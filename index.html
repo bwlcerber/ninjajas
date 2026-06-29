@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Apply saved theme before render to avoid flash -->
+  <script>try{var t=localStorage.getItem('np_portal_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+  <title>NinjaPromo Sales Portal — Login</title>
+  <meta name="description" content="Internal sales enablement portal. Authorized personnel only.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <style>
+    /* Input password eye toggle */
+    .input-pw-wrap { position: relative; }
+    .input-pw-wrap .input { padding-right: 40px; }
+    .pw-toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--text-tertiary);
+      display: flex; padding: 4px; border-radius: var(--r-sm);
+      transition: color var(--t-fast);
+    }
+    .pw-toggle:hover { color: var(--text-secondary); }
+    .pw-toggle svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-bg-grid"></div>
+  <div class="login-glow"></div>
+
+  <div class="login-card" role="main">
+
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>
+      <div>
+        <div class="login-logo-text">NinjaPromo</div>
+        <div class="login-logo-sub">Sales Portal</div>
+      </div>
+    </div>
+
+    <h1 class="login-heading">Welcome back</h1>
+    <p class="login-sub">This portal is for internal use only. Sign in with your sales team credentials.</p>
+
+    <form class="login-form" id="login-form" autocomplete="on" novalidate>
+
+      <div class="input-group">
+        <label class="input-label" for="login-username">Username</label>
+        <input
+          class="input"
+          id="login-username"
+          type="text"
+          name="username"
+          placeholder="Enter username"
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="login-password">Password</label>
+        <div class="input-pw-wrap">
+          <input
+            class="input"
+            id="login-password"
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+          >
+          <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Toggle password visibility">
+            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-error" id="login-error" role="alert"></div>
+
+      <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="width:100%;justify-content:center;margin-top:4px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        Sign In
+      </button>
+    </form>
+
+
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+  // Redirect if already authenticated
+  if (AUTH.isAuthenticated()) {
+    window.location.replace('app.html');
+  }
+
+  const form = document.getElementById('login-form');
+  const usernameInput = document.getElementById('login-username');
+  const passwordInput = document.getElementById('login-password');
+  const errorDiv = document.getElementById('login-error');
+  const loginBtn = document.getElementById('login-btn');
+  const pwToggle = document.getElementById('pw-toggle');
+  const eyeIcon = document.getElementById('eye-icon');
+
+  // Password visibility toggle
+  pwToggle.addEventListener('click', () => {
+    const isVisible = passwordInput.type === 'text';
+    passwordInput.type = isVisible ? 'password' : 'text';
+    eyeIcon.innerHTML = isVisible
+      ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+      : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  });
+
+  // Form submit
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorDiv.style.display = 'none';
+
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!username || !password) {
+      errorDiv.style.display = 'block';
+      errorDiv.textContent = 'Please enter both username and password.';
+      return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in…';
+
+    // Simulate a tiny delay for UX realism
+    setTimeout(() => {
+      const result = AUTH.login(username, password);
+      if (result.success) {
+        window.location.replace('app.html');
+      } else {
+        errorDiv.style.display = 'block';
+        errorDiv.textContent = result.error;
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Sign In`;
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }, 400);
+  });
+
+  usernameInput.focus();
+</script>
+</body>
+</html>

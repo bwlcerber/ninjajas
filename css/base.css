@@ -1,0 +1,295 @@
+/* ============================================================
+   BASE.CSS — Design tokens, typography, reset
+   NinjaPromo Sales Portal · Inspired by sola.framer.media
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700,800&display=swap');
+
+/* ── Tokens ── */
+:root {
+  /* Backgrounds */
+  --bg-0: #060608;
+  --bg-1: #0d0d10;
+  --bg-2: #111116;
+  --bg-3: #17171d;
+  --bg-4: #1e1e26;
+
+  /* Borders */
+  --border-subtle: rgba(255,255,255,0.05);
+  --border-default: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.13);
+
+  /* Text */
+  --text-primary: #f0f0f2;
+  --text-secondary: #8a8a9a;
+  --text-tertiary: #50505e;
+  --text-inverse: #060608;
+
+  /* Accent – restrained emerald green */
+  --accent: #3de892;
+  --accent-dim: rgba(61,232,146,0.12);
+  --accent-glow: rgba(61,232,146,0.25);
+  --accent-dark: #1ba85f;
+
+  /* Status */
+  --danger: #e05039;
+  --danger-dim: rgba(224,80,57,0.12);
+  --warning: #e0a439;
+  --warning-dim: rgba(224,164,57,0.12);
+  --info: #3990e0;
+  --info-dim: rgba(57,144,224,0.12);
+
+  /* Visibility badges */
+  --badge-internal: rgba(224,80,57,0.15);
+  --badge-internal-text: #e05039;
+  --badge-safe: rgba(61,232,146,0.12);
+  --badge-safe-text: #3de892;
+
+  /* Radius — less rounded, sharper editorial feel */
+  --r-xs: 2px;
+  --r-sm: 3px;
+  --r-md: 4px;
+  --r-lg: 6px;
+  --r-xl: 8px;
+  --r-2xl: 12px;
+  --r-full: 9999px;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+  --shadow-accent: 0 0 20px rgba(61,232,146,0.15);
+
+  /* Typography — Manrope default */
+  --font-ui: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', 'Roboto Mono', ui-monospace, monospace;
+
+  /* Transitions */
+  --t-fast: 100ms ease;
+  --t-default: 180ms ease;
+  --t-slow: 300ms ease;
+
+  /* Sidebar */
+  --sidebar-w: 220px;
+  --topbar-h: 64px;
+  --logo-filter: invert(1);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LIGHT THEME — overrides all colour tokens
+   Activated via:  <html data-theme="light">
+   Inspired by sola.framer.media light mode — warm off-white, crisp
+   ════════════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  /* Backgrounds — warm off-whites */
+  --bg-0: #f6f6f4;
+  --bg-1: #ffffff;
+  --bg-2: #ffffff;
+  --bg-3: #f0f0ee;
+  --bg-4: #e8e8e6;
+
+  /* Borders */
+  --border-subtle:  rgba(0,0,0,0.055);
+  --border-default: rgba(0,0,0,0.09);
+  --border-strong:  rgba(0,0,0,0.15);
+
+  /* Text */
+  --text-primary:   #0d0d10;
+  --text-secondary: #50505c;
+  --text-tertiary:  #9898a8;
+  --text-inverse:   #f0f0f2;
+
+  /* Accent — slightly richer green for light backgrounds */
+  --accent:      #0faa5e;
+  --accent-dim:  rgba(15,170,94,0.10);
+  --accent-glow: rgba(15,170,94,0.20);
+  --accent-dark: #0a7d45;
+
+  /* Status */
+  --danger:     #c0392b;
+  --danger-dim: rgba(192,57,43,0.09);
+  --warning:    #c07a10;
+  --warning-dim:rgba(192,122,16,0.09);
+  --info:       #1a6ec0;
+  --info-dim:   rgba(26,110,192,0.09);
+
+  /* Visibility badges */
+  --badge-internal:      rgba(192,57,43,0.10);
+  --badge-internal-text: #c0392b;
+  --badge-safe:          rgba(15,170,94,0.10);
+  --badge-safe-text:     #0faa5e;
+  --logo-filter:         none;
+
+  /* Shadows — softer for light */
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.14);
+  --shadow-accent: 0 0 20px rgba(15,170,94,0.15);
+}
+
+/* Smooth colour transition on theme switch */
+html {
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-0);
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img, video { display: block; max-width: 100%; }
+button { font-family: var(--font-ui); cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: var(--font-ui); }
+ul, ol { list-style: none; }
+h1, h2, h3, h4, h5, h6 { font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ── Typography scale ── */
+.text-xs   { font-size: 11px; line-height: 1.4; }
+.text-sm   { font-size: 12px; line-height: 1.5; }
+.text-base { font-size: 14px; line-height: 1.5; }
+.text-md   { font-size: 15px; line-height: 1.5; }
+.text-lg   { font-size: 17px; line-height: 1.4; }
+.text-xl   { font-size: 20px; line-height: 1.3; }
+.text-2xl  { font-size: 24px; line-height: 1.25; }
+.text-3xl  { font-size: 30px; line-height: 1.2; }
+
+.font-mono { font-family: var(--font-mono); }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary  { color: var(--text-tertiary); }
+.text-accent    { color: var(--accent); }
+.text-danger    { color: var(--danger); }
+
+/* ── Utility ── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-1 { gap: var(--sp-1); }
+.gap-2 { gap: var(--sp-2); }
+.gap-3 { gap: var(--sp-3); }
+.gap-4 { gap: var(--sp-4); }
+.gap-6 { gap: var(--sp-6); }
+.gap-8 { gap: var(--sp-8); }
+.w-full { width: 100%; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opacity-0 { opacity: 0; }
+.opacity-50 { opacity: 0.5; }
+.hidden { display: none !important; }
+.pointer { cursor: pointer; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.grid { display: grid; }
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--accent-dim);
+  color: var(--text-primary);
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-fade { animation: fadeIn var(--t-slow) both; }
+.animate-slide { animation: slideIn var(--t-slow) both; }
+
+/* Typography main content scale (+2px) */
+.main {
+  font-size: 16px !important;
+}
+.main input, .main select, .main textarea, .main button {
+  font-size: 15px;
+}
+.main .text-xs { font-size: 13px !important; }
+.main .text-sm { font-size: 14px !important; }
+.main .text-base { font-size: 16px !important; }
+.main .text-md { font-size: 17px !important; }
+.main .text-lg { font-size: 19px !important; }
+.main .text-xl { font-size: 22px !important; }
+.main .text-2xl { font-size: 26px !important; }
+.main .text-3xl { font-size: 32px !important; }
+
+/* Overrides for specific labels and elements in pages */
+.main .card-title { font-size: 15px !important; }
+.main .card-desc { font-size: 14px !important; }
+.main .material-row-title { font-size: 15px !important; }
+.main .material-row-sub { font-size: 13px !important; }
+.main .ref-name { font-size: 16px !important; }
+.main .ref-summary { font-size: 14px !important; }
+.main .profile-name { font-size: 16px !important; }
+.main .profile-note { font-size: 14px !important; }
+.main .stat-label { font-size: 13px !important; }
+.main .stat-value { font-size: 30px !important; }
+.main .stat-sub { font-size: 13px !important; }
+.main .input-label { font-size: 13px !important; }
+.main .filter-chip { font-size: 13px !important; }
+.main .tag { font-size: 11px !important; }

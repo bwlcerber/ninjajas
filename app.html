@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Apply saved theme BEFORE any render to prevent flash -->
+  <script>try{var t=localStorage.getItem('np_portal_theme')||'dark';document.documentElement.setAttribute('data-theme',t);var v=localStorage.getItem('np_portal_design_version')||'v1';document.documentElement.setAttribute('data-version',v);}catch(e){}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NinjaPromo Sales Portal</title>
+  <meta name="description" content="Internal sales enablement portal for NinjaPromo sales team.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <style>
+    /* ── Global search overlay ── */
+    #gsearch-overlay {
+      position: fixed; inset: 0;
+      background: rgba(6,6,8,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 100px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+    #gsearch-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #gsearch-box {
+      width: 90%;
+      max-width: 760px;
+      background: #202026;
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(0,0,0,0.6);
+      overflow: hidden;
+      animation: modalIn 180ms ease both;
+    }
+    [data-theme="light"] #gsearch-box {
+      background: #ffffff;
+      border-color: var(--border-strong);
+    }
+    #gsearch-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    #gsearch-input-wrap svg { width: 18px; height: 18px; color: var(--text-secondary); flex-shrink: 0; }
+    #gsearch-input {
+      flex: 1; background: none; border: none; outline: none;
+      font-size: 17px; color: var(--text-primary); font-family: var(--font-ui);
+    }
+    #gsearch-input::placeholder { color: var(--text-tertiary); }
+    #gsearch-results { max-height: 480px; overflow-y: auto; padding: 12px; }
+    .gsearch-result {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border-radius: var(--r-md); cursor: pointer; transition: background var(--t-fast);
+    }
+    .gsearch-result:hover, .gsearch-result.focused { background: rgba(255, 255, 255, 0.05); }
+    [data-theme="light"] .gsearch-result:hover, [data-theme="light"] .gsearch-result.focused { background: rgba(0, 0, 0, 0.03); }
+    .gsearch-result-type {
+      font-size: 9px; font-family: var(--font-mono); color: var(--text-tertiary);
+      background: var(--bg-4); border: 1px solid var(--border-subtle); padding: 2px 6px;
+      border-radius: var(--r-xs); text-transform: uppercase; letter-spacing: .06em;
+      width: 64px; text-align: center; flex-shrink: 0;
+    }
+    .gsearch-result-info { flex: 1; min-width: 0; }
+    .gsearch-result-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    .gsearch-result-sub { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); margin-top: 1px; }
+    .gsearch-empty { padding: 40px; text-align: center; color: var(--text-tertiary); font-size: 14px; }
+    .gsearch-footer {
+      display: flex; align-items: center; gap: 12px; padding: 12px 22px;
+      border-top: 1px solid var(--border-subtle); font-size: 10px; font-family: var(--font-mono);
+      color: var(--text-tertiary);
+    }
+    .gsearch-footer kbd {
+      background: var(--bg-3); border: 1px solid var(--border-default);
+      border-radius: 3px; padding: 2px 5px; font-family: var(--font-mono);
+    }
+    
+    /* Sun yellow styling in dark mode */
+    [data-theme="dark"] #theme-icon svg {
+      color: #ffd700 !important;
+    }
+
+    /* ── Responsive ── */
+    /* ── Responsive (Up to iPad landscape / 1024px) ── */
+    @media (max-width: 1024px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { position: fixed; left: -240px; top: 0; width: 240px; height: 100vh; z-index: 250; transition: left var(--t-default); }
+      .sidebar.mobile-open { left: 0; box-shadow: var(--shadow-lg); }
+      .topbar-menu-btn { display: flex !important; }
+      .masonry-grid { columns: 2; }
+      .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-recent { grid-template-columns: 1fr; }
+      .cases-grid { grid-template-columns: repeat(2, 1fr); }
+      .docs-categories { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .span-2 { grid-column: 1; }
+      
+      .sidebar-close-btn {
+        display: flex !important;
+        position: absolute;
+        top: 18px;
+        right: 16px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: var(--r-sm);
+        background: var(--bg-3);
+        border: 1px solid var(--border-subtle);
+        align-items: center;
+        justify-content: center;
+        z-index: 260;
+      }
+      .sidebar-close-btn:hover {
+        color: var(--text-primary);
+        background: var(--bg-4);
+      }
+    }
+    @media (max-width: 768px) {
+      .masonry-grid { columns: 1; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .cases-grid { grid-template-columns: 1fr; }
+      .page-content { padding: 16px 12px; }
+    }
+    @media (max-width: 600px) {
+      #topbar-search-btn {
+        min-width: unset !important;
+        width: 32px;
+        height: 32px;
+        padding: 0 !important;
+        justify-content: center;
+      }
+      #topbar-search-btn .search-text {
+        display: none !important;
+      }
+      #topbar-search-btn svg {
+        margin-right: 0 !important;
+        width: 14px;
+        height: 14px;
+      }
+      #screenshare-toggle-btn #screenshare-label {
+        display: none !important;
+      }
+      #screenshare-toggle-btn {
+        padding: 0 8px !important;
+      }
+    }
+    .topbar-menu-btn { display: none; }
+    .sidebar-close-btn { display: none; }
+    
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 6, 8, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 240;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--t-default);
+    }
+    .sidebar-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .static-video-wrapper .video-play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.4);
+      z-index: 5;
+      pointer-events: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .static-video-wrapper .video-play-button svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+      margin-left: 4px; /* visually center play triangle */
+    }
+    .creative-card-item:hover .static-video-wrapper .video-play-button {
+      background: rgba(0,0,0,0.7);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    .creative-card-item:hover .static-video-wrapper video {
+      filter: brightness(0.6);
+    }
+    .static-video-wrapper video {
+      transition: filter 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+    <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Close sidebar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="sidebar-logo" onclick="ROUTER.navigate('client-dashboard')" style="cursor: pointer; display: flex; align-items: center;">
+      <img src="logo.png" alt="NinjaPromo Logo" style="max-width: 100%; height: auto; max-height: 28px; display: block; filter: var(--logo-filter);">
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-label" style="color: #a87af0; font-weight: 700; font-size: 11px;">Client Portal</span>
+      <div class="nav-item" data-page="client-dashboard" onclick="ROUTER.navigate('client-dashboard')" role="button" tabindex="0">
+        <span id="nav-icon-client-dashboard"></span> Dashboard
+      </div>
+      <div class="nav-item" data-page="client-search" onclick="ROUTER.navigate('client-search')" role="button" tabindex="0">
+        <span id="nav-icon-client-search"></span> Global Search
+      </div>
+      <div class="nav-item" data-page="reports" onclick="ROUTER.navigate('reports')" role="button" tabindex="0">
+        <span id="nav-icon-reports"></span> Reports
+        <span class="nav-item-badge" id="badge-reports">—</span>
+      </div>
+      <div class="nav-item" data-page="creatives" onclick="ROUTER.navigate('creatives')" role="button" tabindex="0">
+        <span id="nav-icon-creatives"></span> Creatives
+        <span class="nav-item-badge" id="badge-creatives">—</span>
+      </div>
+      <div class="nav-item" data-page="cases" onclick="ROUTER.navigate('cases')" role="button" tabindex="0">
+        <span id="nav-icon-cases"></span> Cases
+        <span class="nav-item-badge" id="badge-cases">—</span>
+      </div>
+      <div class="nav-item" data-page="clientrefs" onclick="ROUTER.navigate('clientrefs')" role="button" tabindex="0">
+        <span id="nav-icon-refs"></span> Client References
+        <span class="nav-item-badge" id="badge-refs">—</span>
+      </div>
+
+
+      <!-- Collapsible Internal Portal Header -->
+      <div class="nav-section-header" id="internal-portal-toggle" onclick="toggleInternalPortal()" style="color: #ff7f50; font-weight: 700; font-size: 11px; margin-top: 16px;">
+        <span>Internal Portal</span>
+        <span id="internal-portal-arrow" style="transform: rotate(0deg); transition: transform 0.2s; font-size: 8px;">▼</span>
+      </div>
+      <div id="internal-portal-items" style="display: none; flex-direction: column; gap: 1px;">
+        <div class="nav-item" data-page="docs" id="nav-item-docs" onclick="ROUTER.navigate('docs')" role="button" tabindex="0">
+          <span id="nav-icon-docs"></span> Docs
+          <span class="nav-item-badge" id="badge-docs">—</span>
+        </div>
+        <div class="nav-item" data-page="call-library" id="nav-item-call-library" onclick="ROUTER.navigate('call-library')" role="button" tabindex="0">
+          <span id="nav-icon-call-library"></span> Call Library
+        </div>
+        <div class="nav-item" data-page="enablement-tracker" id="nav-item-enablement-tracker" onclick="ROUTER.navigate('enablement-tracker')" role="button" tabindex="0">
+          <span id="nav-icon-enablement-tracker"></span> Team Tracker
+        </div>
+        <div class="nav-item" data-page="admin" id="nav-item-admin" role="button" tabindex="0" style="display:flex; flex-direction:column; align-items:stretch; height:auto; padding:0;">
+          <div style="display:flex; align-items:center; gap:8px; padding:8px 12px;" onclick="ROUTER.navigate('admin')">
+            <span id="nav-icon-admin"></span> <span id="nav-admin-text">Admin</span>
+          </div>
+          <div id="admin-submenu" style="display:none; flex-direction:column; padding-left:28px; padding-bottom:6px; gap:4px;">
+            <div onclick="event.stopPropagation(); ROUTER.navigate('admin','materials')" style="font-size:11.5px; padding:4px 8px; border-radius:var(--r-sm); color:var(--text-secondary); cursor:pointer;" class="submenu-item" id="submenu-materials">Materials</div>
+            <div onclick="event.stopPropagation(); ROUTER.navigate('admin','refs')" style="font-size:11.5px; padding:4px 8px; border-radius:var(--r-sm); color:var(--text-secondary); cursor:pointer;" class="submenu-item" id="submenu-refs">Client References</div>
+            <div onclick="event.stopPropagation(); ROUTER.navigate('admin','team')" style="font-size:11.5px; padding:4px 8px; border-radius:var(--r-sm); color:var(--text-secondary); cursor:pointer;" class="submenu-item" id="submenu-team">Team Settings</div>
+            <div onclick="event.stopPropagation(); ROUTER.navigate('admin','bin')" style="font-size:11.5px; padding:4px 8px; border-radius:var(--r-sm); color:var(--text-secondary); cursor:pointer;" class="submenu-item" id="submenu-bin">Recycle Bin</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-username">Admin</div>
+          <div class="sidebar-user-role" id="sidebar-user-role">Sales Team</div>
+        </div>
+        <button class="sidebar-logout-btn" onclick="AUTH.logout()" title="Sign out" aria-label="Sign out" style="padding: 6px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main area ── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar" style="position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); background: var(--bg-0);">
+      <button class="btn btn-ghost btn-icon topbar-menu-btn" id="menu-toggle" aria-label="Toggle menu" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <span class="topbar-title" id="topbar-title" style="display:none"></span>
+
+      <!-- Persistent widget tray in the top right corner of the screen -->
+      <div id="top-right-widget-tray" style="display:flex; align-items:center; gap:8px; margin-left: auto;">
+        <!-- Design version switcher hidden -->
+        <div style="display:none;">
+          <button class="btn btn-xs" onclick="setDesignVersion('v1')" id="ver-btn-v1">V1</button>
+        </div>
+
+        <!-- Search Trigger -->
+        <button class="topbar-search-trigger" id="topbar-search-btn" aria-label="Open global search" onclick="openGlobalSearch()" style="min-width:180px; height:32px; padding:0 10px; font-size:12px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span class="search-text">Search everything…</span>
+        </button>
+
+        <!-- Screen Share Mode Toggle -->
+        <button
+          id="screenshare-toggle-btn"
+          class="btn btn-sm btn-secondary"
+          title="Toggle Screen Share Mode (Hide internal files) [Alt+S]"
+          onclick="toggleScreenShareMode()"
+          style="display:flex;align-items:center;gap:6px;height:32px;"
+        >
+          <span id="screenshare-icon"></span> <span id="screenshare-label">Share Screen</span>
+        </button>
+
+        <!-- Theme toggle -->
+        <button
+          id="theme-toggle-btn"
+          class="btn btn-ghost btn-icon"
+          aria-label="Toggle theme"
+          title="Switch theme"
+          onclick="THEME.toggle()"
+          style="height:32px; width:32px; display:flex; align-items:center; justify-content:center;"
+        >
+          <span id="theme-icon"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <div class="page-content" id="page-container"></div>
+
+  </div>
+</div>
+
+<!-- ── Global search overlay ── -->
+<div id="gsearch-overlay" role="dialog" aria-modal="true" aria-label="Global search">
+  <div id="gsearch-box">
+    <div id="gsearch-input-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="gsearch-input" placeholder="Search across all content…" autocomplete="off">
+      <kbd style="font-family:var(--font-mono);font-size:10px;background:var(--bg-3);border:1px solid var(--border-default);border-radius:3px;padding:2px 5px;color:var(--text-tertiary)">ESC</kbd>
+    </div>
+    <div id="gsearch-results"></div>
+    <div class="gsearch-footer">
+      <span><kbd>↑↓</kbd> navigate</span>
+      <span><kbd>Enter</kbd> open</span>
+      <span><kbd>ESC</kbd> close</span>
+      <span style="margin-left:auto">
+        <a style="color:var(--accent);cursor:pointer" onclick="closeGlobalSearch();ROUTER.navigate('search')">Full search →</a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar backdrop for mobile/iPad -->
+<div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+<!-- Toast container -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- ── Scripts ── -->
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/store.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/router.js"></script>
+<script src="js/pages/dashboard.js"></script>
+<script src="js/pages/search.js"></script>
+<script src="js/pages/reports.js"></script>
+<script src="js/pages/creatives.js"></script>
+<script src="js/pages/docs.js"></script>
+<script src="js/pages/cases.js"></script>
+<script src="js/pages/clientrefs.js"></script>
+<script src="js/pages/miniprofiles.js"></script>
+<script src="js/pages/admin.js"></script>
+<script src="js/pages/console.js"></script>
+<script src="js/pages/calllibrary.js"></script>
+<script src="js/pages/enablement.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════
+if (!AUTH.requireAuth()) { throw new Error('Unauthenticated'); }
+
+// ════════════════════════════════════════════════════
+// THEME MODULE
+// ════════════════════════════════════════════════════
+const THEME = (() => {
+  const SUN_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+  const MOON_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
+  function current() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+  }
+
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    AUTH.applyTheme(theme);
+    updateIcon(theme);
+  }
+
+  function toggle() {
+    apply(current() === 'dark' ? 'light' : 'dark');
+  }
+
+  function updateIcon(theme) {
+    const el = document.getElementById('theme-icon');
+    if (el) el.innerHTML = theme === 'dark' ? SUN_ICON : MOON_ICON;
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  }
+
+  function init() {
+    const saved = AUTH.getSavedTheme();
+    apply(saved);
+  }
+
+  return { init, toggle, current, apply };
+})();
+
+window.THEME = THEME;
+THEME.init();
+
+// ════════════════════════════════════════════════════
+// INJECT NAV ICONS
+// ════════════════════════════════════════════════════
+const injectIcon = (id, svg) => {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = svg;
+};
+injectIcon('nav-icon-client-dashboard', ICONS.dashboard);
+injectIcon('nav-icon-client-search', ICONS.search);
+injectIcon('nav-icon-internal-dashboard', ICONS.dashboard);
+injectIcon('nav-icon-internal-search', ICONS.search);
+injectIcon('nav-icon-reports', ICONS.reports);
+injectIcon('nav-icon-creatives', ICONS.creatives);
+injectIcon('nav-icon-docs', ICONS.docs);
+injectIcon('nav-icon-cases', ICONS.cases);
+injectIcon('nav-icon-refs', ICONS.refs);
+injectIcon('nav-icon-profiles', ICONS.profiles);
+injectIcon('nav-icon-admin', ICONS.admin);
+injectIcon('nav-icon-call-library', ICONS.file_vid);
+injectIcon('nav-icon-enablement-tracker', ICONS.lightning);
+
+// Apply Manrope font on load
+document.documentElement.classList.add('font-manrope');
+
+// ════════════════════════════════════════════════════
+// COLLAPSIBLE INTERNAL PORTAL LOGIC
+// ════════════════════════════════════════════════════
+let internalPortalTimer = null;
+
+function toggleInternalPortal(forceState) {
+  const itemsDiv = document.getElementById('internal-portal-items');
+  const arrow = document.getElementById('internal-portal-arrow');
+  if (!itemsDiv) return;
+
+  const isSuperAdmin = AUTH.getRole() === 'superadmin';
+  const isScreenSharing = window.SCREEN_SHARE_ACTIVE;
+
+  // Protect internal content if screen sharing is active
+  if (isScreenSharing && !isSuperAdmin) {
+    showToast('Internal Portal is locked during screen sharing', 'error');
+    itemsDiv.style.display = 'none';
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+    return;
+  }
+
+  // Determine target state
+  let show = itemsDiv.style.display === 'none';
+  if (typeof forceState === 'boolean') {
+    show = forceState;
+  }
+
+  if (show) {
+    itemsDiv.style.display = 'flex';
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+    
+    // Start/Reset timed collapse for regular admins (3 minutes)
+    if (!isSuperAdmin) {
+      if (internalPortalTimer) clearTimeout(internalPortalTimer);
+      internalPortalTimer = setTimeout(() => {
+        toggleInternalPortal(false);
+        showToast('Internal Portal collapsed automatically (Client-Safe Timer)', 'info');
+      }, 3 * 60 * 1000);
+    }
+  } else {
+    itemsDiv.style.display = 'none';
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+    if (internalPortalTimer) clearTimeout(internalPortalTimer);
+  }
+}
+
+function initInternalPortalNav() {
+  const isSuperAdmin = AUTH.getRole() === 'superadmin';
+  const toggleBtn = document.getElementById('internal-portal-toggle');
+  const arrow = document.getElementById('internal-portal-arrow');
+  
+  if (isSuperAdmin) {
+    toggleInternalPortal(true);
+    if (toggleBtn) {
+      toggleBtn.removeAttribute('onclick');
+      toggleBtn.style.cursor = 'default';
+      if (arrow) arrow.style.display = 'none';
+    }
+  } else {
+    toggleInternalPortal(false);
+  }
+}
+
+setTimeout(initInternalPortalNav, 50);
+
+// ════════════════════════════════════════════════════
+// ROLE-AWARE NAVIGATION
+// Superadmin: sees Admin nav item
+// Admin (view-only): Admin item hidden
+// ════════════════════════════════════════════════════
+const _role = AUTH.getRole();
+const _canManage = AUTH.canManageContent();
+
+// Hide Admin nav for non-superadmin
+const _adminNavItem = document.getElementById('nav-item-admin');
+if (_adminNavItem && !AUTH.canAccessAdmin()) {
+  _adminNavItem.style.display = 'none';
+}
+
+function updateAdminSubmenu() {
+  const submenu = document.getElementById('admin-submenu');
+  if (!submenu) return;
+  const isHashAdmin = window.location.hash.startsWith('#admin');
+  if (isHashAdmin && AUTH.canAccessAdmin()) {
+    submenu.style.display = 'flex';
+    // Highlight sub-tab in menu
+    const currentHash = window.location.hash;
+    const items = submenu.querySelectorAll('.submenu-item');
+    items.forEach(el => {
+      el.style.background = 'transparent';
+      el.style.color = 'var(--text-secondary)';
+    });
+    if (currentHash.includes('/refs')) {
+      const el = document.getElementById('submenu-refs');
+      if (el) { el.style.background = 'var(--bg-3)'; el.style.color = 'var(--accent)'; }
+    } else if (currentHash.includes('/team')) {
+      const el = document.getElementById('submenu-team');
+      if (el) { el.style.background = 'var(--bg-3)'; el.style.color = 'var(--accent)'; }
+    } else if (currentHash.includes('/bin')) {
+      const el = document.getElementById('submenu-bin');
+      if (el) { el.style.background = 'var(--bg-3)'; el.style.color = 'var(--accent)'; }
+    } else {
+      const el = document.getElementById('submenu-materials');
+      if (el) { el.style.background = 'var(--bg-3)'; el.style.color = 'var(--accent)'; }
+    }
+  } else {
+    submenu.style.display = 'none';
+  }
+}
+window.addEventListener('hashchange', updateAdminSubmenu);
+setTimeout(updateAdminSubmenu, 100);
+
+// ════════════════════════════════════════════════════
+// NAV BADGES
+// ════════════════════════════════════════════════════
+function updateBadges() {
+  const stats = STORE.getStats();
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+  // Client-safe reports count (exclude cases and creatives)
+  const clientSafeReportsCount = STORE.getMaterials().filter(m => m.visibility_status === 'client-safe' && !['case','creative','video','image'].includes(m.asset_type)).length;
+  setVal('badge-reports', clientSafeReportsCount);
+  setVal('badge-creatives', stats.totalCreatives);
+  setVal('badge-docs', STORE.getByTypes(['contract','template','process-doc','training','pdf','doc-link']).length);
+  setVal('badge-cases', stats.totalCases);
+  setVal('badge-refs', stats.totalRefs);
+  setVal('badge-profiles', stats.totalProfiles);
+}
+updateBadges();
+
+// ════════════════════════════════════════════════════
+// SESSION / USER DISPLAY
+// ════════════════════════════════════════════════════
+const _session = AUTH.getSession();
+if (_session) {
+  const displayName = _session.displayName || _session.username;
+  document.getElementById('sidebar-username').textContent = displayName;
+
+  // Statically hide avatar as requested
+  document.getElementById('sidebar-avatar').style.display = 'none';
+  document.getElementById('sidebar-username').style.fontSize = '14px';
+  document.getElementById('sidebar-username').style.fontWeight = '700';
+
+  const roleEl = document.getElementById('sidebar-user-role');
+  const isSuperAdmin = _session.role === 'superadmin';
+  
+  if (roleEl) {
+    const roleLabel = isSuperAdmin ? 'Super Admin' : 'View Only';
+    if (isSuperAdmin && displayName.toLowerCase() === 'super admin') {
+      roleEl.innerHTML = '';
+    } else {
+      roleEl.innerHTML = `${roleLabel}`;
+    }
+    roleEl.style.color = 'var(--text-tertiary)';
+  }
+
+  // Rename Admin navigation label dynamically if Super Admin
+  const navAdminText = document.getElementById('nav-admin-text');
+  if (navAdminText) {
+    navAdminText.textContent = isSuperAdmin ? 'Super Admin' : 'Admin';
+  }
+
+  // Add rotating border animation for EVERY logged in user with customizable color
+  const userContainer = document.querySelector('.sidebar-user');
+  if (userContainer) {
+    userContainer.classList.add('superadmin-glowing');
+    
+    // Fetch glowColor from auth
+    const currentUsers = AUTH.getUsers();
+    const currUser = currentUsers.find(u => u.username.toLowerCase() === _session.username.toLowerCase());
+    const glowColor = currUser ? currUser.glowColor : '#2563eb';
+    userContainer.style.setProperty('--glow-color', glowColor);
+  }
+}
+
+// ════════════════════════════════════════════════════
+// DESIGN VERSION SWITCHER SCRIPT
+// ════════════════════════════════════════════════════
+function setDesignVersion(ver) {
+  document.documentElement.setAttribute('data-version', ver);
+  localStorage.setItem('np_portal_design_version', ver);
+  updateVersionSwitcherUI();
+}
+
+function updateVersionSwitcherUI() {
+  const ver = localStorage.getItem('np_portal_design_version') || 'v1';
+  ['v1', 'v2', 'v3'].forEach(v => {
+    const btn = document.getElementById('ver-btn-' + v);
+    if (btn) {
+      if (v === ver) {
+        btn.style.background = 'var(--accent)';
+        btn.style.color = 'var(--bg-0)';
+        btn.style.borderColor = 'var(--accent)';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--text-secondary)';
+        btn.style.borderColor = 'var(--border-default)';
+      }
+    }
+  });
+}
+
+// Initialize switcher state
+updateVersionSwitcherUI();
+
+// ════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ════════════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  // ════════════════════════════════════════════════════
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openGlobalSearch();
+  }
+  // ════════════════════════════════════════════════════
+  if ((e.metaKey || e.ctrlKey) && e.key === '.') {
+    e.preventDefault();
+    THEME.toggle();
+  }
+  // ════════════════════════════════════════════════════
+  if (e.altKey && e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    toggleScreenShareMode();
+  }
+  // ════════════════════════════════════════════════════
+  if (e.altKey && e.key >= '1' && e.key <= '9') {
+    const pages = ['client-dashboard', 'client-search', 'reports', 'creatives', 'cases', 'clientrefs', 'miniprofiles', 'internal-dashboard', 'internal-search', 'docs'];
+    const idx = parseInt(e.key) - 1;
+    if (pages[idx]) {
+      e.preventDefault();
+      ROUTER.navigate(pages[idx]);
+    }
+  }
+});
+
+// ════════════════════════════════════════════════════
+// SCREEN SHARE MODE MODULE
+// ════════════════════════════════════════════════════
+window.SCREEN_SHARE_ACTIVE = sessionStorage.getItem('np_screenshare') === 'true';
+
+function updateScreenShareUI() {
+  const btn = document.getElementById('screenshare-toggle-btn');
+  const label = document.getElementById('screenshare-label');
+  const icon = document.getElementById('screenshare-icon');
+  if (!btn) return;
+  
+  if (window.SCREEN_SHARE_ACTIVE) {
+    btn.className = 'btn btn-sm btn-danger';
+    label.textContent = 'Screen Sharing (Safe)';
+    icon.innerHTML = `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;margin-right:2px"></span>`;
+  } else {
+    btn.className = 'btn btn-sm btn-secondary';
+    label.textContent = 'Share Screen';
+    icon.innerHTML = ICONS.shield || '🔓';
+  }
+  
+  if (window.PAGE_CONSOLE && typeof window.PAGE_CONSOLE.updateShareStatus === 'function') {
+    window.PAGE_CONSOLE.updateShareStatus();
+  }
+}
+
+function toggleScreenShareMode() {
+  window.SCREEN_SHARE_ACTIVE = !window.SCREEN_SHARE_ACTIVE;
+  sessionStorage.setItem('np_screenshare', window.SCREEN_SHARE_ACTIVE ? 'true' : 'false');
+  updateScreenShareUI();
+  
+  if (window.SCREEN_SHARE_ACTIVE && AUTH.getRole() !== 'superadmin') {
+    toggleInternalPortal(false);
+  }
+
+  ROUTER.render();
+  updateBadges();
+  showToast(window.SCREEN_SHARE_ACTIVE ? 'Client Screen Share active — internal docs hidden' : 'Screen Share inactive — showing all files');
+}
+
+// Initial UI Apply
+updateScreenShareUI();
+
+// Initial Call Prep Tray render on load
+setTimeout(() => {
+  if (window.updateCallPrepTray) window.updateCallPrepTray();
+}, 200);
+
+// ════════════════════════════════════════════════════
+// GLOBAL SEARCH OVERLAY
+// ════════════════════════════════════════════════════
+let _gSearchResults = [];
+let _gFocusedIdx = -1;
+
+function openGlobalSearch() {
+  const overlay = document.getElementById('gsearch-overlay');
+  const input   = document.getElementById('gsearch-input');
+  overlay.classList.add('open');
+  input.value = '';
+  input.focus();
+  document.getElementById('gsearch-results').innerHTML = `<div class="gsearch-empty">Start typing to search across all portal content…</div>`;
+  document.addEventListener('keydown', _gsEscapeHandler);
+}
+
+function closeGlobalSearch() {
+  document.getElementById('gsearch-overlay').classList.remove('open');
+  document.removeEventListener('keydown', _gsEscapeHandler);
+  _gFocusedIdx = -1;
+}
+
+function _gsEscapeHandler(e) {
+  if (e.key === 'Escape') { closeGlobalSearch(); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); _gsFocusNext(1); }
+  if (e.key === 'ArrowUp')   { e.preventDefault(); _gsFocusNext(-1); }
+  if (e.key === 'Enter')     { _gsOpenFocused(); }
+}
+
+function _gsFocusNext(dir) {
+  const items = document.querySelectorAll('.gsearch-result');
+  if (!items.length) return;
+  _gFocusedIdx = Math.max(0, Math.min(items.length - 1, _gFocusedIdx + dir));
+  items.forEach((el, i) => el.classList.toggle('focused', i === _gFocusedIdx));
+}
+
+function _gsOpenFocused() {
+  const items = document.querySelectorAll('.gsearch-result');
+  if (_gFocusedIdx >= 0 && items[_gFocusedIdx]) items[_gFocusedIdx].click();
+}
+
+document.getElementById('gsearch-input').addEventListener('input', (e) => {
+  const q = e.target.value.trim();
+  _gFocusedIdx = -1;
+  if (q.length < 2) {
+    document.getElementById('gsearch-results').innerHTML = `<div class="gsearch-empty">Type at least 2 characters…</div>`;
+    return;
+  }
+  _gsRenderResults(q);
+});
+
+document.getElementById('gsearch-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('gsearch-overlay')) closeGlobalSearch();
+});
+
+function _gsRenderResults(q) {
+  const lower = q.toLowerCase();
+  const results = [];
+
+  STORE.getMaterials().forEach(m => {
+    const s = [m.title, m.client_name, m.vertical, m.geo, m.asset_type, ...(m.tags||[]), ...(m.services_provided||[])].join(' ').toLowerCase();
+    if (s.includes(lower)) results.push({ type: 'material', item: m });
+  });
+  STORE.getClientRefs().forEach(r => {
+    const s = [r.client_name, r.vertical, r.geo, r.ai_summary].join(' ').toLowerCase();
+    if (s.includes(lower)) results.push({ type: 'ref', item: r });
+  });
+  STORE.getClientProfiles().forEach(p => {
+    const s = [p.client_name, p.geo, p.product_summary, ...(p.services_provided||[])].join(' ').toLowerCase();
+    if (s.includes(lower)) results.push({ type: 'profile', item: p });
+  });
+
+  _gSearchResults = results.slice(0, 12);
+  const wrap = document.getElementById('gsearch-results');
+
+  if (!_gSearchResults.length) {
+    wrap.innerHTML = `<div class="gsearch-empty">No results for "<strong>${q}</strong>"</div>`;
+    return;
+  }
+
+  wrap.innerHTML = _gSearchResults.map((r) => {
+    const typeLabel = { material: 'Material', ref: 'Ref', profile: 'Profile' }[r.type];
+    let title = '', sub = '', onclick = '';
+    if (r.type === 'material') {
+      title = r.item.title;
+      sub   = `${r.item.client_name} · ${r.item.vertical} · ${assetTypeLabel(r.item.asset_type)}`;
+      onclick = `closeGlobalSearch();openMaterial(STORE.getMaterialById('${r.item.id}'))`;
+    } else if (r.type === 'ref') {
+      title = r.item.client_name;
+      sub   = `${r.item.vertical} · ${r.item.geo} · Client Reference`;
+      onclick = `closeGlobalSearch();ROUTER.navigate('clientrefs')`;
+    } else {
+      title = r.item.client_name;
+      sub   = `${r.item.geo} · Mini Profile`;
+      onclick = `closeGlobalSearch();ROUTER.navigate('miniprofiles','${r.item.id}')`;
+    }
+    return `
+      <div class="gsearch-result" onclick="${onclick}">
+        <span class="gsearch-result-type">${typeLabel}</span>
+        <div class="gsearch-result-info">
+          <div class="gsearch-result-title">${title}</div>
+          <div class="gsearch-result-sub">${sub}</div>
+        </div>
+        <span class="tag ${r.type==='material'?getVerticalClass(r.item.vertical):'tag-default'}" style="font-size:9px;flex-shrink:0">${r.type==='material'?r.item.vertical:(r.type==='ref'?'→ Site':'→ Profile')}</span>
+      </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
+// MOBILE SIDEBAR
+// ════════════════════════════════════════════════════
+const _menuBtn = document.getElementById('menu-toggle');
+const _sidebar = document.getElementById('sidebar');
+const _backdrop = document.getElementById('sidebar-backdrop');
+const _closeBtn = document.getElementById('sidebar-close-btn');
+
+function toggleSidebar(open) {
+  if (open) {
+    if (_sidebar) _sidebar.classList.add('mobile-open');
+    if (_backdrop) _backdrop.classList.add('active');
+  } else {
+    if (_sidebar) _sidebar.classList.remove('mobile-open');
+    if (_backdrop) _backdrop.classList.remove('active');
+  }
+}
+
+if (_menuBtn) {
+  _menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = _sidebar ? _sidebar.classList.contains('mobile-open') : false;
+    toggleSidebar(!isOpen);
+  });
+}
+
+if (_closeBtn) {
+  _closeBtn.addEventListener('click', () => {
+    toggleSidebar(false);
+  });
+}
+
+if (_backdrop) {
+  _backdrop.addEventListener('click', () => {
+    toggleSidebar(false);
+  });
+  _backdrop.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    toggleSidebar(false);
+  }, { passive: false });
+}
+
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => {
+    toggleSidebar(false);
+  });
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+  });
+});
+
+// Dismiss sidebar when tapping outside on mobile/tablets
+document.addEventListener('click', (e) => {
+  if (_sidebar && _sidebar.classList.contains('mobile-open')) {
+    if (!_sidebar.contains(e.target) && e.target !== _menuBtn && !_menuBtn.contains(e.target) && e.target !== _backdrop) {
+      toggleSidebar(false);
+    }
+  }
+});
+
+// ════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
+// Intercept #admin navigation for non-superadmin
+const _originalInit = ROUTER.init;
+ROUTER.init = function() {
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#','').split('/')[0];
+    if (hash === 'admin' && !AUTH.canAccessAdmin()) {
+      showToast('Admin access requires Super Admin credentials', 'error');
+      window.location.hash = '#dashboard';
+      return;
+    }
+  });
+  _originalInit.call(ROUTER);
+};
+
+// Also expose role flag globally for page modules (must be set BEFORE ROUTER.init() so page modules see it on page load)
+window.CAN_MANAGE = AUTH.canManageContent();
+
+ROUTER.init();
+</script>
+
+</body>
+</html>
