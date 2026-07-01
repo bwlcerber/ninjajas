@@ -48,7 +48,7 @@ const PAGE_SEARCH = (() => {
           <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Industries</span>
           ${window.PORTAL_DATA.VERTICALS.map(v => {
             const active = _selectedVerticals.has(v);
-            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>\`;
+            return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
           }).join('')}
         </div>
 
@@ -57,7 +57,7 @@ const PAGE_SEARCH = (() => {
           <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Services</span>
           ${window.PORTAL_DATA.SERVICES.map(s => {
             const active = _selectedServices.has(s);
-            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('services', '${s}')">${s}</button>\`;
+            return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('services', '${s}')">${s}</button>`;
           }).join('')}
         </div>
 
@@ -66,7 +66,7 @@ const PAGE_SEARCH = (() => {
           <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Geos</span>
           ${window.PORTAL_DATA.GEOS.map(g => {
             const active = _selectedGeos.has(g);
-            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('geos', '${g}')">${g}</button>\`;
+            return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('geos', '${g}')">${g}</button>`;
           }).join('')}
         </div>
 
@@ -75,7 +75,7 @@ const PAGE_SEARCH = (() => {
           <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Asset Types</span>
           ${window.PORTAL_DATA.ASSET_TYPES.map(a => {
             const active = _selectedTypes.has(a);
-            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('types', '${a}')">${assetTypeLabel(a)}</button>\`;
+            return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('types', '${a}')">${assetTypeLabel(a)}</button>`;
           }).join('')}
         </div>
 

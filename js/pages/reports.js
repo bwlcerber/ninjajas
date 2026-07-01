@@ -15,8 +15,9 @@ const PAGE_REPORTS = (() => {
 
   let _activeCategory = 'all';
   let _query = '';
-  let _vertical = 'all';
-  const _selectedTags = new Set();
+  const _selectedVerticals = new Set();
+  const _selectedServices = new Set();
+  const _selectedGeos = new Set();
 
   function render(container) {
     const allReports = STORE.getMaterials().filter(m => !['case', 'creative', 'video', 'image'].includes(m.asset_type));
@@ -31,35 +32,41 @@ const PAGE_REPORTS = (() => {
           </button>` : ''}
         </div>
 
-        <!-- Horizontal service filter chips -->
-        <div class="filter-row" style="margin-top:12px; margin-bottom:12px; display:flex; flex-wrap:wrap; gap:8px;">
-          <button class="filter-chip ${_selectedTags.size === 0 ? 'active' : ''}" onclick="PAGE_REPORTS.clearAllTags()" style="display:inline-flex; align-items:center;">
-            <span style="display:inline-block;width:14px;height:14px;vertical-align:middle;margin-right:6px">${ICONS.refs}</span> Show All Services
-          </button>
-          ${services.map(s => {
-            const active = _selectedTags.has(s);
-            return `
-              <button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS.toggleTag('${s}')">
-                ${s}
-              </button>
-            `;
-          }).join('')}
+        <!-- Multi-select Filter Rows -->
+        <div style="margin-top:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">
+          <!-- Industries -->
+          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Industries</span>
+            ${window.PORTAL_DATA.VERTICALS.map(v => {
+              const active = _selectedVerticals.has(v);
+              return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
+            }).join('')}
+          </div>
+          <!-- Services -->
+          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Services</span>
+            ${window.PORTAL_DATA.SERVICES.map(s => {
+              const active = _selectedServices.has(s);
+              return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS._toggleFilter('services', '${s}')">${s}</button>`;
+            }).join('')}
+          </div>
+          <!-- Geos -->
+          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Geos</span>
+            ${window.PORTAL_DATA.GEOS.map(g => {
+              const active = _selectedGeos.has(g);
+              return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS._toggleFilter('geos', '${g}')">${g}</button>`;
+            }).join('')}
+          </div>
         </div>
 
-        <!-- Search + filters -->
+        <!-- Search -->
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <div class="search-bar" style="flex:1;min-width:240px">
             ${ICONS.search}
             <input id="reports-search" type="text" placeholder="Search reports…" value="${_query}" autocomplete="off">
           </div>
-          <select class="select" id="reports-vertical" style="width:160px">
-            <option value="all">All Industries / Categories</option>
-            ${window.PORTAL_DATA.VERTICALS.map(v => `<option value="${v}" ${_vertical === v ? 'selected' : ''}>${v}</option>`).join('')}
-          </select>
         </div>
-
-        <!-- Selected active filters -->
-        <div id="reports-active-filters" class="active-filters" style="display:none"></div>
 
         <!-- Category tabs -->
         <div class="tabs" style="margin-top:16px;margin-bottom:0">
@@ -78,11 +85,6 @@ const PAGE_REPORTS = (() => {
       renderList(container);
     });
 
-    container.querySelector('#reports-vertical').addEventListener('change', (e) => {
-      _vertical = e.target.value;
-      renderList(container);
-    });
-
     container.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         _activeCategory = tab.dataset.cat;
@@ -95,54 +97,27 @@ const PAGE_REPORTS = (() => {
     renderActiveFilters(container);
   }
 
-  function toggleTag(tag) {
-    if (_selectedTags.has(tag)) {
-      _selectedTags.delete(tag);
-    } else {
-      _selectedTags.add(tag);
+  function _toggleFilter(type, val) {
+    if (type === 'verticals') {
+      if (_selectedVerticals.has(val)) _selectedVerticals.delete(val);
+      else _selectedVerticals.add(val);
+    } else if (type === 'services') {
+      if (_selectedServices.has(val)) _selectedServices.delete(val);
+      else _selectedServices.add(val);
+    } else if (type === 'geos') {
+      if (_selectedGeos.has(val)) _selectedGeos.delete(val);
+      else _selectedGeos.add(val);
     }
     const container = document.getElementById('page-container');
-    if (container) {
-      render(container);
-    }
-  }
-
-  function removeTag(tag) {
-    _selectedTags.delete(tag);
-    const container = document.getElementById('page-container');
-    if (container) {
-      render(container);
-    }
+    if (container) render(container);
   }
 
   function clearAllTags() {
-    _selectedTags.clear();
+    _selectedVerticals.clear();
+    _selectedServices.clear();
+    _selectedGeos.clear();
     const container = document.getElementById('page-container');
-    if (container) {
-      render(container);
-    }
-  }
-
-  function renderActiveFilters(container) {
-    const wrap = container.querySelector('#reports-active-filters');
-    if (!wrap) return;
-
-    if (_selectedTags.size === 0) {
-      wrap.style.display = 'none';
-      return;
-    }
-
-    wrap.style.display = 'flex';
-    wrap.innerHTML = `
-      <span style="font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); margin-right:4px">Filtered tags:</span>
-      ${Array.from(_selectedTags).map(t => `
-        <span class="filter-badge">
-          ${t}
-          <span class="filter-badge-remove" onclick="PAGE_REPORTS.removeTag('${t}')">✕</span>
-        </span>
-      `).join('')}
-      <a style="font-size:11px; color:var(--danger); cursor:pointer; margin-left:8px; font-family:var(--font-mono)" onclick="PAGE_REPORTS.clearAllTags()">Clear All</a>
-    `;
+    if (container) render(container);
   }
 
   function renderList(container) {
@@ -159,19 +134,22 @@ const PAGE_REPORTS = (() => {
       }
     }
 
-    // Filter by vertical
-    if (_vertical !== 'all') {
-      items = items.filter(m => m.vertical === _vertical || (m.verticals && m.verticals.includes(_vertical)));
-    }
+    // Helper for OR logic within a category
+    const checkCategory = (item, set, checkFn) => {
+      if (set.size === 0) return true;
+      for (const val of set) {
+        if (checkFn(item, val)) return true;
+      }
+      return false;
+    };
 
-    // Apply multi-select tags filtering
-    if (_selectedTags.size > 0) {
-      items = items.filter(m => {
-        return Array.from(_selectedTags).every(t => {
-          return m.vertical === t || (m.verticals && m.verticals.includes(t)) || (m.services_provided && m.services_provided.includes(t)) || (m.tags && m.tags.includes(t)) || m.asset_type === t;
-        });
-      });
-    }
+    items = items.filter(m => {
+      const matchVertical = checkCategory(m, _selectedVerticals, (m, v) => m.vertical === v || (m.verticals && m.verticals.includes(v)));
+      const matchService = checkCategory(m, _selectedServices, (m, s) => (m.services_provided && m.services_provided.includes(s)));
+      const matchGeo = checkCategory(m, _selectedGeos, (m, g) => m.geo === g || (!m.geo && g === 'Global'));
+      
+      return matchVertical && matchService && matchGeo;
+    });
 
     // Filter by query
     if (_query.trim()) {
@@ -205,11 +183,11 @@ const PAGE_REPORTS = (() => {
 
     // Interactive clickable tags
     const matVerts = mat.verticals && mat.verticals.length ? mat.verticals : [mat.vertical || 'Other'];
-    const verticalTags = matVerts.map(v => `<span class="tag ${getVerticalClass(v)} tag-interactive ${_selectedTags.has(v) ? 'active' : ''}" onclick="event.stopPropagation(); PAGE_REPORTS.toggleTag('${v}')">${v}</span>`).join('');
-    const assetTag = `<span class="tag tag-default tag-interactive ${_selectedTags.has(mat.asset_type) ? 'active' : ''}" onclick="event.stopPropagation(); PAGE_REPORTS.toggleTag('${mat.asset_type}')">${assetTypeLabel(mat.asset_type)}</span>`;
+    const verticalTags = matVerts.map(v => `<span class="tag ${getVerticalClass(v)} tag-interactive ${_selectedVerticals.has(v) ? 'active' : ''}" onclick="event.stopPropagation(); PAGE_REPORTS._toggleFilter('verticals', '${v}')">${v}</span>`).join('');
+    const assetTag = `<span class="tag tag-default">${assetTypeLabel(mat.asset_type)}</span>`;
     const serviceTags = (mat.services_provided || []).map(s => {
-      const active = _selectedTags.has(s);
-      return `<span class="tag tag-info tag-interactive ${active ? 'active' : ''}" onclick="event.stopPropagation(); PAGE_REPORTS.toggleTag('${s}')">${s}</span>`;
+      const active = _selectedServices.has(s);
+      return `<span class="tag tag-info tag-interactive ${active ? 'active' : ''}" onclick="event.stopPropagation(); PAGE_REPORTS._toggleFilter('services', '${s}')">${s}</span>`;
     }).join('');
 
     return `
@@ -848,8 +826,7 @@ const PAGE_REPORTS = (() => {
 
   return { 
     render, 
-    toggleTag, 
-    removeTag, 
+    _toggleFilter, 
     clearAllTags,
     openUploadModal,
     setUploadTab,

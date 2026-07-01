@@ -405,7 +405,7 @@ const PAGE_CREATIVES = (() => {
             <div class="input-group">
               <span class="input-label">Geo Location *</span>
               <select class="select" id="batch-creative-geo" style="height:34px; font-size:12px;">
-                ${window.PORTAL_DATA.GEOS.map(g => \`<option value="\${g}">\${g}</option>\`).join('')}
+                ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}">${g}</option>`).join('')}
               </select>
             </div>
             <div class="input-group">
