@@ -5,11 +5,16 @@ const PAGE_SEARCH = (() => {
 
   let _query = '';
   let _mode = 'client'; // 'client' or 'internal'
-  let _activeFilters = [];
+  
+  let _selectedVerticals = new Set();
+  let _selectedServices = new Set();
+  let _selectedGeos = new Set();
+  let _selectedTypes = new Set();
 
   function render(container, opts = { mode: 'client' }) {
     _mode = opts.mode || 'client';
     const isInternal = _mode === 'internal';
+    const hasFilters = _selectedVerticals.size > 0 || _selectedServices.size > 0 || _selectedGeos.size > 0 || _selectedTypes.size > 0;
 
     container.innerHTML = `
       <div class="page-header">
@@ -28,22 +33,52 @@ const PAGE_SEARCH = (() => {
             value="${_query}"
             style="flex:1; border:none; background:transparent; outline:none; padding:12px; font-size:16px;"
           />
-          <button id="search-clear-btn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:8px; display:${(_query || _activeFilters.length > 0) ? 'flex' : 'none'}; align-items:center; justify-content:center; margin-right:8px;" title="Reset all search & filters">
+          <button id="search-clear-btn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:8px; display:${(_query || hasFilters) ? 'flex' : 'none'}; align-items:center; justify-content:center; margin-right:8px;" title="Reset all search & filters">
             ${ICONS.close}
           </button>
           <span class="topbar-search-kbd" style="margin-left:auto">⌘K</span>
         </div>
       </div>
 
-      <!-- Active Filters Bar -->
-      <div id="active-filters-bar" style="margin-top:12px; display:${_activeFilters.length > 0 ? 'flex' : 'none'}; flex-wrap:wrap; gap:8px; align-items:center;">
-        <span class="text-secondary text-sm" style="font-size:13px">Active filters:</span>
-        ${_activeFilters.map(f => `
-          <span class="tag tag-accent" style="display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:12px; font-size:13px; cursor:pointer" onclick="PAGE_SEARCH._toggleFilter('${f}')">
-            ${f} <span style="font-weight:bold; font-size:11px; opacity:0.7">✕</span>
-          </span>
-        `).join('')}
-        <button class="text-btn" style="font-size:12px; color:var(--danger); background:none; border:none; cursor:pointer; padding:0 4px;" onclick="PAGE_SEARCH._clearAllFilters()">Clear all</button>
+      <!-- Advanced Filters (4 rows) -->
+      <div id="advanced-filters" style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
+        
+        <!-- Row 1: Industries -->
+        <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Industries</span>
+          ${window.PORTAL_DATA.VERTICALS.map(v => {
+            const active = _selectedVerticals.has(v);
+            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>\`;
+          }).join('')}
+        </div>
+
+        <!-- Row 2: Services -->
+        <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Services</span>
+          ${window.PORTAL_DATA.SERVICES.map(s => {
+            const active = _selectedServices.has(s);
+            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('services', '${s}')">${s}</button>\`;
+          }).join('')}
+        </div>
+
+        <!-- Row 3: Geos -->
+        <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Geos</span>
+          ${window.PORTAL_DATA.GEOS.map(g => {
+            const active = _selectedGeos.has(g);
+            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('geos', '${g}')">${g}</button>\`;
+          }).join('')}
+        </div>
+
+        <!-- Row 4: Asset Types -->
+        <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Asset Types</span>
+          ${window.PORTAL_DATA.ASSET_TYPES.map(a => {
+            const active = _selectedTypes.has(a);
+            return \`<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_SEARCH._toggleFilter('types', '${a}')">${assetTypeLabel(a)}</button>\`;
+          }).join('')}
+        </div>
+
       </div>
 
       <div id="search-results-wrap" style="margin-top:24px"></div>
@@ -65,82 +100,28 @@ const PAGE_SEARCH = (() => {
     const clearBtn = container.querySelector('#search-clear-btn');
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
-        _query = '';
-        _activeFilters = [];
-        input.value = '';
-        updateClearButtonVisibility();
-        const filtersBar = container.querySelector('#active-filters-bar');
-        if (filtersBar) {
-          filtersBar.style.display = 'none';
-        }
-        renderResults(container.querySelector('#search-results-wrap'), '');
+        PAGE_SEARCH._clearAllFilters();
       });
     }
 
     function updateClearButtonVisibility() {
       if (clearBtn) {
-        clearBtn.style.display = (_query || _activeFilters.length > 0) ? 'flex' : 'none';
+        clearBtn.style.display = (_query || _selectedVerticals.size > 0 || _selectedServices.size > 0 || _selectedGeos.size > 0 || _selectedTypes.size > 0) ? 'flex' : 'none';
       }
     }
 
-    if (_query || _activeFilters.length > 0) {
-      renderResults(container.querySelector('#search-results-wrap'), _query);
-    } else {
-      renderDefault(container.querySelector('#search-results-wrap'));
-    }
-  }
-
-  function renderDefault(wrap) {
-    const verticals = window.PORTAL_DATA.VERTICALS;
-    const services = window.PORTAL_DATA.SERVICES;
-    wrap.innerHTML = `
-      <div class="search-filters-container" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:16px;">
-        <!-- Vertical Column -->
-        <div class="filter-group-card" style="background:var(--bg-2); border:1px solid var(--border-default); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.02)">
-          <div class="divider-label" style="margin-bottom:16px; border-bottom:2px solid var(--accent, #3de892); padding-bottom:8px; font-weight:bold; color:var(--text-primary)">
-            <span style="font-size:15px; letter-spacing:0.05em; text-transform:uppercase">Browse by Industry / Category</span>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:8px">
-            ${verticals.map(v => {
-              const isActive = _activeFilters.includes(v);
-              return `
-                <button class="filter-chip ${isActive ? 'active' : ''}" 
-                        style="padding:8px 14px; border-radius:8px; border:${isActive ? '1.5px solid var(--accent)' : '1.5px solid var(--border-default)'}; background:${isActive ? 'var(--accent-dim)' : 'var(--bg-3)'}; color:${isActive ? 'var(--accent)' : 'var(--text-secondary)'}; cursor:pointer; font-weight:${isActive ? '700' : '500'}; display:flex; align-items:center; gap:6px; transition:all 0.2s; font-size:13px;"
-                        onclick="PAGE_SEARCH._toggleFilter('${v}')">
-                  ${getVerticalEmoji(v)} ${v}
-                </button>`;
-            }).join('')}
-          </div>
-        </div>
-
-        <!-- Service Column -->
-        <div class="filter-group-card" style="background:var(--bg-2); border:1px solid var(--border-default); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.02)">
-          <div class="divider-label" style="margin-bottom:16px; border-bottom:2px solid var(--info, #3990e0); padding-bottom:8px; font-weight:bold; color:var(--text-primary)">
-            <span style="font-size:15px; letter-spacing:0.05em; text-transform:uppercase">Browse by Service</span>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:8px">
-            ${services.map(s => {
-              const isActive = _activeFilters.includes(s);
-              return `
-                <button class="filter-chip ${isActive ? 'active' : ''}" 
-                        style="padding:8px 14px; border-radius:8px; border:${isActive ? '1.5px solid var(--accent)' : '1.5px solid var(--border-default)'}; background:${isActive ? 'var(--accent-dim)' : 'var(--bg-3)'}; color:${isActive ? 'var(--accent)' : 'var(--text-secondary)'}; cursor:pointer; font-weight:${isActive ? '700' : '500'}; display:flex; align-items:center; gap:6px; transition:all 0.2s; font-size:13px;"
-                        onclick="PAGE_SEARCH._toggleFilter('${s}')">
-                  ${s}
-                </button>`;
-            }).join('')}
-          </div>
-        </div>
-      </div>
-    `;
+    renderResults(container.querySelector('#search-results-wrap'), _query);
   }
 
   function renderResults(wrap, q) {
-    if ((!q || q.trim().length < 2) && _activeFilters.length === 0) {
-      renderDefault(wrap);
+    const hasFilters = _selectedVerticals.size > 0 || _selectedServices.size > 0 || _selectedGeos.size > 0 || _selectedTypes.size > 0;
+    
+    if ((!q || q.trim().length < 2) && !hasFilters) {
+      wrap.innerHTML = `<div class="gsearch-empty" style="padding:20px 0; color:var(--text-secondary)">Start typing or select a filter above to search across all portal content.</div>`;
       return;
     }
 
-    const results = search(q.trim(), _activeFilters);
+    const results = search(q.trim());
 
     if (results.length === 0) {
       wrap.innerHTML = `
@@ -156,13 +137,9 @@ const PAGE_SEARCH = (() => {
 
     let html = `
       <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:16px">
-        <span class="text-secondary text-sm">${results.length} result${results.length !== 1 ? 's' : ''} for</span>
+        <span class="text-secondary text-sm">${results.length} result${results.length !== 1 ? 's' : ''}</span>
         ${q ? `<span class="tag tag-accent">"${q}"</span>` : ''}
-        ${_activeFilters.map(f => `
-          <span class="tag tag-accent" style="display:inline-flex; align-items:center; gap:4px; cursor:pointer" onclick="PAGE_SEARCH._toggleFilter('${f}')">
-            ${f} ✕
-          </span>
-        `).join('')}
+        ${hasFilters ? `<button class="text-btn" style="font-size:12px; color:var(--danger); background:none; border:none; cursor:pointer; padding:0 4px; margin-left:auto;" onclick="PAGE_SEARCH._clearAllFilters()">Clear all filters</button>` : ''}
       </div>`;
 
     const typeOrder = ['material', 'clientRef', 'clientProfile'];
@@ -193,15 +170,15 @@ const PAGE_SEARCH = (() => {
 
     if (r.resultType === 'material') {
       title = r.title;
-      sub = `${r.client_name} · ${r.vertical} · ${r.geo} · ${assetTypeLabel(r.asset_type)}`;
+      sub = `${r.client_name} · ${r.vertical} · ${r.geo || ''} · ${assetTypeLabel(r.asset_type)}`;
       onClick = `openMaterial(STORE.getMaterialById('${r.id}'))`;
     } else if (r.resultType === 'clientRef') {
       title = r.client_name;
-      sub = `${r.vertical} · ${r.geo} · Client Reference`;
+      sub = `${r.vertical} · ${r.geo || ''} · Client Reference`;
       onClick = `ROUTER.navigate('clientrefs','${encodeURIComponent(r.client_name)}')`;
     } else {
       title = r.client_name;
-      sub = `${r.geo} · ${r.services_provided.join(', ')} · Mini Profile`;
+      sub = `${r.geo || ''} · ${(r.services_provided || []).join(', ')} · Mini Profile`;
       onClick = `ROUTER.navigate('clientrefs','${encodeURIComponent(r.client_name)}')`;
     }
 
@@ -221,8 +198,20 @@ const PAGE_SEARCH = (() => {
       </div>`;
   }
 
-  function search(q, filters) {
-    const lower = q.toLowerCase();
+  function _checkFilters(item) {
+    if (_selectedVerticals.size > 0 && !_selectedVerticals.has(item.vertical)) return false;
+    if (_selectedGeos.size > 0 && !_selectedGeos.has(item.geo)) return false;
+    if (_selectedTypes.size > 0 && !_selectedTypes.has(item.asset_type)) return false;
+    if (_selectedServices.size > 0) {
+      const svcs = item.services_provided || [];
+      const hasAnyService = svcs.some(s => _selectedServices.has(s));
+      if (!hasAnyService) return false;
+    }
+    return true;
+  }
+
+  function search(q) {
+    const lower = q ? q.toLowerCase() : '';
     const results = [];
 
     // Materials (client safe vs internal depending on mode)
@@ -231,6 +220,8 @@ const PAGE_SEARCH = (() => {
       mats = mats.filter(m => m.visibility_status === 'client-safe');
     }
     mats.forEach(m => {
+      if (!_checkFilters(m)) return;
+      
       let matchesText = true;
       if (lower) {
         const searchStr = [
@@ -241,27 +232,13 @@ const PAGE_SEARCH = (() => {
         ].join(' ').toLowerCase();
         matchesText = searchStr.includes(lower);
       }
-
-      let matchesFilters = true;
-      if (filters && filters.length > 0) {
-        matchesFilters = filters.every(f => {
-          const fLower = f.toLowerCase();
-          const list = [
-            m.vertical,
-            ...(m.services_provided || []),
-            ...(m.tags || [])
-          ].map(x => x.toLowerCase());
-          return list.includes(fLower);
-        });
-      }
-
-      if (matchesText && matchesFilters) {
-        results.push({ ...m, resultType: 'material' });
-      }
+      if (matchesText) results.push({ ...m, resultType: 'material' });
     });
 
     // Client refs
     STORE.getClientRefs().forEach(r => {
+      if (!_checkFilters(r)) return;
+
       let matchesText = true;
       if (lower) {
         const searchStr = [
@@ -271,27 +248,14 @@ const PAGE_SEARCH = (() => {
         ].join(' ').toLowerCase();
         matchesText = searchStr.includes(lower);
       }
-
-      let matchesFilters = true;
-      if (filters && filters.length > 0) {
-        matchesFilters = filters.every(f => {
-          const fLower = f.toLowerCase();
-          const list = [
-            r.vertical,
-            ...(r.services_provided || [])
-          ].map(x => x.toLowerCase());
-          return list.includes(fLower);
-        });
-      }
-
-      if (matchesText && matchesFilters) {
-        results.push({ ...r, resultType: 'clientRef' });
-      }
+      if (matchesText) results.push({ ...r, resultType: 'clientRef' });
     });
 
     // Client profiles
     if (_mode === 'internal') {
       STORE.getClientProfiles().forEach(p => {
+        if (!_checkFilters(p)) return;
+
         let matchesText = true;
         if (lower) {
           const searchStr = [
@@ -300,22 +264,7 @@ const PAGE_SEARCH = (() => {
           ].join(' ').toLowerCase();
           matchesText = searchStr.includes(lower);
         }
-
-        let matchesFilters = true;
-        if (filters && filters.length > 0) {
-          matchesFilters = filters.every(f => {
-            const fLower = f.toLowerCase();
-            const list = [
-              p.vertical || '',
-              ...(p.services_provided || [])
-            ].map(x => x.toLowerCase());
-            return list.includes(fLower);
-          });
-        }
-
-        if (matchesText && matchesFilters) {
-          results.push({ ...p, resultType: 'clientProfile' });
-        }
+        if (matchesText) results.push({ ...p, resultType: 'clientProfile' });
       });
     }
 
@@ -329,23 +278,17 @@ const PAGE_SEARCH = (() => {
     }, {});
   }
 
-  function _quickSearch(term) {
-    const idx = _activeFilters.indexOf(term);
-    if (idx === -1) {
-      _activeFilters.push(term);
-    }
-    const container = document.getElementById('page-container');
-    if (container) {
-      render(container, { mode: _mode });
-    }
-  }
+  function _toggleFilter(category, term) {
+    let set;
+    if (category === 'verticals') set = _selectedVerticals;
+    if (category === 'services') set = _selectedServices;
+    if (category === 'geos') set = _selectedGeos;
+    if (category === 'types') set = _selectedTypes;
 
-  function _toggleFilter(term) {
-    const idx = _activeFilters.indexOf(term);
-    if (idx > -1) {
-      _activeFilters.splice(idx, 1);
+    if (set.has(term)) {
+      set.delete(term);
     } else {
-      _activeFilters.push(term);
+      set.add(term);
     }
     const container = document.getElementById('page-container');
     if (container) {
@@ -354,14 +297,18 @@ const PAGE_SEARCH = (() => {
   }
 
   function _clearAllFilters() {
-    _activeFilters = [];
+    _query = '';
+    _selectedVerticals.clear();
+    _selectedServices.clear();
+    _selectedGeos.clear();
+    _selectedTypes.clear();
     const container = document.getElementById('page-container');
     if (container) {
       render(container, { mode: _mode });
     }
   }
 
-  return { render, _quickSearch, _toggleFilter, _clearAllFilters };
+  return { render, _toggleFilter, _clearAllFilters };
 })();
 
 window.PAGE_SEARCH = PAGE_SEARCH;

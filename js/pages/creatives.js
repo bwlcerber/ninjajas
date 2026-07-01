@@ -402,7 +402,13 @@ const PAGE_CREATIVES = (() => {
               <span class="input-label">Client Website URL</span>
               <input class="input" type="text" id="batch-creative-website" placeholder="https://example.com">
             </div>
-            <div class="input-group span-2">
+            <div class="input-group">
+              <span class="input-label">Geo Location *</span>
+              <select class="select" id="batch-creative-geo" style="height:34px; font-size:12px;">
+                ${window.PORTAL_DATA.GEOS.map(g => \`<option value="\${g}">\${g}</option>\`).join('')}
+              </select>
+            </div>
+            <div class="input-group">
               <span class="input-label">Creative Type *</span>
               <select class="select" id="batch-creative-type" style="height:34px; font-size:12px;">
                 <option value="static">🖼️ Static</option>
@@ -522,14 +528,16 @@ const PAGE_CREATIVES = (() => {
     }
 
     // Auto-create client reference/profile if name is custom and doesn't exist yet
+    const batchCreativeGeo = document.getElementById('batch-creative-geo') ? document.getElementById('batch-creative-geo').value : 'Global';
+
     if (clientName !== 'Internal' && clientName !== 'Client Name Not Available') {
-      const existingRef = STORE.getClientRefs().find(r => r.client_name.toLowerCase() === clientName.toLowerCase());
+      const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase());
       if (!existingRef) {
         STORE.addClientRef({
           client_name: clientName,
           website_url: clientWebsite || 'https://ninjapromo.io',
           vertical: selectedVerticals[0],
-          geo: 'Global',
+          geo: batchCreativeGeo,
           ai_summary: `Newly registered client profile for ${clientName}.`,
           services_provided: ['Design'],
           thumbnail_url: ''
@@ -537,7 +545,7 @@ const PAGE_CREATIVES = (() => {
         STORE.addClientProfile({
           client_name: clientName,
           vertical: selectedVerticals[0],
-          geo: 'Global',
+          geo: batchCreativeGeo,
           website_url: clientWebsite || 'https://ninjapromo.io',
           services_provided: ['Design'],
           notes: `Added automatically during creative upload.`,
@@ -577,13 +585,10 @@ const PAGE_CREATIVES = (() => {
         console.warn('Server upload failed for creative asset:', err);
       }
 
-      const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase());
-      const geoVal = existingRef ? existingRef.geo : 'Global';
-
       const item = {
         title: file.name.split('.')[0].replace(/[-_]/g, ' '),
         client_name: clientName,
-        geo: geoVal,
+        geo: batchCreativeGeo,
         vertical: selectedVerticals[0],
         verticals: selectedVerticals,
         asset_type: 'creative',
