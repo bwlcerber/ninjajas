@@ -821,7 +821,7 @@ const PAGE_ADMIN = (() => {
             <input class="input" id="user-edit-name" type="text" value="${user.displayName}" placeholder="e.g. John Doe">
           </div>
           <div class="input-group span-2">
-            <label class="input-label">Login Username * (Max 7 symbols${user.isNew ? '' : ', starts with their name'})</label>
+            <label class="input-label">Login Username * (Max 7 symbols)</label>
             <input class="input" id="user-edit-username" type="text" value="${user.username}" placeholder="e.g. john_np">
           </div>
           <div class="input-group span-2">
@@ -924,12 +924,6 @@ const PAGE_ADMIN = (() => {
       userIndex = users.findIndex(u => u.username === oldUsername);
       if (userIndex === -1) return;
       namePrefix = users[userIndex].displayName.toLowerCase().slice(0, 3);
-    }
-    
-    if (!newUsername.startsWith(namePrefix)) {
-      errEl.style.display = 'block';
-      errEl.textContent = `Username must start with "${namePrefix}".`;
-      return;
     }
 
     if (newUsername.length > 7) {

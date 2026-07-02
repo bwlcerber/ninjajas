@@ -91,27 +91,57 @@ const AUTH = (() => {
   ];
 
   function getUsers() {
+    let usersList = [...DEFAULT_USERS];
+    
+    // 1. Try server sync first
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'data.php?type=users', false); // synchronous
+      xhr.send(null);
+      if (xhr.status === 200) {
+        const serverData = JSON.parse(xhr.responseText);
+        if (Array.isArray(serverData) && serverData.length > 0) {
+          usersList = serverData;
+        }
+      }
+    } catch (e) {}
+
+    // 2. Merge local storage overrides
     try {
       const raw = localStorage.getItem(LOCAL_USERS_KEY);
       if (raw) {
         let localUsers = JSON.parse(raw);
-        // Ensure any new default users added to the source code are synced to localStorage
-        DEFAULT_USERS.forEach(du => {
-          if (!localUsers.some(lu => lu.username === du.username)) {
-            localUsers.push(du);
+        localUsers.forEach(lu => {
+          const idx = usersList.findIndex(su => su.username === lu.username);
+          if (idx === -1) {
+            usersList.push(lu);
+          } else {
+            usersList[idx] = lu; // local override
           }
         });
-        return localUsers;
       }
-      return DEFAULT_USERS;
-    } catch {
-      return DEFAULT_USERS;
-    }
+    } catch (e) {}
+
+    // Ensure all defaults exist
+    DEFAULT_USERS.forEach(du => {
+      if (!usersList.some(lu => lu.username === du.username)) {
+        usersList.push(du);
+      }
+    });
+
+    return usersList;
   }
 
   function saveUsers(usersList) {
     try {
       localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(usersList));
+    } catch (e) {}
+    
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'data.php?type=users', true); // async
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(usersList));
     } catch (e) {}
   }
 

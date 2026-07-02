@@ -9,7 +9,12 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-$filename = __DIR__ . '/uploads/content_override.json';
+$type = isset($_GET['type']) ? $_GET['type'] : 'content';
+if ($type === 'users') {
+    $filename = __DIR__ . '/uploads/users.json';
+} else {
+    $filename = __DIR__ . '/uploads/content_override.json';
+}
 
 // Ensure the directory exists
 $dir = dirname($filename);
