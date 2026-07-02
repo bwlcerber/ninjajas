@@ -23,6 +23,7 @@
 const AUTH = (() => {
 
   const LOCAL_USERS_KEY = 'np_portal_users';
+  const LOCAL_DELETED_USERS_KEY = 'np_deleted_users';
 
   const DEFAULT_USERS = [
     {
@@ -136,18 +137,38 @@ const AUTH = (() => {
       }
     } catch (e) {}
 
-    // Ensure all defaults exist
+    // Load deleted users list to prevent respawn
+    let deletedUsers = [];
+    try {
+      const rawDeleted = localStorage.getItem(LOCAL_DELETED_USERS_KEY);
+      if (rawDeleted) {
+        deletedUsers = JSON.parse(rawDeleted);
+      }
+    } catch (e) {}
+
+    // Ensure all defaults exist UNLESS they were explicitly deleted
     DEFAULT_USERS.forEach(du => {
-      if (!usersList.some(lu => lu.username === du.username)) {
+      if (!usersList.some(lu => lu.username === du.username) && !deletedUsers.includes(du.username)) {
         usersList.push(du);
       }
     });
+
+    // Final filter just in case a deleted user snuck through from server sync
+    usersList = usersList.filter(u => !deletedUsers.includes(u.username));
 
     return usersList;
   }
 
   function saveUsers(usersList) {
+    let deletedUsers = [];
+    DEFAULT_USERS.forEach(du => {
+      if (!usersList.some(lu => lu.username === du.username)) {
+        deletedUsers.push(du.username);
+      }
+    });
+
     try {
+      localStorage.setItem(LOCAL_DELETED_USERS_KEY, JSON.stringify(deletedUsers));
       localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(usersList));
     } catch (e) {}
     
