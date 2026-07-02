@@ -97,7 +97,7 @@ const AUTH = (() => {
     // 1. Try server sync first
     try {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'data.php?type=users', false); // synchronous
+      xhr.open('GET', 'data.php?type=users&t=' + Date.now(), false); // synchronous, cache-busting
       xhr.send(null);
       if (xhr.status === 200) {
         const serverData = JSON.parse(xhr.responseText);

@@ -20,7 +20,7 @@ const STORE = (() => {
     // 1. Try fetching from server data.php synchronously
     try {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'data.php', false); // synchronous XHR
+      xhr.open('GET', 'data.php?t=' + Date.now(), false); // synchronous XHR with cache-busting
       xhr.send(null);
       if (xhr.status === 200) {
         data = JSON.parse(xhr.responseText);
