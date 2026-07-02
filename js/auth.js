@@ -85,8 +85,22 @@ const AUTH = (() => {
       username:    'mariesm',
       password:    'sef2!3fse)_1',
       role:        'admin',
-      displayName: 'Marie',
+      displayName: 'Marie (SMM team)',
       glowColor:   '#06b6d4' // cyan
+    },
+    {
+      username:    '123123',
+      password:    '123123',
+      role:        'admin',
+      displayName: '12323',
+      glowColor:   '#8b5cf6' 
+    },
+    {
+      username:    'sfe343',
+      password:    'q23fdaewd',
+      role:        'admin',
+      displayName: 'sfesf',
+      glowColor:   '#3b82f6'
     }
   ];
 
