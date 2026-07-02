@@ -682,6 +682,159 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
     });
   }
 
+  let _editDocId = null;
+
+  function openEditDocModal(id) {
+    _editDocId = id;
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
+  function closeEditDocPanel() {
+    _editDocId = null;
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
+  function renderInlineEditForm(data) {
+    const assetTypes = getCategories().flatMap(c => c.types);
+    return `
+      <div style="margin-bottom:12px; font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui); display:flex; justify-content:space-between; align-items:center;">
+        <span>📝 EDIT DOCUMENT</span>
+        <button class="btn btn-sm btn-ghost" onclick="PAGE_DOCS.closeEditDocPanel()" style="padding:4px;">${ICONS.close}</button>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr; gap:12px;">
+        <div class="input-group">
+          <label class="input-label">Title *</label>
+          <input class="input" id="doc-edit-title" type="text" placeholder="Title..." value="${data.title || ''}">
+        </div>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <label class="input-label">Client Name</label>
+            <input class="input" id="doc-edit-client" type="text" value="${data.client_name || 'Internal'}">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Geo</label>
+            <select class="select" id="doc-edit-geo">
+              ${['Global','North America','Europe','LATAM','APAC','Middle East','Africa'].map(g => `<option value="${g}" ${data.geo === g ? 'selected':''}>${g}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <label class="input-label">Asset Type</label>
+            <select class="select" id="doc-edit-type">
+              ${assetTypes.map(t => `<option value="${t}" ${data.asset_type === t ? 'selected':''}>${assetTypeLabel(t)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Visibility</label>
+            <select class="select" id="doc-edit-vis">
+              <option value="internal-only" ${data.visibility_status === 'internal-only' || !data.visibility_status ? 'selected':''}>Internal Only</option>
+              <option value="client-safe" ${data.visibility_status === 'client-safe' ? 'selected':''}>Client Safe</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" style="font-size:11px; margin-bottom:4px;">Verticals / Industries * (Select multiple)</label>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;" id="doc-edit-verticals">
+            ${['AI','Apps','B2B','B2C','Cyber Security','eCommerce','Education','FinTech','Gaming','Healthcare','iGaming','Real Estate','SaaS','Sports Betting','Trading','Web3','Other'].map(v => `
+              <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                <input type="checkbox" value="${v}" style="accent-color:var(--accent);" ${(data.verticals || []).includes(v) || data.vertical === v ? 'checked' : ''}> ${v}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">File URL / Link *</label>
+          <input class="input" id="doc-edit-url" type="url" placeholder="https://…" value="${data.file_url || ''}">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Description</label>
+          <textarea class="input" id="doc-edit-desc" rows="2" placeholder="Short description…">${data.description || ''}</textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" style="font-size:11px; margin-bottom:4px;">Services Provided * (Select multiple)</label>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;" id="doc-edit-services">
+            ${['Analytics','Content','Design','Email Marketing','Influencer Marketing','NDA','PPC','PR','SEO','Social Media','Web / Landing Pages'].map(s => `
+              <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${(data.services_provided || []).includes(s) ? 'checked' : ''}> ${s}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-primary btn-sm" id="doc-edit-save-btn" style="flex:1;">Update Document</button>
+        </div>
+        <div id="doc-edit-error" class="login-error" style="margin-top:10px; display:none;"></div>
+      </div>
+    `;
+  }
+
+  function bindInlineEditForm(wrap, originalData) {
+    const btn = wrap.querySelector('#doc-edit-save-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+      const title = wrap.querySelector('#doc-edit-title').value.trim();
+      const url = wrap.querySelector('#doc-edit-url').value.trim();
+      const err = wrap.querySelector('#doc-edit-error');
+
+      if (!title || !url) {
+        err.style.display = 'block';
+        err.textContent = 'Title and File URL are required.';
+        return;
+      }
+      err.style.display = 'none';
+
+      const checkedVerts = wrap.querySelectorAll('#doc-edit-verticals input[type="checkbox"]:checked');
+      const parsedVerticals = Array.from(checkedVerts).map(cb => cb.value);
+      const firstVertical = parsedVerticals[0] || 'Other';
+
+      const checkedServices = wrap.querySelectorAll('#doc-edit-services input[type="checkbox"]:checked');
+      const services = Array.from(checkedServices).map(cb => cb.value);
+
+      const assetType = wrap.querySelector('#doc-edit-type').value || 'other';
+
+      let fileType = originalData.file_type || 'pdf';
+      const urlLower = url.toLowerCase();
+      if (urlLower.includes('docs.google.com/document') || urlLower.includes('drive.google.com/file')) fileType = 'doc-link';
+      else if (urlLower.includes('docs.google.com/spreadsheets') || urlLower.includes('docs.google.com/sheet')) fileType = 'spreadsheet-link';
+      
+      const record = {
+        title,
+        client_name: wrap.querySelector('#doc-edit-client').value.trim() || 'Internal',
+        geo: wrap.querySelector('#doc-edit-geo').value.trim() || 'Global',
+        vertical: firstVertical,
+        verticals: parsedVerticals.length ? parsedVerticals : [firstVertical],
+        asset_type: assetType,
+        visibility_status: wrap.querySelector('#doc-edit-vis').value,
+        file_type: fileType,
+        file_url: url,
+        thumbnail_url: originalData.thumbnail_url || '',
+        description: wrap.querySelector('#doc-edit-desc').value.trim(),
+        tags: [...parsedVerticals, assetType, ...services],
+        services_provided: services,
+        related_assets: originalData.related_assets || []
+      };
+
+      STORE.updateMaterial(originalData.id, record);
+      STORE.syncClientGeo(record.client_name, record.geo);
+      showToast('Document updated successfully', 'success');
+      
+      _editDocId = null;
+      const container = document.getElementById('page-container');
+      if (container) render(container);
+    });
+  }
+
   return { 
     render, 
     toggleTag, 
@@ -697,7 +850,9 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
     addCustomCategory,
     saveNewDocument,
     handleDocFileDrop,
-    handleDocFileSelect
+    handleDocFileSelect,
+    openEditDocModal,
+    closeEditDocPanel
   };
 })();
 
