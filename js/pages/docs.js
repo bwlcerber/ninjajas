@@ -86,25 +86,37 @@ const PAGE_DOCS = (() => {
         <div id="docs-active-filters" class="active-filters" style="display:none"></div>
       </div>
 
-      <div class="docs-categories">
-        <!-- Category nav -->
-        <div class="docs-category-nav">
-          ${cats.map(c => {
-            const count = c.id === 'all'
-              ? allDocs.length
-              : allDocs.filter(m => c.types.includes(m.asset_type)).length;
-            return `
-              <div class="docs-cat-item ${_activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">
-                ${c.label}
-                <span class="docs-cat-count">${count}</span>
-              </div>`;
-          }).join('')}
+      <div style="display:grid; grid-template-columns:1fr ${_editDocId ? '400px' : '0px'}; gap:${_editDocId ? '24px' : '0px'}; align-items:start; transition: all 0.3s ease;">
+        <div class="docs-categories" style="min-width:0; overflow:hidden;">
+          <!-- Category nav -->
+          <div class="docs-category-nav">
+            ${cats.map(c => {
+              const count = c.id === 'all'
+                ? allDocs.length
+                : allDocs.filter(m => c.types.includes(m.asset_type)).length;
+              return `
+                <div class="docs-cat-item ${_activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">
+                  ${c.label}
+                  <span class="docs-cat-count">${count}</span>
+                </div>`;
+            }).join('')}
+          </div>
+
+          <!-- Doc list -->
+          <div id="docs-list" class="reports-list"></div>
         </div>
 
-        <!-- Doc list -->
-        <div id="docs-list" class="reports-list"></div>
+        ${_editDocId ? `
+          <div id="docs-edit-wrap" style="position: sticky; top: 20px; align-self: start; background:var(--bg-2); border:1px solid var(--border-subtle); border-radius:var(--r-md); padding:16px; overflow:hidden;">
+            ${renderInlineEditForm(STORE.getById(_editDocId))}
+          </div>
+        ` : ''}
       </div>
     `;
+
+    if (_editDocId) {
+      bindInlineEditForm(container.querySelector('#docs-edit-wrap'), STORE.getById(_editDocId));
+    }
 
     container.querySelector('#docs-search').addEventListener('input', e => {
       _query = e.target.value;
@@ -676,7 +688,6 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
     removeTag, 
     clearAllTags,
     openAddDocModal,
-    openEditDocModal: (id) => ROUTER.navigate(`admin/materials/${id}`),
     openManageCategoriesModal,
     openDocumentViewer,
     addCategoryFromManager,
