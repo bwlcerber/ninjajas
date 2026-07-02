@@ -80,13 +80,30 @@ const AUTH = (() => {
       role:        'admin',
       displayName: 'Paul',
       glowColor:   '#10b981' // green
+    },
+    {
+      username:    'mariesm',
+      password:    'sef2!3fse)_1',
+      role:        'admin',
+      displayName: 'Marie',
+      glowColor:   '#06b6d4' // cyan
     }
   ];
 
   function getUsers() {
     try {
       const raw = localStorage.getItem(LOCAL_USERS_KEY);
-      return raw ? JSON.parse(raw) : DEFAULT_USERS;
+      if (raw) {
+        let localUsers = JSON.parse(raw);
+        // Ensure any new default users added to the source code are synced to localStorage
+        DEFAULT_USERS.forEach(du => {
+          if (!localUsers.some(lu => lu.username === du.username)) {
+            localUsers.push(du);
+          }
+        });
+        return localUsers;
+      }
+      return DEFAULT_USERS;
     } catch {
       return DEFAULT_USERS;
     }

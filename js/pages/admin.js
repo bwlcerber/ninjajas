@@ -845,6 +845,7 @@ const PAGE_ADMIN = (() => {
         <div style="margin-top:16px; display:flex; gap:8px">
           <button class="btn btn-primary btn-sm" onclick="PAGE_ADMIN.saveUser('${user.isNew ? 'new' : user.username}')">${user.isNew ? 'Create Member' : 'Update Member Settings'}</button>
           <button class="btn btn-ghost btn-sm" onclick="PAGE_ADMIN.cancelUserEdit()">Cancel</button>
+          ${!user.isNew ? `<button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="PAGE_ADMIN.deleteUser('${user.username}')">${ICONS.trash} Delete Member</button>` : ''}
         </div>
         <div id="user-form-error" class="login-error" style="margin-top:10px; display:none"></div>
       </div>`;
@@ -852,6 +853,24 @@ const PAGE_ADMIN = (() => {
 
   function newUser() {
     _editUserId = 'new';
+    const container = document.querySelector('.page-content');
+    if (container) renderAdmin(container);
+  }
+
+  function deleteUser(username) {
+    if (username === 'super admin') {
+      alert("Cannot delete the primary super admin account.");
+      return;
+    }
+    if (!confirm(`Are you sure you want to delete the team member "${username}"?`)) return;
+    
+    const users = AUTH.getUsers();
+    const filtered = users.filter(u => u.username !== username);
+    AUTH.saveUsers(filtered);
+    
+    _editUserId = null;
+    showToast('Team member deleted successfully!', 'success');
+    
     const container = document.querySelector('.page-content');
     if (container) renderAdmin(container);
   }
@@ -1166,6 +1185,7 @@ const PAGE_ADMIN = (() => {
     editUser,
     cancelUserEdit,
     saveUser,
+    deleteUser,
     restoreItem,
     purgeItem
   };
