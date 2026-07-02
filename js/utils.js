@@ -267,7 +267,7 @@ function assetTypeLabel(type) {
     'training': 'Training', 'video': 'Video', 'image': 'Image',
     'pdf': 'PDF', 'spreadsheet-link': 'Spreadsheet', 'doc-link': 'Document',
     'offer-prep': 'Offer Preparation',
-    'social-media-link': 'Social Media Account Link'
+    'social-media-link': 'Social Media Links'
   };
   return map[type] || type;
 }

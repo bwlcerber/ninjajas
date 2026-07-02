@@ -259,11 +259,15 @@ const PAGE_CASES = (() => {
               <span class="input-label">Client / Brand Name *</span>
               <input class="input" type="text" id="case-new-client" required>
             </div>
-            <div class="input-group">
-              <span class="input-label">Geo *</span>
-              <select class="select" id="case-new-geo" style="height:34px; font-size:12px;">
-                ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}">${g}</option>`).join('')}
-              </select>
+            <div class="input-group span-2">
+              <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="case-new-geo-checkboxes">
+                ${window.PORTAL_DATA.GEOS.map(g => `
+                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                    <input type="checkbox" value="${g}" style="accent-color:var(--accent);"> ${g}
+                  </label>
+                `).join('')}
+              </div>
             </div>
             <div class="input-group">
               <span class="input-label">Vertical</span>
@@ -338,7 +342,9 @@ const PAGE_CASES = (() => {
 
       document.getElementById('case-new-title').value = _fetchedCaseData.title;
       document.getElementById('case-new-client').value = _fetchedCaseData.client_name;
-      document.getElementById('case-new-geo').value = _fetchedCaseData.geo;
+      
+      const geoCheckboxes = document.querySelectorAll('#case-new-geo-checkboxes input[type="checkbox"]');
+      geoCheckboxes.forEach(cb => cb.checked = (_fetchedCaseData.geos || []).includes(cb.value) || _fetchedCaseData.geo === cb.value);
       document.getElementById('case-new-vertical').value = _fetchedCaseData.vertical;
       document.getElementById('case-new-services').value = _fetchedCaseData.services.join(', ');
       document.getElementById('case-new-thumb').value = _fetchedCaseData.thumbnail_url;
@@ -354,7 +360,9 @@ const PAGE_CASES = (() => {
   function saveNewCase() {
     const title = document.getElementById('case-new-title').value.trim();
     const client = document.getElementById('case-new-client').value.trim();
-    const geo = document.getElementById('case-new-geo').value.trim() || 'Global';
+    const checkedGeos = document.querySelectorAll('#case-new-geo-checkboxes input[type="checkbox"]:checked');
+    const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+    const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
     const vertical = document.getElementById('case-new-vertical').value;
     const services = document.getElementById('case-new-services').value.split(',').map(s => s.trim()).filter(Boolean);
     const thumb = document.getElementById('case-new-thumb').value.trim();
@@ -369,7 +377,8 @@ const PAGE_CASES = (() => {
     const item = {
       title: title,
       client_name: client,
-      geo: geo,
+      geo: geoStr,
+      geos: parsedGeos,
       vertical: vertical,
       verticals: [vertical],
       services_provided: services.length ? services : ['PR'],
@@ -385,7 +394,7 @@ const PAGE_CASES = (() => {
     };
 
     STORE.addMaterial(item);
-    STORE.syncClientGeo(client, geo);
+    STORE.syncClientGeo(client, geoStr);
     closeModal();
     showToast('Success case study saved successfully!', 'success');
 
@@ -417,11 +426,18 @@ const PAGE_CASES = (() => {
             <span class="input-label">Client Website URL</span>
             <input class="input" type="text" id="edit-case-website" placeholder="https://example.com" value="${websiteUrl}">
           </div>
-          <div class="input-group">
-            <span class="input-label">Geo *</span>
-            <select class="select" id="edit-case-geo" style="height:34px; font-size:12px;">
-              ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}" ${(mat.geo || 'Global') === g ? 'selected' : ''}>${g}</option>`).join('')}
-            </select>
+          <div class="input-group span-2">
+            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="edit-case-geo-checkboxes">
+              ${window.PORTAL_DATA.GEOS.map(g => {
+                const isChecked = (mat.geos || []).includes(g) || (mat.geo || 'Global') === g;
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                </label>
+                `
+              }).join('')}
+            </div>
           </div>
           <div class="input-group">
             <span class="input-label">Services (comma-separated)</span>
@@ -436,7 +452,7 @@ const PAGE_CASES = (() => {
             <textarea class="input" id="edit-case-desc" rows="3" required>${mat.description || ''}</textarea>
           </div>
           <div style="display:flex; flex-direction:column; gap:6px;" class="span-2">
-            <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Vertical / Industry * (Select multiple)</span>
+            <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Vertical / Industry *</span>
             <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-case-verticals">
               ${(() => {
                 const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
@@ -468,7 +484,9 @@ const PAGE_CASES = (() => {
     const title = document.getElementById('edit-case-title').value.trim();
     const client = document.getElementById('edit-case-client').value.trim();
     const website = document.getElementById('edit-case-website').value.trim();
-    const geo = document.getElementById('edit-case-geo').value.trim() || 'Global';
+    const checkedGeos = document.querySelectorAll('#edit-case-geo-checkboxes input[type="checkbox"]:checked');
+    const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+    const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
     const services = document.getElementById('edit-case-services').value.split(',').map(s => s.trim()).filter(Boolean);
     const thumb = document.getElementById('edit-case-thumb').value.trim();
     const desc = document.getElementById('edit-case-desc').value.trim();
@@ -510,7 +528,8 @@ const PAGE_CASES = (() => {
     STORE.updateMaterial(matId, {
       title,
       client_name: client,
-      geo,
+      geo: geoStr,
+      geos: parsedGeos,
       vertical: selectedVerticals[0] || 'Other',
       verticals: selectedVerticals,
       services_provided: services,
@@ -519,7 +538,7 @@ const PAGE_CASES = (() => {
       tags: [...selectedVerticals, ...services]
     });
 
-    STORE.syncClientGeo(client, geo);
+    STORE.syncClientGeo(client, geoStr);
     closeModal();
     showToast('Case study metadata updated successfully!', 'success');
 

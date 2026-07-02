@@ -266,19 +266,26 @@ const PAGE_ADMIN = (() => {
             <label class="input-label">Client Name</label>
             <input class="input" id="mat-client" type="text" placeholder="e.g. HTX" value="${data.client_name || ''}">
           </div>
-          <div class="input-group">
-            <label class="input-label">Geo</label>
-            <select class="select" id="mat-geo">
-              ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}" ${(data.geo || 'Global') === g ? 'selected' : ''}>${g}</option>`).join('')}
-            </select>
+          <div class="input-group span-2">
+            <label class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="mat-geos-checkboxes">
+              ${window.PORTAL_DATA.GEOS.map(g => {
+                const isChecked = (data.geos || []).includes(g) || (data.geo || 'Global') === g;
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                </label>
+                `
+              }).join('')}
+            </div>
           </div>
         </div>
 
         <div style="margin-bottom:12px; font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui)">🏷️ LINKAGE & CLASSIFICATION</div>
         <div class="form-grid" style="margin-bottom:16px">
           <div class="input-group span-2">
-            <label class="input-label" style="font-size:11px; margin-bottom: 4px;">Verticals / Industries * (Select multiple)</label>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="mat-verticals-checkboxes">
+            <label class="input-label" style="font-size:11px; margin-bottom: 4px;">Verticals / Industries *</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="mat-verticals-checkboxes">
               ${(() => {
                 const matVerts = data.verticals || (data.vertical ? [data.vertical] : []);
                 const sorted = [...VERTICALS].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
@@ -324,8 +331,8 @@ const PAGE_ADMIN = (() => {
           </div>
           
           <div class="input-group span-2" style="margin-top:4px">
-            <label class="input-label" style="font-size:11px; margin-bottom:4px;">Services Provided * (Select multiple)</label>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="mat-services-checkboxes">
+            <label class="input-label" style="font-size:11px; margin-bottom:4px;">Services Provided *</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="mat-services-checkboxes">
               ${[...SERVICES].sort().map(s => {
                 const matServices = data.services_provided || [];
                 return `
@@ -389,10 +396,15 @@ const PAGE_ADMIN = (() => {
       // Auto-generate tags based on verticals, services, and asset type
       const autoTags = [...parsedVerticals, assetType, ...services];
 
+      const checkedGeos = wrap.querySelectorAll('#mat-geos-checkboxes input[type="checkbox"]:checked');
+      const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+      const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
+
       const record = {
         title,
         client_name: wrap.querySelector('#mat-client').value.trim() || 'Internal',
-        geo: wrap.querySelector('#mat-geo').value.trim() || 'Global',
+        geo: geoStr,
+        geos: parsedGeos,
         vertical: firstVertical,
         verticals: parsedVerticals.length ? parsedVerticals : [firstVertical],
         asset_type: assetType,
@@ -554,9 +566,18 @@ const PAGE_ADMIN = (() => {
             <label class="input-label">Website URL *</label>
             <input class="input" id="ref-url" type="url" placeholder="https://…" value="${data.website_url || ''}">
           </div>
-          <div class="input-group">
-            <label class="input-label">Geo</label>
-            <input class="input" id="ref-geo" type="text" placeholder="US, EU, Global…" value="${data.geo || ''}">
+          <div class="input-group span-2">
+            <label class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="ref-geos-checkboxes">
+              ${window.PORTAL_DATA.GEOS.map(g => {
+                const isChecked = (data.geo || '').includes(g);
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                </label>
+                `
+              }).join('')}
+            </div>
           </div>
           <div class="input-group">
             <label class="input-label">Vertical</label>
@@ -668,10 +689,13 @@ const PAGE_ADMIN = (() => {
 
       err.style.display = 'none';
 
+      const checkedGeos = document.querySelectorAll('#ref-geos-checkboxes input[type="checkbox"]:checked');
+      const geoStr = Array.from(checkedGeos).map(cb => cb.value).join(', ') || 'Global';
+
       const payload = {
         client_name: name,
         website_url: url,
-        geo: wrap.querySelector('#ref-geo').value.trim() || 'Global',
+        geo: geoStr,
         vertical: wrap.querySelector('#ref-vertical').value || 'Other',
         ai_summary: wrap.querySelector('#ref-summary').value.trim(),
         services_provided: wrap.querySelector('#ref-services').value.split(',').map(s => s.trim()).filter(Boolean),

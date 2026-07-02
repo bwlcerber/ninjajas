@@ -18,7 +18,7 @@ const PAGE_DOCS = (() => {
       { id: 'process-doc', label: 'Process Docs', types: ['process-doc'] },
       { id: 'template', label: 'Templates', types: ['template'] },
       { id: 'training', label: 'Training', types: ['training'] },
-      { id: 'social-media-link', label: 'Social Media Account Link', types: ['social-media-link'] },
+      { id: 'social-media-link', label: 'Social Media Links', types: ['social-media-link'] },
       { id: 'other', label: 'Other', types: ['other'] },
     ];
     const customWithTypes = _customCategories.map(c => ({
@@ -95,9 +95,9 @@ const PAGE_DOCS = (() => {
                 ? allDocs.length
                 : allDocs.filter(m => c.types.includes(m.asset_type)).length;
               return `
-                <div class="docs-cat-item ${_activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">
+                <div class="docs-cat-item ${_activeCat === c.id ? 'active' : ''}" data-cat="${c.id}" style="font-size:14px; padding:10px 12px;">
                   ${c.label}
-                  <span class="docs-cat-count">${count}</span>
+                  <span class="docs-cat-count" style="font-size:13.5px; padding:2px 8px;">${count}</span>
                 </div>`;
             }).join('')}
           </div>
@@ -699,81 +699,98 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
   function renderInlineEditForm(data) {
     const assetTypes = getCategories().flatMap(c => c.types);
     return `
-      <div style="margin-bottom:12px; font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui); display:flex; justify-content:space-between; align-items:center;">
-        <span>📝 EDIT DOCUMENT</span>
+      <div style="margin-bottom:16px; font-size:13px; font-weight:700; color:var(--accent); font-family:var(--font-ui); display:flex; justify-content:space-between; align-items:center;">
+        <span>EDIT METADATA</span>
         <button class="btn btn-sm btn-ghost" onclick="PAGE_DOCS.closeEditDocPanel()" style="padding:4px;">${ICONS.close}</button>
       </div>
-      <div class="form-grid" style="grid-template-columns:1fr; gap:12px;">
+      <div class="form-grid" style="grid-template-columns:1fr; gap:16px;">
+        
+        <!-- ROW 1 -->
         <div class="input-group">
-          <label class="input-label">Title *</label>
-          <input class="input" id="doc-edit-title" type="text" placeholder="Title..." value="${data.title || ''}">
+          <label class="input-label" style="font-size:11px; font-weight:700;">TITLE *</label>
+          <input class="input" id="doc-edit-title" type="text" placeholder="Title..." value="${data.title || ''}" style="font-size:13px; padding:10px;">
         </div>
         
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <!-- ROW 2 -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
           <div class="input-group">
-            <label class="input-label">Client Name</label>
-            <input class="input" id="doc-edit-client" type="text" value="${data.client_name || 'Internal'}">
+            <label class="input-label" style="font-size:11px; font-weight:700;">CLIENT NAME</label>
+            <input class="input" id="doc-edit-client" type="text" value="${data.client_name || 'Internal'}" style="font-size:13px; padding:10px;">
           </div>
           <div class="input-group">
-            <label class="input-label">Geo</label>
-            <select class="select" id="doc-edit-geo">
-              ${['Global','North America','Europe','LATAM','APAC','Middle East','Africa'].map(g => `<option value="${g}" ${data.geo === g ? 'selected':''}>${g}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-          <div class="input-group">
-            <label class="input-label">Asset Type</label>
-            <select class="select" id="doc-edit-type">
-              ${assetTypes.map(t => `<option value="${t}" ${data.asset_type === t ? 'selected':''}>${assetTypeLabel(t)}</option>`).join('')}
-            </select>
-          </div>
-          <div class="input-group">
-            <label class="input-label">Visibility</label>
-            <select class="select" id="doc-edit-vis">
+            <label class="input-label" style="font-size:11px; font-weight:700;">VISIBILITY</label>
+            <select class="select" id="doc-edit-vis" style="font-size:13px; height:38px;">
               <option value="internal-only" ${data.visibility_status === 'internal-only' || !data.visibility_status ? 'selected':''}>Internal Only</option>
               <option value="client-safe" ${data.visibility_status === 'client-safe' ? 'selected':''}>Client Safe</option>
             </select>
           </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label" style="font-size:11px; margin-bottom:4px;">Verticals / Industries * (Select multiple)</label>
-          <div style="display:flex; flex-wrap:wrap; gap:8px;" id="doc-edit-verticals">
+        <!-- ROW 3 -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start;">
+          <div class="input-group">
+            <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">ASSET TYPE</label>
+            <select class="select" id="doc-edit-type" style="font-size:13px; height:38px;">
+              ${assetTypes.map(t => `<option value="${t}" ${data.asset_type === t ? 'selected':''}>${assetTypeLabel(t)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">GEO *</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="doc-edit-geos">
+              ${['Global','North America','Europe','LATAM','APAC','Middle East','Africa'].map(g => {
+                const isChecked = (data.geos || []).includes(g) || data.geo === g;
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                </label>
+                `
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 4 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">VERTICALS / INDUSTRIES *</label>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="doc-edit-verticals">
             ${['AI','Apps','B2B','B2C','Cyber Security','eCommerce','Education','FinTech','Gaming','Healthcare','iGaming','Real Estate','SaaS','Sports Betting','Trading','Web3','Other'].map(v => `
-              <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
                 <input type="checkbox" value="${v}" style="accent-color:var(--accent);" ${(data.verticals || []).includes(v) || data.vertical === v ? 'checked' : ''}> ${v}
               </label>
             `).join('')}
           </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">File URL / Link *</label>
-          <input class="input" id="doc-edit-url" type="url" placeholder="https://…" value="${data.file_url || ''}">
-        </div>
-
-        <div class="input-group">
-          <label class="input-label">Description</label>
-          <textarea class="input" id="doc-edit-desc" rows="2" placeholder="Short description…">${data.description || ''}</textarea>
-        </div>
-
-        <div class="input-group">
-          <label class="input-label" style="font-size:11px; margin-bottom:4px;">Services Provided * (Select multiple)</label>
-          <div style="display:flex; flex-wrap:wrap; gap:8px;" id="doc-edit-services">
+        <!-- ROW 5 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">SERVICES PROVIDED *</label>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="doc-edit-services">
             ${['Analytics','Content','Design','Email Marketing','Influencer Marketing','NDA','PPC','PR','SEO','Social Media','Web / Landing Pages'].map(s => `
-              <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
                 <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${(data.services_provided || []).includes(s) ? 'checked' : ''}> ${s}
               </label>
             `).join('')}
           </div>
         </div>
 
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-primary btn-sm" id="doc-edit-save-btn" style="flex:1;">Update Document</button>
+        <!-- ROW 6 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700;">FILE URL / LINK *</label>
+          <input class="input" id="doc-edit-url" type="url" placeholder="https://…" value="${data.file_url || ''}" style="font-size:13px; padding:10px;">
         </div>
-        <div id="doc-edit-error" class="login-error" style="margin-top:10px; display:none;"></div>
+
+        <!-- ROW 7 -->
+        <div class="input-group">
+          <label class="input-label" style="font-size:11px; font-weight:700;">DESCRIPTION</label>
+          <textarea class="input" id="doc-edit-desc" rows="3" placeholder="Short description…" style="font-size:13px; padding:10px; line-height:1.4;">${data.description || ''}</textarea>
+        </div>
+
+        <div style="display:flex; justify-content:center; margin-top:16px;">
+          <button class="btn btn-primary" id="doc-edit-save-btn" style="padding:10px 32px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px; width:100%; max-width:240px;">
+            Update Document
+          </button>
+        </div>
+        <div id="doc-edit-error" class="login-error" style="margin-top:10px; display:none; text-align:center;"></div>
       </div>
     `;
   }
@@ -800,6 +817,10 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
 
       const checkedServices = wrap.querySelectorAll('#doc-edit-services input[type="checkbox"]:checked');
       const services = Array.from(checkedServices).map(cb => cb.value);
+      
+      const checkedGeos = wrap.querySelectorAll('#doc-edit-geos input[type="checkbox"]:checked');
+      const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+      const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
 
       const assetType = wrap.querySelector('#doc-edit-type').value || 'other';
 
@@ -811,7 +832,8 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
       const record = {
         title,
         client_name: wrap.querySelector('#doc-edit-client').value.trim() || 'Internal',
-        geo: wrap.querySelector('#doc-edit-geo').value.trim() || 'Global',
+        geo: geoStr,
+        geos: parsedGeos,
         vertical: firstVertical,
         verticals: parsedVerticals.length ? parsedVerticals : [firstVertical],
         asset_type: assetType,

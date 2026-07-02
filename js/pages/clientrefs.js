@@ -240,16 +240,25 @@ const PAGE_CLIENTREFS = (() => {
                   })()}
                 </div>
               </div>
-              <div class="input-group">
-                <span class="input-label">Geo</span>
-                <input class="input" type="text" id="pref-geo" value="${_fetchedData.geo}" required>
+              <div class="input-group span-2">
+                <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="pref-geo-checkboxes">
+                  ${window.PORTAL_DATA.GEOS.map(g => {
+                    const isChecked = (_fetchedData.geos || []).includes(g) || _fetchedData.geo === g;
+                    return `
+                    <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                      <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                    </label>
+                    `
+                  }).join('')}
+                </div>
               </div>
               <div class="input-group span-2">
                 <span class="input-label">Thumbnail URL</span>
                 <input class="input" type="text" id="pref-thumbnail" value="${_fetchedData.thumbnail_url}">
               </div>
               <div class="input-group span-2">
-                <span class="input-label">Services Provided * (Select multiple)</span>
+                <span class="input-label">Services Provided *</span>
                 <div style="display:flex; flex-wrap:wrap; gap:8px;" id="pref-services">
                   ${window.PORTAL_DATA.SERVICES.map(s => `
                     <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
@@ -424,7 +433,9 @@ const PAGE_CLIENTREFS = (() => {
     const selectedVerticals = Array.from(checkedVerticals).map(cb => cb.value);
     const vert = selectedVerticals.length > 0 ? selectedVerticals[0] : 'Other';
     
-    const geo = container.querySelector('#pref-geo').value.trim();
+    const checkedGeos = container.querySelectorAll('#pref-geo-checkboxes input[type="checkbox"]:checked');
+    const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+    const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
     const thumb = container.querySelector('#pref-thumbnail').value.trim();
     const summary = container.querySelector('#pref-summary').value.trim();
     
@@ -437,7 +448,8 @@ const PAGE_CLIENTREFS = (() => {
       website_url: url,
       vertical: vert,
       verticals: selectedVerticals.length > 0 ? selectedVerticals : (vert ? [vert] : ['Other']),
-      geo: geo,
+      geo: geoStr,
+      geos: parsedGeos,
       ai_summary: summary,
       services_provided: services.length ? services : ['SEO'],
       thumbnail_url: thumb
@@ -912,14 +924,21 @@ const PAGE_CLIENTREFS = (() => {
             <span class="input-label">Website URL</span>
             <input class="input" type="text" id="edit-cli-url" value="${urlVal}">
           </div>
-          <div class="input-group">
-            <span class="input-label">Geo *</span>
-            <select class="select" id="edit-cli-geo" style="height:34px; font-size:12px;">
-              ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}" ${geoVal === g ? 'selected' : ''}>${g}</option>`).join('')}
-            </select>
+          <div class="input-group span-2">
+            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="edit-cli-geo-checkboxes">
+              ${window.PORTAL_DATA.GEOS.map(g => {
+                const isChecked = ref ? ((ref.geos || []).includes(g) || ref.geo === g) : (profile ? ((profile.geos || []).includes(g) || profile.geo === g) : geoVal === g);
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                </label>
+                `
+              }).join('')}
+            </div>
           </div>
           <div class="input-group span-2">
-            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Verticals / Industries * (Select multiple)</span>
+            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Verticals / Industries *</span>
             <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-cli-verticals">
               ${(() => {
                 const clientVerts = ref ? (ref.verticals || [ref.vertical]) : (profile ? (profile.verticals || [profile.vertical]) : []);
@@ -972,7 +991,9 @@ const PAGE_CLIENTREFS = (() => {
     const container = document.getElementById('page-container');
     const name = document.getElementById('edit-cli-name').value.trim();
     const url = document.getElementById('edit-cli-url').value.trim();
-    const geo = document.getElementById('edit-cli-geo').value.trim();
+    const checkedGeos = document.querySelectorAll('#edit-cli-geo-checkboxes input[type="checkbox"]:checked');
+    const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+    const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
     const checkedVerts = document.querySelectorAll('#edit-cli-verticals input[type="checkbox"]:checked');
     const selectedVerticals = Array.from(checkedVerts).map(cb => cb.value);
     const summary = document.getElementById('edit-cli-summary').value.trim();
@@ -1004,7 +1025,8 @@ const PAGE_CLIENTREFS = (() => {
       id: ref ? ref.id : `ref-user-${Date.now()}`,
       client_name: name,
       website_url: cleanUrl,
-      geo: geo,
+      geo: geoStr,
+      geos: parsedGeos,
       vertical: firstVertical,
       verticals: selectedVerticals,
       ai_summary: summary,
@@ -1025,7 +1047,8 @@ const PAGE_CLIENTREFS = (() => {
       id: profile ? profile.id : `profile-user-${Date.now()}`,
       client_name: name,
       website_url: cleanUrl,
-      geo: geo,
+      geo: geoStr,
+      geos: parsedGeos,
       vertical: firstVertical,
       verticals: selectedVerticals,
       notes: summary,
@@ -1053,7 +1076,7 @@ const PAGE_CLIENTREFS = (() => {
 
     STORE.saveUserData(ud);
     STORE.resetState();
-    STORE.syncClientGeo(name, geo);
+    STORE.syncClientGeo(name, geoStr);
 
     closeModal();
     showToast('Client profile updated successfully!', 'success');
