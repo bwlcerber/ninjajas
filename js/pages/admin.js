@@ -767,9 +767,10 @@ const PAGE_ADMIN = (() => {
     wrap.innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:start">
         <div>
-          <div class="section-header">
+          <div class="section-header" style="display:flex; align-items:center; gap:8px">
             <span class="section-title">My Team Members</span>
             <span class="section-count">${users.length}</span>
+            <button class="btn btn-primary btn-sm" onclick="PAGE_ADMIN.newUser()" style="margin-left:auto">${ICONS.plus} Add Member</button>
           </div>
           <div class="admin-content-list">
             ${users.map(u => `
@@ -786,7 +787,7 @@ const PAGE_ADMIN = (() => {
           </div>
         </div>
         <div id="admin-user-form-wrap">
-          ${renderUserForm(_editUserId ? users.find(u => u.username === _editUserId) : null)}
+          ${renderUserForm(_editUserId === 'new' ? { isNew: true, displayName: '', username: '', password: '', role: 'admin', glowColor: '#3b82f6' } : (_editUserId ? users.find(u => u.username === _editUserId) : null))}
         </div>
       </div>`;
   }
@@ -813,17 +814,28 @@ const PAGE_ADMIN = (() => {
 
     return `
       <div class="admin-form">
-        <div class="admin-form-title">✏️ Edit Team Member: ${user.displayName}</div>
+        <div class="admin-form-title">${user.isNew ? '✨ Add New Team Member' : `✏️ Edit Team Member: ${user.displayName}`}</div>
         <div class="form-grid">
+          <div class="input-group span-2" style="${user.isNew ? '' : 'display:none;'}">
+            <label class="input-label">Full Name *</label>
+            <input class="input" id="user-edit-name" type="text" value="${user.displayName}" placeholder="e.g. John Doe">
+          </div>
           <div class="input-group span-2">
-            <label class="input-label">Login Username * (Max 7 symbols, starts with their name)</label>
-            <input class="input" id="user-edit-username" type="text" value="${user.username}" placeholder="e.g. alex_np">
+            <label class="input-label">Login Username * (Max 7 symbols${user.isNew ? '' : ', starts with their name'})</label>
+            <input class="input" id="user-edit-username" type="text" value="${user.username}" placeholder="e.g. john_np">
           </div>
           <div class="input-group span-2">
             <label class="input-label">Password *</label>
             <input class="input" id="user-edit-pwd" type="text" value="${user.password}">
           </div>
-          <div class="input-group span-2">
+          <div class="input-group">
+            <label class="input-label">Role</label>
+            <select class="select" id="user-edit-role">
+              <option value="admin" ${user.role === 'admin' ? 'selected':''}>Sales Team (Admin)</option>
+              <option value="superadmin" ${user.role === 'superadmin' ? 'selected':''}>Super Admin</option>
+            </select>
+          </div>
+          <div class="input-group">
             <label class="input-label">Glowing Animation Color</label>
             <select class="select" id="user-edit-glow">
               ${colors.map(c => `<option value="${c.value}" ${user.glowColor === c.value ? 'selected':''}>${c.name}</option>`).join('')}
@@ -831,11 +843,17 @@ const PAGE_ADMIN = (() => {
           </div>
         </div>
         <div style="margin-top:16px; display:flex; gap:8px">
-          <button class="btn btn-primary btn-sm" onclick="PAGE_ADMIN.saveUser('${user.username}')">Update Member Settings</button>
+          <button class="btn btn-primary btn-sm" onclick="PAGE_ADMIN.saveUser('${user.isNew ? 'new' : user.username}')">${user.isNew ? 'Create Member' : 'Update Member Settings'}</button>
           <button class="btn btn-ghost btn-sm" onclick="PAGE_ADMIN.cancelUserEdit()">Cancel</button>
         </div>
         <div id="user-form-error" class="login-error" style="margin-top:10px; display:none"></div>
       </div>`;
+  }
+
+  function newUser() {
+    _editUserId = 'new';
+    const container = document.querySelector('.page-content');
+    if (container) renderAdmin(container);
   }
 
   function editUser(username) {
@@ -852,8 +870,21 @@ const PAGE_ADMIN = (() => {
 
   function saveUser(oldUsername) {
     const container = document.querySelector('.page-content');
+    const isNew = oldUsername === 'new';
+    
+    let newName = '';
+    if (isNew) {
+      newName = document.getElementById('user-edit-name').value.trim();
+      if (!newName) {
+        document.getElementById('user-form-error').style.display = 'block';
+        document.getElementById('user-form-error').textContent = 'Full Name is required.';
+        return;
+      }
+    }
+    
     const newUsername = document.getElementById('user-edit-username').value.trim().toLowerCase();
     const newPwd = document.getElementById('user-edit-pwd').value.trim();
+    const newRole = document.getElementById('user-edit-role').value;
     const newGlow = document.getElementById('user-edit-glow').value;
     const errEl = document.getElementById('user-form-error');
 
@@ -864,11 +895,17 @@ const PAGE_ADMIN = (() => {
     }
 
     const users = AUTH.getUsers();
-    const userIndex = users.findIndex(u => u.username === oldUsername);
-    if (userIndex === -1) return;
-
-    const user = users[userIndex];
-    const namePrefix = user.displayName.toLowerCase().slice(0, 3);
+    
+    let userIndex = -1;
+    let namePrefix = '';
+    
+    if (isNew) {
+      namePrefix = newName.toLowerCase().slice(0, 3);
+    } else {
+      userIndex = users.findIndex(u => u.username === oldUsername);
+      if (userIndex === -1) return;
+      namePrefix = users[userIndex].displayName.toLowerCase().slice(0, 3);
+    }
     
     if (!newUsername.startsWith(namePrefix)) {
       errEl.style.display = 'block';
@@ -891,9 +928,21 @@ const PAGE_ADMIN = (() => {
     }
 
     // Save changes
-    user.username = newUsername;
-    user.password = newPwd;
-    user.glowColor = newGlow;
+    if (isNew) {
+      users.push({
+        displayName: newName,
+        username: newUsername,
+        password: newPwd,
+        role: newRole,
+        glowColor: newGlow
+      });
+    } else {
+      const user = users[userIndex];
+      user.username = newUsername;
+      user.password = newPwd;
+      user.role = newRole;
+      user.glowColor = newGlow;
+    }
 
     AUTH.saveUsers(users);
     _editUserId = null;
@@ -1113,6 +1162,7 @@ const PAGE_ADMIN = (() => {
     handleThumbSelect,
     handleThumbDrop,
     handleThumbPaste,
+    newUser,
     editUser,
     cancelUserEdit,
     saveUser,

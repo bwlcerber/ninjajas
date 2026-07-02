@@ -11,14 +11,14 @@ const PAGE_DOCS = (() => {
 
   function getCategories() {
     const defaults = [
-      { id: 'all', label: 'All Docs', types: ['contract','offer-prep','deck','process-doc','template','training','youtube','doc-link','pdf','other'] },
+      { id: 'all', label: 'All Docs', types: ['contract','offer-prep','deck','process-doc','template','training','social-media-link','doc-link','pdf','other'] },
       { id: 'contract', label: 'Contracts and NDAs', types: ['contract'] },
       { id: 'offer-prep', label: 'Offer Preparation', types: ['offer-prep'] },
       { id: 'deck', label: 'Pitch Decks', types: ['deck'] },
       { id: 'process-doc', label: 'Process Docs', types: ['process-doc'] },
       { id: 'template', label: 'Templates', types: ['template'] },
       { id: 'training', label: 'Training', types: ['training'] },
-      { id: 'youtube', label: 'YouTube', types: ['youtube'] },
+      { id: 'social-media-link', label: 'Social Media Account Link', types: ['social-media-link'] },
       { id: 'other', label: 'Other', types: ['other'] },
     ];
     const customWithTypes = _customCategories.map(c => ({
@@ -307,7 +307,11 @@ const PAGE_DOCS = (() => {
             <label class="input-label">Document Category</label>
             <div style="display:flex; gap:8px;">
               <select class="select" id="doc-new-category" style="flex:1;">
-                ${[...cats].slice(1).sort((a,b) => a.label.localeCompare(b.label)).map(c => `<option value="${c.id}">${c.label}</option>`).join('')}
+                ${[...cats].slice(1).sort((a,b) => {
+                  if (a.id === 'other') return 1;
+                  if (b.id === 'other') return -1;
+                  return a.label.localeCompare(b.label);
+                }).map(c => `<option value="${c.id}">${c.label}</option>`).join('')}
               </select>
               <button class="btn btn-secondary btn-sm" onclick="PAGE_DOCS.showCreateCategoryInput()">+ New Category</button>
             </div>

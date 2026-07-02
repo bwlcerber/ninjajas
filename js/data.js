@@ -39,7 +39,7 @@ const SERVICES = [
 const ASSET_TYPES = [
   'report', 'creative', 'case', 'deck', 'template',
   'contract', 'process-doc', 'media-plan', 'training',
-  'video', 'image', 'pdf', 'spreadsheet-link', 'doc-link', 'offer-prep', 'youtube'
+  'video', 'image', 'pdf', 'spreadsheet-link', 'doc-link', 'offer-prep', 'social-media-link'
 ];
 
 // ─────────────────────────────────────────────
@@ -129,7 +129,7 @@ const SEED_MATERIALS = [
     file_type: 'pdf',
     file_url: 'https://docs.google.com/viewer',
     thumbnail_url: '',
-    tags: ['influencer', 'healthcare', 'instagram', 'youtube'],
+    tags: ['influencer', 'healthcare', 'instagram', 'social-media-link'],
     related_assets: [],
     created_at: '2025-03-12'
   },
@@ -1413,7 +1413,7 @@ const SEED_MATERIALS = [
     file_type: 'video',
     file_url: 'https://www.w3schools.com/html/mov_bbb.mp4',
     thumbnail_url: 'https://picsum.photos/seed/trading-video/400/225',
-    tags: ['creative', 'video', 'trading', 'youtube', 'promo'],
+    tags: ['creative', 'video', 'trading', 'social-media-link', 'promo'],
     related_assets: [],
     created_at: '2025-02-18'
   },
