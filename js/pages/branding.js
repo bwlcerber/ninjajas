@@ -471,7 +471,8 @@ const PAGE_BRANDING = (() => {
     const verticals = window.PORTAL_DATA.VERTICALS;
     const matVerts = mat.verticals || (mat.vertical ? [mat.vertical] : []);
     const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && mat.client_name && typeof mat.client_name === 'string' && r.client_name.toLowerCase() === mat.client_name.toLowerCase());
-    const websiteUrl = ref ? ref.website_url : '';
+    let websiteUrl = ref ? ref.website_url : '';
+    if (websiteUrl && websiteUrl.toLowerCase().includes('ninjapromo.io')) websiteUrl = '';
 
     const modalBody = `
       <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_BRANDING.handlePaste(event, 'edit-branding-thumb')">
