@@ -27,12 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($input) {
         $json = json_decode($input, true);
         if ($json !== null) {
+            // Safety check: never write an empty materials dataset over existing data
+            $existing = [];
+            if (file_exists($filename)) {
+                $existingRaw = file_get_contents($filename);
+                $existing = json_decode($existingRaw, true) ?: [];
+            }
+            $existingMats = count($existing['materials'] ?? []);
+            $incomingMats = count($json['materials'] ?? []);
+            // If incoming has fewer materials than existing (likely a wipe), abort
+            if ($incomingMats === 0 && $existingMats > 0) {
+                echo json_encode(['success' => false, 'error' => 'Refused: incoming data would wipe ' . $existingMats . ' existing materials']);
+                exit;
+            }
+            
             // Attempt write and verify it succeeded
             $written = file_put_contents($filename, $input, LOCK_EX);
             if ($written !== false) {
                 echo json_encode(['success' => true, 'bytes' => $written]);
             } else {
-                // Write failed — report error with diagnostics
                 echo json_encode([
                     'success' => false,
                     'error' => 'File write failed',
