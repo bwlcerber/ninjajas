@@ -160,6 +160,9 @@ const PAGE_CASES = (() => {
 
   function renderCaseCard(mat) {
     const profile = STORE.getProfileForClient(mat.client_name);
+    const ref = STORE.getClientRefs().find(r => r.client_name && mat.client_name && r.client_name.toLowerCase() === mat.client_name.toLowerCase());
+    const clientWebsiteUrl = (ref && ref.website_url && !ref.website_url.includes('ninjapromo.io')) ? ref.website_url : 
+                             (profile && profile.website_url && !profile.website_url.includes('ninjapromo.io')) ? profile.website_url : null;
     const metric  = extractMetric(mat.title);
     const isLive  = mat.file_url && mat.file_url.includes('ninjapromo.io');
     const isChecked = window.CALL_PREP_BASKET && window.CALL_PREP_BASKET.has(mat.id);
@@ -227,8 +230,8 @@ const PAGE_CASES = (() => {
           <button class="btn btn-sm btn-ghost" onclick="copyToClipboard('${mat.file_url}','Case link')" title="Copy link">
             ${ICONS.copy}
           </button>
-          ${profile && profile.website_url && !profile.website_url.includes('ninjapromo.io') ? `
-            <a class="btn btn-sm btn-ghost" href="${profile.website_url}" target="_blank" rel="noopener" title="Visit Website">
+          ${clientWebsiteUrl ? `
+            <a class="btn btn-sm btn-ghost" href="${clientWebsiteUrl}" target="_blank" rel="noopener" title="Visit ${clientWebsiteUrl}">
               ${ICONS.refs}
             </a>
           ` : ''}
@@ -628,10 +631,11 @@ const PAGE_CASES = (() => {
       if (existingRef) {
         const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
         if (refIdx !== -1) {
-          if (cleanUrl) ud.clientRefs[refIdx].website_url = cleanUrl;
+          // Always update website_url (even if blank, to allow clearing it)
+          ud.clientRefs[refIdx].website_url = cleanUrl || '';
           if (thumb) ud.clientRefs[refIdx].thumbnail_url = thumb;
         } else {
-          ud.clientRefs.push({ ...existingRef, ...(cleanUrl ? {website_url: cleanUrl} : {}), ...(thumb ? {thumbnail_url: thumb} : {}) });
+          ud.clientRefs.push({ ...existingRef, website_url: cleanUrl || '', ...(thumb ? {thumbnail_url: thumb} : {}) });
         }
         STORE.saveUserData(ud);
       } else if (cleanUrl) {
