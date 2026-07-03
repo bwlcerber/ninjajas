@@ -373,11 +373,16 @@ const STORE = (() => {
     ud.customOrder = ud.customOrder || {};
     
     let oldOrder = ud.customOrder[type];
+    const seed = window.PORTAL_DATA;
+    const allMats = [...seed.materials, ...(ud.materials || [])].filter(m => m.asset_type === type).map(m => m.id);
+    const uniqueMats = Array.from(new Set(allMats));
+    
     if (!oldOrder || oldOrder.length === 0) {
-      // Initialize oldOrder with all current materials of this type
-      const seed = window.PORTAL_DATA;
-      const allMats = [...seed.materials, ...(ud.materials || [])].filter(m => m.asset_type === type).map(m => m.id);
-      oldOrder = Array.from(new Set(allMats)); // unique ids
+      oldOrder = uniqueMats;
+    } else {
+      // Heal oldOrder if it's missing items (due to the old subset dragging bug)
+      const missing = uniqueMats.filter(id => !oldOrder.includes(id));
+      oldOrder = oldOrder.concat(missing);
     }
     
     const oldOrderArr = [...oldOrder];
