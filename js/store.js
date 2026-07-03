@@ -313,25 +313,27 @@ const STORE = (() => {
       const materialsArr = [...resolvedMaterials, ...userOnlyMats];
       
       // Apply customOrder if exists
-      if (user.customOrder) {
-        for (let type in user.customOrder) {
+      materialsArr.sort((a, b) => {
+        // Group by asset type first to preserve stable ordering across types
+        const typeDiff = a.asset_type.localeCompare(b.asset_type);
+        if (typeDiff !== 0) return typeDiff;
+
+        // Apply custom order if exists
+        const type = a.asset_type;
+        if (user.customOrder && user.customOrder[type]) {
           const orderArr = user.customOrder[type];
           const orderMap = new Map(orderArr.map((id, index) => {
-            if (id === 'mat-b01') return ['mat-wafee-v2', index];
-            if (id === 'mat-b03') return ['mat-voto-v2', index];
+            if (id === 'mat-b01' || id === 'mat-wafee-v2') return ['mat-wafee-v3', index];
+            if (id === 'mat-b03' || id === 'mat-voto-v2') return ['mat-voto-v3', index];
             return [id, index];
           }));
           
-          materialsArr.sort((a, b) => {
-            if (a.asset_type === type && b.asset_type === type) {
-              const aIdx = orderMap.has(a.id) ? orderMap.get(a.id) : 999999;
-              const bIdx = orderMap.has(b.id) ? orderMap.get(b.id) : 999999;
-              if (aIdx !== 999999 || bIdx !== 999999) return aIdx - bIdx;
-            }
-            return 0; // preserve original order for non-matching or un-ordered
-          });
+          const aIdx = orderMap.has(a.id) ? orderMap.get(a.id) : 999999;
+          const bIdx = orderMap.has(b.id) ? orderMap.get(b.id) : 999999;
+          if (aIdx !== bIdx) return aIdx - bIdx;
         }
-      }
+        return 0; // preserve original relative order for non-matching or un-ordered
+      });
 
       _state = {
         materials:      materialsArr,
@@ -347,7 +349,28 @@ const STORE = (() => {
   function reorderMaterials(type, newOrderIds) {
     const ud = loadUserData();
     ud.customOrder = ud.customOrder || {};
-    ud.customOrder[type] = newOrderIds;
+    
+    let oldOrder = ud.customOrder[type];
+    if (!oldOrder || oldOrder.length === 0) {
+      // Initialize oldOrder with all current materials of this type
+      const seed = window.PORTAL_DATA;
+      const allMats = [...seed.materials, ...(ud.materials || [])].filter(m => m.asset_type === type).map(m => m.id);
+      oldOrder = Array.from(new Set(allMats)); // unique ids
+    }
+    
+    const oldOrderArr = [...oldOrder];
+    const indices = newOrderIds.map(id => oldOrderArr.indexOf(id)).filter(i => i !== -1).sort((a,b) => a - b);
+    
+    let j = 0;
+    for (let id of newOrderIds) {
+      if (oldOrder.includes(id)) {
+        oldOrderArr[indices[j++]] = id;
+      }
+    }
+    
+    const newItems = newOrderIds.filter(id => !oldOrder.includes(id));
+    ud.customOrder[type] = oldOrderArr.concat(newItems);
+    
     saveUserData(ud);
     resetState();
   }
