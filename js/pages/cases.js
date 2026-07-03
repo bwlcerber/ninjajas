@@ -14,7 +14,7 @@ const PAGE_CASES = (() => {
     container.innerHTML = `
       <div class="page-header">
         <div class="page-header-row">
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Real NinjaPromo case studies — proof of performance across every vertical and service. <span style="font-size:13px;font-weight:400;color:var(--text-tertiary);font-family:var(--font-mono);margin-left:6px">${total} total</span></div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">NinjaPromo case studies — proof of performance across every vertical and service. <span style="font-size:13px;font-weight:400;color:var(--text-tertiary);font-family:var(--font-mono);margin-left:6px">${total} total</span></div>
           <button class="btn btn-primary" onclick="checkSuperAdminAction(() => PAGE_CASES.openAddCaseModal())">
             ${ICONS.plus} Add Case
           </button>

@@ -165,7 +165,7 @@ const PAGE_ENABLEMENT = (() => {
       <div class="page-header">
         <div class="page-header-row">
           <div>
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Track adoption of call frameworks, training guides, and client engagement tools across the sales team.</div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Track adoption of call frameworks and training guides.</div>
           </div>
         </div>
       </div>

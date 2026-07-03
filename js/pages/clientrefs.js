@@ -305,7 +305,7 @@ const PAGE_CLIENTREFS = (() => {
       <div class="page-header">
         <div class="page-header-row">
           <div>
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Live client websites to showcase during calls.</div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Live client websites.</div>
           </div>
           <button class="btn btn-primary" onclick="checkSuperAdminAction(() => ROUTER.navigate('admin'))">${ICONS.plus} Content Center</button>
         </div>

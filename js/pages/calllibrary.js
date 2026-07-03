@@ -64,7 +64,7 @@ const PAGE_CALLLIBRARY = (() => {
     container.innerHTML = `
       <div class="page-header">
         <div class="page-header-row">
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Internal archive of successful sales calls, Closed Won deals, and prospect reviews.</div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Internal archive of successful sales calls.</div>
           <div style="display:flex; gap:8px;">
             ${isSuperAdmin ? `
               <button class="btn btn-primary" onclick="PAGE_CALLLIBRARY.openAddCallModal()">

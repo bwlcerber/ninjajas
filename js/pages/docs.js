@@ -64,7 +64,7 @@ const PAGE_DOCS = (() => {
     container.innerHTML = `
       <div class="page-header">
         <div class="page-header-row">
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Contracts, NDAs, decks, process docs, training materials, and sales resources.</div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">All sales resources in one place.</div>
           <div style="display:flex; gap:8px; align-items:center;">
             ${window.CAN_MANAGE ? `
               <button class="btn btn-secondary" onclick="PAGE_DOCS.openManageCategoriesModal()" title="Manage Document Categories" style="display:flex; align-items:center; justify-content:center; padding:10px; width:36px; height:36px;">
