@@ -9,7 +9,7 @@ const PAGE_REPORTS = (() => {
     { id: 'influencer', label: 'Influencer Marketing' },
     { id: 'seo', label: 'SEO/GEO' },
     { id: 'media-plan', label: 'PPC Media Plans' },
-    { id: 'smm', label: 'SMM' },
+    { id: 'smm', label: 'SMM Profiles' },
     { id: 'gtm', label: 'GTMs' },
     { id: 'pr', label: 'PR Demos' },
     { id: 'other', label: 'Other files' },
@@ -139,7 +139,7 @@ const PAGE_REPORTS = (() => {
   }
 
   function renderList(container) {
-    let items = STORE.getMaterials().filter(m => !['case', 'creative', 'video', 'image'].includes(m.asset_type));
+    let items = STORE.getMaterials().filter(m => !['case', 'branding', 'creative', 'video', 'image'].includes(m.asset_type));
 
     // Filter by category
     if (_activeCategory !== 'all') {
@@ -148,7 +148,7 @@ const PAGE_REPORTS = (() => {
       } else if (_activeCategory === 'seo') {
         items = items.filter(m => (m.services_provided || []).includes('SEO'));
       } else if (_activeCategory === 'smm') {
-        items = items.filter(m => (m.services_provided || []).includes('Social Media'));
+        items = items.filter(m => m.asset_type === 'social-media-link' || ((m.services_provided || []).includes('Social Media') && m.asset_type !== 'report' && m.asset_type !== 'media-plan'));
       } else if (_activeCategory === 'gtm') {
         items = items.filter(m => (m.asset_type === 'gtm') || (m.tags || []).includes('gtm'));
       } else if (_activeCategory === 'pr') {

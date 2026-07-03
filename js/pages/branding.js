@@ -14,7 +14,7 @@ const PAGE_BRANDING = (() => {
     container.innerHTML = `
       <div class="page-header">
         <div class="page-header-row">
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Visual identities, logotypes, and design systems.</div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Visual identities, logotypes, and design systems. <span style="font-size:13px;font-weight:400;color:var(--text-tertiary);font-family:var(--font-mono);margin-left:6px">${total} total</span></div>
           ${window.CAN_MANAGE ? `<button class="btn btn-primary" onclick="PAGE_BRANDING.openAddCaseModal()">
             ${ICONS.plus} Add Branding Project
           </button>` : ''}
