@@ -49,7 +49,7 @@ const ASSET_TYPES = [
 const SEED_MATERIALS = [
   // ── BRANDING ──
   {
-    id: 'mat-wafee-v2',
+    id: 'mat-b01',
     title: 'Wafee Banking App',
     client_name: 'Wafee',
     geo: 'Global',
@@ -85,7 +85,7 @@ const SEED_MATERIALS = [
     created_at: '2025-10-09'
   },
   {
-    id: 'mat-voto-v2',
+    id: 'mat-b03',
     title: 'VOTO Branding UX/UI',
     client_name: 'VOTO',
     geo: 'Global',
@@ -1575,7 +1575,7 @@ const SEED_MATERIALS = [
     created_at: '2021-11-01'
   },
   {
-    id: 'case-wafee-v2',
+    id: 'case-040',
     title: "Unleashing Wafee's Market Potential Through Integrated Marketing Mastery",
     client_name: 'Wafee',
     geo: 'MENA',
@@ -2590,7 +2590,7 @@ const SEED_CLIENT_PROFILES = [
 // EXPORT
 // ─────────────────────────────────────────────
 
-window.PORTAL_DATA = {
+module.exports = {
   VERTICALS,
   SERVICES,
   ASSET_TYPES,
