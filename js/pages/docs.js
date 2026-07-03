@@ -234,7 +234,7 @@ const PAGE_DOCS = (() => {
       const verticalTag = m.vertical ? `<span class="tag ${getVerticalClass(m.vertical)} tag-interactive ${_selectedTags.has(m.vertical) ? 'active' : ''}" onclick="event.stopPropagation(); PAGE_DOCS.toggleTag('${m.vertical}')">${m.vertical}</span>` : '';
 
       return `
-        <div class="material-row animate-fade" data-id="${m.id}" onclick="PAGE_DOCS.openDocumentViewer('${m.id}')">
+        <div class="material-row animate-fade ${m.pinned ? 'pinned' : ''}" data-id="${m.id}" onclick="PAGE_DOCS.openDocumentViewer('${m.id}')">
           <div class="material-row-checkbox" onclick="event.stopPropagation()">
             <label class="item-select-wrap">
               <input type="checkbox" data-select-id="${m.id}" ${isChecked ? 'checked' : ''} onchange="toggleCallPrepItem('${m.id}')">

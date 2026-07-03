@@ -232,7 +232,7 @@ const PAGE_REPORTS = (() => {
     }).join('');
 
     return `
-      <div class="material-row animate-fade" data-id="${mat.id}" onclick="openMaterial(STORE.getMaterialById('${mat.id}'))">
+      <div class="material-row animate-fade ${mat.pinned ? 'pinned' : ''}" data-id="${mat.id}" onclick="openMaterial(STORE.getMaterialById('${mat.id}'))">
         <div class="material-row-checkbox" onclick="event.stopPropagation()">
           <label class="item-select-wrap">
             <input type="checkbox" data-select-id="${mat.id}" ${isChecked ? 'checked' : ''} onchange="toggleCallPrepItem('${mat.id}')">
