@@ -193,6 +193,14 @@ const PAGE_REPORTS = (() => {
       ].join(' ').toLowerCase().includes(q));
     }
 
+    // Sort by pinned first, then alphabetical by title
+    items.sort((a, b) => {
+      const aPinned = a.pinned ? 1 : 0;
+      const bPinned = b.pinned ? 1 : 0;
+      if (aPinned !== bPinned) return bPinned - aPinned; // pinned first (1 > 0)
+      return (a.title || '').localeCompare(b.title || '');
+    });
+
     const list = container.querySelector('#reports-list');
 
     if (items.length === 0) {
@@ -248,6 +256,9 @@ const PAGE_REPORTS = (() => {
           ${serviceTags}
         </div>
         <div style="display:flex;gap:4px">
+          <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();PAGE_REPORTS.togglePin('${mat.id}')" title="${mat.pinned ? 'Unpin' : 'Pin'}" style="color:${mat.pinned ? 'var(--accent)' : 'var(--text-tertiary)'}; padding:4px;">
+            ${mat.pinned ? ICONS.pinSolid || '📌' : ICONS.pinOutline || '📌'}
+          </button>
           <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openMaterial(STORE.getMaterialById('${mat.id}'))" title="Open preview inside dashboard">
             ${ICONS.eye} Preview
           </button>
@@ -269,6 +280,14 @@ const PAGE_REPORTS = (() => {
           ` : ''}
         </div>
       </div>`;
+  }
+
+  function togglePin(matId) {
+    const mat = STORE.getMaterialById(matId);
+    if (!mat) return;
+    STORE.updateMaterial(matId, { pinned: !mat.pinned });
+    const container = document.getElementById('page-container');
+    if (container) render(container);
   }
 
   let _uploadedReportFiles = [];
@@ -336,7 +355,13 @@ const PAGE_REPORTS = (() => {
                 { value: 'media-plan', label: 'Media Plan' },
                 { value: 'process-doc', label: 'Process Doc' },
                 { value: 'report', label: 'Performance Report' },
-                { value: 'template', label: 'Template' }
+                { value: 'template', label: 'Template' },
+                { value: 'gtm', label: 'GTM' },
+                { value: 'social-media-link', label: 'Social Media Links' },
+                { value: 'doc-link', label: 'Document' },
+                { value: 'spreadsheet-link', label: 'Spreadsheet' },
+                { value: 'pdf', label: 'PDF' },
+                { value: 'offer-prep', label: 'Offer Preparation' }
               ].sort((a, b) => a.label.localeCompare(b.label)).map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
             </select>
           </div>
@@ -725,7 +750,13 @@ const PAGE_REPORTS = (() => {
               { value: 'media-plan', label: 'Media Plan' },
               { value: 'process-doc', label: 'Process Doc' },
               { value: 'report', label: 'Performance Report' },
-              { value: 'template', label: 'Template' }
+              { value: 'template', label: 'Template' },
+              { value: 'gtm', label: 'GTM' },
+              { value: 'social-media-link', label: 'Social Media Links' },
+              { value: 'doc-link', label: 'Document' },
+              { value: 'spreadsheet-link', label: 'Spreadsheet' },
+              { value: 'pdf', label: 'PDF' },
+              { value: 'offer-prep', label: 'Offer Preparation' }
             ].sort((a,b)=>a.label.localeCompare(b.label)).map(t => `<option value="${t.value}" ${data.asset_type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
           </select>
         </div>
@@ -865,6 +896,7 @@ const PAGE_REPORTS = (() => {
     addReportLinkItem,
     removeFileFromBatch,
     saveBatchUpload,
+    togglePin,
     setEditReport,
     closeEditReport
   };

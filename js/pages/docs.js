@@ -211,6 +211,14 @@ const PAGE_DOCS = (() => {
       );
     }
 
+    // Sort by pinned first, then alphabetical by title
+    items.sort((a, b) => {
+      const aPinned = a.pinned ? 1 : 0;
+      const bPinned = b.pinned ? 1 : 0;
+      if (aPinned !== bPinned) return bPinned - aPinned; // pinned first (1 > 0)
+      return (a.title || '').localeCompare(b.title || '');
+    });
+
     const list = container.querySelector('#docs-list');
 
     if (items.length === 0) {
@@ -244,6 +252,9 @@ const PAGE_DOCS = (() => {
             ${assetTag}
           </div>
           <div style="display:flex;gap:4px">
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();PAGE_DOCS.togglePin('${m.id}')" title="${m.pinned ? 'Unpin' : 'Pin'}" style="color:${m.pinned ? 'var(--accent)' : 'var(--text-tertiary)'}; padding:4px;">
+              ${m.pinned ? ICONS.pinSolid || '📌' : ICONS.pinOutline || '📌'}
+            </button>
             <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();PAGE_DOCS.openDocumentViewer('${m.id}')">
               ${ICONS.eye} Open
             </button>
@@ -265,6 +276,16 @@ const PAGE_DOCS = (() => {
         </div>
       `;
     }).join('');
+  }
+
+  function togglePin(matId) {
+    const mat = STORE.getMaterialById(matId);
+    if (!mat) return;
+    STORE.updateMaterial(matId, { pinned: !mat.pinned });
+    const container = document.getElementById('page-container');
+    if (container) {
+      renderList(container, STORE.getByTypes(getDocTypes()));
+    }
   }
 
   function openAddDocModal() {
@@ -874,9 +895,9 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
     handleDocFileDrop,
     handleDocFileSelect,
     openEditDocModal,
-    closeEditDocPanel
+    closeEditDocPanel,
+    togglePin
   };
 })();
 
 window.PAGE_DOCS = PAGE_DOCS;
-
