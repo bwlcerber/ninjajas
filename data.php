@@ -27,8 +27,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($input) {
         $json = json_decode($input, true);
         if ($json !== null) {
-            file_put_contents($filename, $input);
-            echo json_encode(['success' => true]);
+            // Attempt write and verify it succeeded
+            $written = file_put_contents($filename, $input, LOCK_EX);
+            if ($written !== false) {
+                echo json_encode(['success' => true, 'bytes' => $written]);
+            } else {
+                // Write failed — report error with diagnostics
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'File write failed',
+                    'path' => $filename,
+                    'dir_exists' => is_dir(dirname($filename)),
+                    'dir_writable' => is_writable(dirname($filename)),
+                    'file_exists' => file_exists($filename),
+                    'file_writable' => file_exists($filename) ? is_writable($filename) : 'n/a'
+                ]);
+            }
             exit;
         }
     }

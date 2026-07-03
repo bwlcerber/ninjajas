@@ -234,11 +234,30 @@ const STORE = (() => {
 
     _cachedUserData = JSON.parse(JSON.stringify(data));
     
-    // 1. Save to server database (asynchronous POST to data.php)
+    // 1. Save to server database (async POST to data.php)
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', 'data.php', true);
       xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = function() {
+        try {
+          const res = JSON.parse(xhr.responseText);
+          if (!res.success) {
+            console.error('Server save failed:', res);
+            if (typeof showToast === 'function') {
+              showToast('⚠️ Save to server failed: ' + (res.error || 'unknown error') + '. Data is in local backup only.', 'error');
+            }
+          }
+        } catch (e) {
+          console.error('Save response parse error:', e, xhr.responseText);
+        }
+      };
+      xhr.onerror = function() {
+        console.error('Server save XHR error');
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Could not reach server. Data saved locally only — may not sync to other devices.', 'error');
+        }
+      };
       xhr.send(JSON.stringify(data));
     } catch (e) {
       console.warn('Server save failed:', e);
