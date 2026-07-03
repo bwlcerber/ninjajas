@@ -602,9 +602,10 @@ const STORE = (() => {
     resetState();
   }
 
-  function syncClientGeo(clientName, geo) {
+  function syncClientGeo(clientName, geo, providedUd = null) {
     if (!clientName || typeof clientName !== 'string' || clientName === 'Internal' || clientName === 'Client Name Not Available') return;
-    const ud = _getUserData();
+    const shouldSave = !providedUd;
+    const ud = providedUd || _getUserData();
 
     // 1. Update materials in user data
     ud.materials.forEach(m => {
@@ -652,8 +653,10 @@ const STORE = (() => {
       }
     });
 
-    saveUserData(ud);
-    resetState();
+    if (shouldSave) {
+      saveUserData(ud);
+      resetState();
+    }
   }
 
   // ── Stats ──

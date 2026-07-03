@@ -417,8 +417,11 @@ const PAGE_CASES = (() => {
       created_at: new Date().toISOString().split('T')[0]
     };
 
-    STORE.addMaterial(item);
-    STORE.syncClientGeo(client, geoStr);
+    const ud = STORE.loadUserData();
+    
+    // Add Material
+    item.id = `mat-user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    ud.materials.push(item);
     
     // Sync client reference (website & thumbnail)
     if (client !== 'Internal' && client !== 'Client Name Not Available') {
@@ -427,7 +430,7 @@ const PAGE_CASES = (() => {
         cleanUrl = 'https://' + cleanUrl;
       }
       const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === client.toLowerCase());
-      const ud = STORE.loadUserData();
+      
       if (existingRef) {
         const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
         if (refIdx !== -1) {
@@ -436,7 +439,6 @@ const PAGE_CASES = (() => {
         } else {
           ud.clientRefs.push({ ...existingRef, ...(cleanUrl ? {website_url: cleanUrl} : {}), ...(thumb ? {thumbnail_url: thumb} : {}) });
         }
-        STORE.saveUserData(ud);
       } else if (cleanUrl) {
         ud.clientRefs.push({
           id: `ref-user-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
@@ -447,9 +449,13 @@ const PAGE_CASES = (() => {
           vertical: vertical,
           services_provided: services.length ? services : ['PR']
         });
-        STORE.saveUserData(ud);
       }
     }
+
+    STORE.syncClientGeo(client, geoStr, ud);
+
+    STORE.saveUserData(ud);
+    STORE.resetState();
     
     closeModal();
     showToast('Success case study saved successfully!', 'success');
@@ -674,11 +680,13 @@ const PAGE_CASES = (() => {
       }
     }
 
-    // ③ Single save — no race condition
+    // ③ Apply geo sync to the same ud
+    STORE.syncClientGeo(client, geoStr, ud);
+
+    // ④ Single save — no race condition
     STORE.saveUserData(ud);
     STORE.resetState();
 
-    STORE.syncClientGeo(client, geoStr);
     closeModal();
     showToast('Case study metadata updated successfully!', 'success');
 
