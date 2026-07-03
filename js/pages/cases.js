@@ -183,7 +183,14 @@ const PAGE_CASES = (() => {
     }).join('');
 
     return `
-      <div class="card animate-fade" data-id="${mat.id}" style="display:flex;flex-direction:column;position:relative">
+      <div class="card animate-fade" data-id="${mat.id}" 
+           draggable="${window.CAN_MANAGE ? 'true' : 'false'}"
+           ondragstart="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragStart(event)"
+           ondragover="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragOver(event)"
+           ondragleave="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragLeave(event)"
+           ondrop="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.drop(event, 'case')"
+           ondragend="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragEnd(event)"
+           style="display:flex;flex-direction:column;position:relative">
         <div class="card-checkbox-overlay ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation()">
           <label class="item-select-wrap">
             <input type="checkbox" data-select-id="${mat.id}" ${isChecked ? 'checked' : ''} onchange="toggleCallPrepItem('${mat.id}')">

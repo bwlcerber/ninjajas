@@ -144,6 +144,17 @@ const STORE = (() => {
           const deleted = new Set(data._deletedSeeds || []);
           data.clientProfiles = data.clientProfiles.filter(p => !binned.has(p.id) && !deleted.has(p.id));
         }
+
+        // Merge customOrder
+        if (localData.customOrder) {
+          data.customOrder = data.customOrder || {};
+          for (let type in localData.customOrder) {
+             if (!data.customOrder[type]) {
+               data.customOrder[type] = localData.customOrder[type];
+               merged = true;
+             }
+          }
+        }
       }
 
       if (merged) {
@@ -160,12 +171,13 @@ const STORE = (() => {
     }
 
     if (!data) {
-      data = { materials: [], clientRefs: [], clientProfiles: [] };
+      data = { materials: [], clientRefs: [], clientProfiles: [], customOrder: {} };
     }
 
     data.materials = data.materials || [];
     data.clientRefs = data.clientRefs || [];
     data.clientProfiles = data.clientProfiles || [];
+    data.customOrder = data.customOrder || {};
 
     // Heal duplicate IDs if any exist
     let modified = false;
@@ -256,8 +268,27 @@ const STORE = (() => {
       const seedProfKeys = new Set(seed.clientProfiles.map(p => p.client_name.toLowerCase()));
       const userOnlyProfs = user.clientProfiles.filter(p => !seedProfIds.has(p.id) && !seedProfKeys.has(p.client_name.toLowerCase()));
 
+      const materialsArr = [...resolvedMaterials, ...userOnlyMats];
+      
+      // Apply customOrder if exists
+      if (user.customOrder) {
+        for (let type in user.customOrder) {
+          const orderArr = user.customOrder[type];
+          const orderMap = new Map(orderArr.map((id, index) => [id, index]));
+          
+          materialsArr.sort((a, b) => {
+            if (a.asset_type === type && b.asset_type === type) {
+              const aIdx = orderMap.has(a.id) ? orderMap.get(a.id) : 999999;
+              const bIdx = orderMap.has(b.id) ? orderMap.get(b.id) : 999999;
+              if (aIdx !== 999999 || bIdx !== 999999) return aIdx - bIdx;
+            }
+            return 0; // preserve original order for non-matching or un-ordered
+          });
+        }
+      }
+
       _state = {
-        materials:      [...resolvedMaterials, ...userOnlyMats],
+        materials:      materialsArr,
         clientRefs:     [...resolvedRefs,      ...userOnlyRefs],
         clientProfiles: [...resolvedProfiles,  ...userOnlyProfs]
       };
@@ -266,6 +297,14 @@ const STORE = (() => {
   }
 
   function resetState() { _state = null; }
+
+  function reorderMaterials(type, newOrderIds) {
+    const ud = loadUserData();
+    ud.customOrder = ud.customOrder || {};
+    ud.customOrder[type] = newOrderIds;
+    saveUserData(ud);
+    resetState();
+  }
 
   // ── Getters ──
   function getMaterials() {
@@ -599,6 +638,7 @@ const STORE = (() => {
     updateMaterial, deleteMaterial, deleteClientRef, deleteClientProfile,
     getDeletedClientNames, getRecycleBin, restoreRecord, purgeRecord,
     syncClientGeo,
+    reorderMaterials,
     getStats,
     loadUserData, saveUserData, resetState
   };

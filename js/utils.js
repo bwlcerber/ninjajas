@@ -685,6 +685,73 @@ window.updateCallPrepTray = updateCallPrepTray;
 window.renderCheckbox = renderCheckbox;
 window.deleteStagedReports = deleteStagedReports;
 
+const DRAG_DROP = {
+  draggedItem: null,
+  draggedId: null,
+  dragStart: function(e) {
+    this.draggedItem = e.target.closest('.card');
+    if (!this.draggedItem) return;
+    this.draggedId = this.draggedItem.dataset.id;
+    setTimeout(() => this.draggedItem.classList.add('dragging'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.draggedId);
+  },
+  dragOver: function(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const targetCard = e.target.closest('.card');
+    if (targetCard && targetCard !== this.draggedItem) {
+      targetCard.classList.add('drag-over');
+    }
+  },
+  dragLeave: function(e) {
+    const targetCard = e.target.closest('.card');
+    if (targetCard) {
+      targetCard.classList.remove('drag-over');
+    }
+  },
+  drop: function(e, type) {
+    e.preventDefault();
+    const targetCard = e.target.closest('.card');
+    if (targetCard) {
+      targetCard.classList.remove('drag-over');
+    }
+    if (targetCard && targetCard !== this.draggedItem) {
+      // Determine array order
+      const grid = targetCard.parentNode;
+      const allCards = Array.from(grid.querySelectorAll('.card'));
+      const draggedIdx = allCards.indexOf(this.draggedItem);
+      const targetIdx = allCards.indexOf(targetCard);
+      
+      if (draggedIdx < targetIdx) {
+        targetCard.after(this.draggedItem);
+      } else {
+        targetCard.before(this.draggedItem);
+      }
+      
+      // Build new order array based on DOM order
+      const newOrder = Array.from(grid.querySelectorAll('.card')).map(card => card.dataset.id);
+      
+      // Save order
+      if (window.STORE && window.STORE.reorderMaterials) {
+        window.STORE.reorderMaterials(type, newOrder);
+      }
+      if (window.ROUTER) {
+        setTimeout(() => window.ROUTER.render(), 100);
+      }
+    }
+  },
+  dragEnd: function(e) {
+    if (this.draggedItem) {
+      this.draggedItem.classList.remove('dragging');
+      this.draggedItem = null;
+      this.draggedId = null;
+    }
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
+  }
+};
+window.DRAG_DROP = DRAG_DROP;
+
 function checkSuperAdminAction(actionFn) {
   if (AUTH.canManageContent()) {
     actionFn();

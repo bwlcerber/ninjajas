@@ -93,6 +93,12 @@
       color: #ffd700 !important;
     }
 
+    /* ── Drag & Drop ── */
+    .card[draggable="true"] { cursor: grab; }
+    .card[draggable="true"]:active { cursor: grabbing; }
+    .card.dragging { opacity: 0.4; outline: 2px dashed var(--accent); z-index: 100; transform: scale(0.98); }
+    .card.drag-over { border-top: 4px solid var(--accent) !important; transform: translateY(4px); transition: transform 0.1s, border 0.1s; }
+
     /* ── Responsive ── */
     /* ── Responsive (Up to iPad landscape / 1024px) ── */
     @media (max-width: 1024px) {
