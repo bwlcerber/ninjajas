@@ -9,7 +9,7 @@ const PAGE_BRANDING = (() => {
   const _selectedTags = new Set();
 
   function render(container) {
-    const total = STORE.getByType('case').length;
+    const total = STORE.getByType('branding').length;
 
     container.innerHTML = `
       <div class="page-header">
@@ -105,7 +105,7 @@ const PAGE_BRANDING = (() => {
   }
 
   function renderGrid(container) {
-    let items = STORE.getByType('case');
+    let items = STORE.getByType('branding');
 
     if (_vertical !== 'all') items = items.filter(m => {
       // Support multi-vertical via verticals array
@@ -134,7 +134,7 @@ const PAGE_BRANDING = (() => {
 
     const grid        = container.querySelector('#cases-grid');
     const countEl     = container.querySelector('#cases-result-count');
-    const total       = STORE.getByType('case').length;
+    const total       = STORE.getByType('branding').length;
     countEl.textContent = items.length === total
       ? `Showing all ${total} case studies`
       : `${items.length} of ${total} cases match your filters`;
@@ -390,7 +390,7 @@ const PAGE_BRANDING = (() => {
       vertical: vertical,
       verticals: [vertical],
       services_provided: services.length ? services : ['PR'],
-      asset_type: 'case',
+      asset_type: 'branding',
       visibility_status: 'client-safe',
       description: desc,
       file_type: 'doc-link',
