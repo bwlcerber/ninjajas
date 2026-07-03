@@ -697,7 +697,7 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
   }
 
   function renderInlineEditForm(data) {
-    const assetTypes = getCategories().flatMap(c => c.types);
+    const assetTypes = [...new Set(getCategories().flatMap(c => c.types))];
     return `
       <div style="margin-bottom:16px; font-size:13px; font-weight:700; color:var(--accent); font-family:var(--font-ui); display:flex; justify-content:space-between; align-items:center;">
         <span>EDIT METADATA</span>
