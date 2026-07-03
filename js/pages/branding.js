@@ -574,6 +574,201 @@ const PAGE_BRANDING = (() => {
       if (window.location.hash.startsWith('#clientrefs')) {
         PAGE_CLIENTREFS.render(container, client);
       } else {
+    const services = Array.from(checkedServices).map(cb => cb.value);
+    const thumb = document.getElementById('branding-new-thumb').value.trim();
+    const desc = document.getElementById('branding-new-desc').value.trim();
+    const url = document.getElementById('case-fetch-url').value.trim() || 'https://ninjapromo.io/design-branding';
+
+    if (!title || !client || !desc) {
+      showToast('Please fill out all required fields', 'error');
+      return;
+    }
+
+    const item = {
+      title: title,
+      client_name: client,
+      geo: geoStr,
+      geos: parsedGeos,
+      vertical: vertical,
+      verticals: [vertical],
+      services_provided: services.length ? services : ['PR'],
+      asset_type: 'branding',
+      visibility_status: 'client-safe',
+      description: desc,
+      file_type: 'doc-link',
+      file_url: url,
+      thumbnail_url: thumb,
+      tags: [...services, vertical],
+      related_assets: [],
+      created_at: new Date().toISOString().split('T')[0]
+    };
+
+    STORE.addMaterial(item);
+    STORE.syncClientGeo(client, geoStr);
+    closeModal();
+    showToast('Success case study saved successfully!', 'success');
+
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
+  function openEditCaseModal(caseId) {
+    const mat = STORE.getMaterialById(caseId);
+    if (!mat) return;
+
+    const verticals = window.PORTAL_DATA.VERTICALS;
+    const matVerts = mat.verticals || (mat.vertical ? [mat.vertical] : []);
+    const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && mat.client_name && typeof mat.client_name === 'string' && r.client_name.toLowerCase() === mat.client_name.toLowerCase());
+    const websiteUrl = ref ? ref.website_url : '';
+
+    const modalBody = `
+      <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_BRANDING.handlePaste(event, 'edit-branding-thumb')">
+        <div class="form-grid">
+          <div class="input-group span-2">
+            <span class="input-label">Case Title *</span>
+            <input class="input" type="text" id="edit-branding-title" value="${mat.title || ''}" required>
+          </div>
+          <div class="input-group">
+            <span class="input-label">Client / Brand Name *</span>
+            <input class="input" type="text" id="edit-branding-client" value="${mat.client_name || ''}" required>
+          </div>
+          <div class="input-group">
+            <span class="input-label">Client Website URL</span>
+            <input class="input" type="text" id="edit-branding-website" placeholder="https://example.com" value="${websiteUrl}">
+          </div>
+          <div class="input-group span-2">
+            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="edit-branding-geo-checkboxes">
+              ${window.PORTAL_DATA.GEOS.map(g => {
+                const isChecked = (mat.geos || []).includes(g) || (mat.geo || 'Global') === g;
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+                </label>
+                `
+              }).join('')}
+            </div>
+          </div>
+          <div class="input-group span-2">
+            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Services Provided *</span>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-branding-services-checkboxes">
+              ${window.PORTAL_DATA.SERVICES.map(s => {
+                const isChecked = (mat.services_provided || []).includes(s);
+                return `
+                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                  <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${s}
+                </label>
+                `
+              }).join('')}
+            </div>
+          </div>
+          <div class="input-group span-2">
+            <span class="input-label">Thumbnail Image URL (or paste image anywhere in this window)</span>
+            <input class="input" type="text" id="edit-branding-thumb" value="${mat.thumbnail_url || ''}" placeholder="URL or Base64... (Paste an image to auto-fill)">
+          </div>
+          <div class="input-group span-2">
+            <span class="input-label">Description / Summary</span>
+            <textarea class="input" id="edit-branding-desc" rows="3" required>${mat.description || ''}</textarea>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;" class="span-2">
+            <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Vertical / Industry *</span>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-branding-verticals">
+              ${(() => {
+                const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+                if (verticals.includes('Other')) sorted.push('Other');
+                return sorted.map(v => `
+                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                    <input type="checkbox" value="${v}" style="accent-color:var(--accent);" ${matVerts.includes(v) ? 'checked' : ''}> ${v}
+                  </label>
+                `).join('');
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    openModal({
+      title: `Edit Case study: ${mat.client_name}`,
+      body: modalBody,
+      footer: `
+        <button class="btn btn-sm btn-ghost" style="color:var(--danger); margin-right:auto" onclick="PAGE_BRANDING.deleteCase('${mat.id}')">Delete Case</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="PAGE_BRANDING.saveCaseEdit('${mat.id}')">Save Changes</button>
+      `,
+      size: 'medium'
+    });
+  }
+
+  function saveCaseEdit(matId) {
+    const title = document.getElementById('edit-branding-title').value.trim();
+    const client = document.getElementById('edit-branding-client').value.trim();
+    const website = document.getElementById('edit-branding-website').value.trim();
+    const checkedGeos = document.querySelectorAll('#edit-branding-geo-checkboxes input[type="checkbox"]:checked');
+    const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+    const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
+    const checkedServices = document.querySelectorAll('#edit-branding-services-checkboxes input[type="checkbox"]:checked');
+    const services = Array.from(checkedServices).map(cb => cb.value);
+    const thumb = document.getElementById('edit-branding-thumb').value.trim();
+    const desc = document.getElementById('edit-branding-desc').value.trim();
+    const checkedVerts = document.querySelectorAll('#edit-branding-verticals input[type="checkbox"]:checked');
+    const selectedVerticals = Array.from(checkedVerts).map(cb => cb.value);
+
+    if (!title || !client || !desc) {
+      showToast('Please fill out all required fields', 'error');
+      return;
+    }
+    if (selectedVerticals.length === 0) {
+      showToast('Please select at least one vertical', 'error');
+      return;
+    }
+
+    // Sync client website URL if reference profile exists
+    if (client !== 'Internal' && client !== 'Client Name Not Available') {
+      let cleanUrl = website;
+      if (cleanUrl) {
+        if (!/^https?:\/\//i.test(cleanUrl)) {
+          cleanUrl = 'https://' + cleanUrl;
+        }
+      }
+      const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === client.toLowerCase());
+      if (existingRef) {
+        existingRef.website_url = cleanUrl;
+        const ud = STORE.loadUserData();
+        const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
+        if (refIdx !== -1) {
+          ud.clientRefs[refIdx].website_url = cleanUrl;
+          STORE.saveUserData(ud);
+        } else {
+          ud.clientRefs.push({ ...existingRef, website_url: cleanUrl });
+          STORE.saveUserData(ud);
+        }
+      }
+    }
+
+    STORE.updateMaterial(matId, {
+      title,
+      client_name: client,
+      geo: geoStr,
+      geos: parsedGeos,
+      vertical: selectedVerticals[0] || 'Other',
+      verticals: selectedVerticals,
+      services_provided: services,
+      thumbnail_url: thumb,
+      description: desc,
+      tags: [...selectedVerticals, ...services]
+    });
+
+    STORE.syncClientGeo(client, geoStr);
+    closeModal();
+    showToast('Case study metadata updated successfully!', 'success');
+
+    const container = document.getElementById('page-container');
+    if (container) {
+      // Re-route dynamically back or re-render
+      if (window.location.hash.startsWith('#clientrefs')) {
+        PAGE_CLIENTREFS.render(container, client);
+      } else {
         render(container);
       }
     }
@@ -588,38 +783,34 @@ const PAGE_BRANDING = (() => {
     if (container) render(container);
   }
 
-  function handlePaste(e, targetId) {
+  async function handlePaste(e, targetId) {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (const item of items) {
       if (item.type.indexOf('image') === 0) {
-        const blob = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const img = new Image();
-          img.onload = function() {
-            // Resize to max 600px width to save localStorage space
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const MAX_WIDTH = 600;
-            let width = img.width;
-            let height = img.height;
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            const input = document.getElementById(targetId);
-            if (input) {
-              input.value = dataUrl;
-              showToast('Image pasted and resized successfully!', 'success');
-            }
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(blob);
+        const file = item.getAsFile();
+        showToast('Uploading pasted image...', 'info');
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('type', 'thumbnails');
+          
+          const input = document.getElementById(targetId);
+          if (input && input.value && input.value.startsWith('uploads/')) {
+            formData.append('old_file', input.value);
+          }
+
+          const response = await fetch('upload.php', { method: 'POST', body: formData });
+          const res = await response.json();
+          if (res.success && input) {
+            input.value = res.url;
+            showToast('Image pasted and uploaded successfully!', 'success');
+          } else {
+            showToast('Failed to upload image.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Image upload failed.', 'error');
+        }
         e.preventDefault();
         break;
       }

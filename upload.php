@@ -33,8 +33,20 @@ if (!is_dir($uploadDir)) {
 }
 
 $file = $_FILES['file'];
-$fileName = preg_replace('/[^a-zA-Z0-9\-\._]/', '_', $file['name']); // Sanitize file name
+$fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9\-\._]/', '_', $file['name']); // Sanitize and make unique to bust cache
 $targetPath = $uploadDir . $fileName;
+
+// Delete old file completely from the server if specified
+if (isset($_POST['old_file']) && !empty($_POST['old_file'])) {
+    $oldFile = trim($_POST['old_file']);
+    // Ensure we only delete within the uploads directory for security
+    if (strpos($oldFile, 'uploads/') === 0 && strpos($oldFile, '..') === false) {
+        $oldPath = __DIR__ . '/' . $oldFile;
+        if (file_exists($oldPath) && is_file($oldPath)) {
+            unlink($oldPath);
+        }
+    }
+}
 
 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
     $relativeUrl = 'uploads/' . $type . '/' . $fileName;

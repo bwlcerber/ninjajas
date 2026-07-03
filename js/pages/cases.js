@@ -510,47 +510,39 @@ const PAGE_CASES = (() => {
     window._currentPasteHandler = handlePaste;
   }
 
-  function handlePaste(e) {
+  async function handlePaste(e) {
     const input = document.getElementById('edit-case-thumb');
     if (!input) return; // Not open
 
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-    let blob = null;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') === 0) {
-        blob = items[i].getAsFile();
+    for (const item of items) {
+      if (item.type.indexOf('image') === 0) {
+        const file = item.getAsFile();
+        showToast('Uploading pasted image...', 'info');
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('type', 'thumbnails');
+          
+          if (input.value && input.value.startsWith('uploads/')) {
+            formData.append('old_file', input.value);
+          }
+
+          const response = await fetch('upload.php', { method: 'POST', body: formData });
+          const res = await response.json();
+          if (res.success) {
+            input.value = res.url;
+            showToast('Image pasted and uploaded successfully!', 'success');
+          } else {
+            showToast('Failed to upload image.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Image upload failed.', 'error');
+        }
+        e.preventDefault();
         break;
       }
-    }
-
-    if (blob) {
-      e.preventDefault();
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          // Scale down if too large (e.g. max 800px width)
-          const MAX_WIDTH = 800;
-          if (width > MAX_WIDTH) {
-            height = Math.round((height * MAX_WIDTH) / width);
-            width = MAX_WIDTH;
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          // Use a lower quality webp to keep localStorage small
-          const dataUrl = canvas.toDataURL('image/webp', 0.6);
-          input.value = dataUrl;
-          showToast('Image pasted and compressed successfully!', 'success');
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(blob);
     }
   }
 
