@@ -49,9 +49,6 @@ const STORE = (() => {
         if (!serverMaterialIdx.has(m.id)) {
           data.materials.push(m);
           merged = true;
-        } else {
-          data.materials[serverMaterialIdx.get(m.id)] = m;
-          merged = true;
         }
       });
 
@@ -60,9 +57,6 @@ const STORE = (() => {
         if (!serverRefIdx.has(r.id)) {
           data.clientRefs.push(r);
           merged = true;
-        } else {
-          data.clientRefs[serverRefIdx.get(r.id)] = r;
-          merged = true;
         }
       });
 
@@ -70,9 +64,6 @@ const STORE = (() => {
       (localData.clientProfiles || []).forEach(p => {
         if (!serverProfileIdx.has(p.id)) {
           data.clientProfiles.push(p);
-          merged = true;
-        } else {
-          data.clientProfiles[serverProfileIdx.get(p.id)] = p;
           merged = true;
         }
       });
