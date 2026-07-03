@@ -598,7 +598,7 @@ function updateBadges() {
   const clientSafeReportsCount = STORE.getMaterials().filter(m => m.visibility_status === 'client-safe' && !['case','creative','video','image'].includes(m.asset_type)).length;
   setVal('badge-reports', clientSafeReportsCount);
   setVal('badge-creatives', stats.totalCreatives);
-  setVal('badge-docs', STORE.getByTypes(['contract','template','process-doc','training','pdf','doc-link']).length);
+  setVal('badge-docs', STORE.getByTypes(PAGE_DOCS.getDocTypes()).length);
   setVal('badge-cases', stats.totalCases);
   setVal('badge-branding', STORE.getByTypes(['branding']).length);
   setVal('badge-refs', stats.totalRefs);

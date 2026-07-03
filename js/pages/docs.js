@@ -896,7 +896,8 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
     handleDocFileSelect,
     openEditDocModal,
     closeEditDocPanel,
-    togglePin
+    togglePin,
+    getDocTypes
   };
 })();
 
