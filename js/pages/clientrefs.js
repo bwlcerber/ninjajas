@@ -661,8 +661,12 @@ const PAGE_CLIENTREFS = (() => {
     const services_provided = ref ? ref.services_provided : (profile ? profile.services_provided : []);
     const initials = displayClientName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
-    // Query materials dynamically by client name
-    const materials = STORE.getMaterials().filter(m => m.client_name.toLowerCase() === decodedName.toLowerCase());
+    // Query materials dynamically by client name, excluding cases/branding from related assets
+    const materials = STORE.getMaterials().filter(m => 
+      m.client_name.toLowerCase() === decodedName.toLowerCase() && 
+      m.asset_type !== 'case' && 
+      m.asset_type !== 'branding'
+    );
     const materialIds = materials.map(m => m.id);
 
     container.innerHTML = `
