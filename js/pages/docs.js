@@ -318,13 +318,11 @@ const PAGE_DOCS = (() => {
           <div class="input-group">
             <label class="input-label">File Format / Input Type</label>
             <select class="select" id="doc-new-filetype">
-              <option value="doc-link">.docx / Word</option>
+              <option value="doc-link">.pdf / .docx / .xls</option>
               <option value="google-doc">Google Doc</option>
               <option value="google-drive">Google Drive</option>
               <option value="link">Link</option>
               <option value="other">Other / Asset</option>
-              <option value="pdf">PDF</option>
-              <option value="spreadsheet-link">.xls / Excel</option>
             </select>
           </div>
 
@@ -602,8 +600,8 @@ const PAGE_DOCS = (() => {
     const doc = STORE.getById(id);
     if (!doc) return;
 
-    // Fallback for PDFs or Spreadsheets that open in external tab directly
-    if (doc.file_type === 'pdf' || doc.file_type === 'spreadsheet-link') {
+    // Internal document reader is only used for training materials
+    if (doc.asset_type !== 'training') {
       window.open(doc.file_url, '_blank');
       return;
     }
@@ -669,7 +667,7 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
     }).join('\n');
 
     const body = `
-      <div style="display:flex; height:60vh; max-height:550px; min-height:380px; gap:16px; overflow:hidden;">
+      <div style="display:flex; height:80vh; max-height:800px; min-height:500px; gap:16px; overflow:hidden;">
         <!-- Table of Contents Sidebar -->
         <div style="width:190px; border-right:1px solid var(--border-default); padding-right:16px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex-shrink:0;">
           <div style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase; font-weight:700;">Table of Contents</div>
@@ -699,7 +697,7 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
       title: 'Internal Document Reader',
       body: body,
       footer: footer,
-      size: 'large'
+      size: 'modal-xl'
     });
   }
 
