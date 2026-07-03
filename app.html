@@ -336,17 +336,6 @@
           <span class="search-text">Search everything…</span>
         </button>
 
-        <!-- Screen Share Mode Toggle -->
-        <button
-          id="screenshare-toggle-btn"
-          class="btn btn-sm btn-secondary"
-          title="Toggle Screen Share Mode (Hide internal files) [Alt+S]"
-          onclick="toggleScreenShareMode()"
-          style="display:flex;align-items:center;gap:6px;height:32px;"
-        >
-          <span id="screenshare-icon"></span> <span id="screenshare-label">Share Screen</span>
-        </button>
-
         <!-- Theme toggle -->
         <button
           id="theme-toggle-btn"
@@ -611,6 +600,7 @@ function updateBadges() {
   setVal('badge-creatives', stats.totalCreatives);
   setVal('badge-docs', STORE.getByTypes(['contract','template','process-doc','training','pdf','doc-link']).length);
   setVal('badge-cases', stats.totalCases);
+  setVal('badge-branding', STORE.getByTypes(['branding']).length);
   setVal('badge-refs', stats.totalRefs);
   setVal('badge-profiles', stats.totalProfiles);
 }

@@ -2050,24 +2050,6 @@ const SEED_MATERIALS = [
     related_assets: [],
     created_at: '2024-06-15'
   },
-  {
-    id: 'case-068',
-    title: 'In Two Months, We Relaunched the Zoomex Blog in a Highly Competitive Crypto Niche',
-    client_name: 'Zoomex',
-    geo: 'Global',
-    vertical: 'Trading',
-    services_provided: ['SEO', 'Content'],
-    asset_type: 'case',
-    visibility_status: 'client-safe',
-    description: 'Relaunched the Zoomex derivatives exchange blog within 2 months, achieving top-3 rankings for competitive crypto trading keywords and driving qualified trader traffic.',
-    file_type: 'doc-link',
-    file_url: 'https://ninjapromo.io/our-cases/zoomex',
-    thumbnail_url: 'https://ninjapromo.io/wp-content/uploads/2025/08/Zoomex.png',
-    tags: ['trading', 'seo', 'blog', 'crypto', 'content'],
-    related_assets: [],
-    created_at: '2024-02-15'
-  },
-
 
 
   // ── CREATIVES ──

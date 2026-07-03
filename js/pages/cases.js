@@ -470,6 +470,7 @@ const PAGE_CASES = (() => {
           <div class="input-group span-2">
             <span class="input-label">Thumbnail Image URL</span>
             <input class="input" type="url" id="edit-case-thumb" value="${mat.thumbnail_url || ''}">
+            <p style="font-size:10px; color:var(--text-tertiary); margin-top:2px;">Alternatively, just paste a screenshot here directly (Ctrl+V or Cmd+V)</p>
           </div>
           <div class="input-group span-2">
             <span class="input-label">Description / Summary</span>
@@ -497,11 +498,70 @@ const PAGE_CASES = (() => {
       title: `Edit Case study: ${mat.client_name}`,
       body: modalBody,
       footer: `
+        <button class="btn btn-sm" style="color:var(--danger); border: 1px solid var(--danger); background:transparent; margin-right:auto;" onclick="PAGE_CASES.deleteCase('${mat.id}')">Delete Case</button>
         <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
         <button class="btn btn-primary btn-sm" onclick="PAGE_CASES.saveCaseEdit('${mat.id}')">Save Changes</button>
       `,
       size: 'medium'
     });
+
+    // Handle paste event for screenshot inside modal
+    document.addEventListener('paste', handlePaste);
+    window._currentPasteHandler = handlePaste;
+  }
+
+  function handlePaste(e) {
+    const input = document.getElementById('edit-case-thumb');
+    if (!input) return; // Not open
+
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    let blob = null;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') === 0) {
+        blob = items[i].getAsFile();
+        break;
+      }
+    }
+
+    if (blob) {
+      e.preventDefault();
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          // Scale down if too large (e.g. max 800px width)
+          const MAX_WIDTH = 800;
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Use a lower quality webp to keep localStorage small
+          const dataUrl = canvas.toDataURL('image/webp', 0.6);
+          input.value = dataUrl;
+          showToast('Image pasted and compressed successfully!', 'success');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(blob);
+    }
+  }
+
+  function deleteCase(matId) {
+    if (confirm('Are you sure you want to completely delete this case study?')) {
+      STORE.deleteMaterial(matId);
+      closeModal();
+      showToast('Case study deleted.', 'success');
+      const container = document.getElementById('page-container');
+      if (container) render(container);
+    }
   }
 
   function saveCaseEdit(matId) {
@@ -578,18 +638,18 @@ const PAGE_CASES = (() => {
     }
   }
 
-  return { 
-    render, 
-    toggleTag, 
-    removeTag, 
+  return {
+    render,
+    toggleTag,
+    removeTag,
     clearAllTags,
     openAddCaseModal,
     fetchCaseMetadata,
     saveNewCase,
     openEditCaseModal,
-    saveCaseEdit
+    saveCaseEdit,
+    deleteCase
   };
 })();
 
 window.PAGE_CASES = PAGE_CASES;
-
