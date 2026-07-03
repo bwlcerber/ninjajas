@@ -227,7 +227,7 @@ const PAGE_BRANDING = (() => {
           <button class="btn btn-sm btn-ghost" onclick="copyToClipboard('${mat.file_url}','Case link')" title="Copy link">
             ${ICONS.copy}
           </button>
-          ${profile && profile.website_url ? `
+          ${profile && profile.website_url && !profile.website_url.includes('ninjapromo.io') ? `
             <a class="btn btn-sm btn-ghost" href="${profile.website_url}" target="_blank" rel="noopener" title="Visit Website">
               ${ICONS.refs}
             </a>
