@@ -13,8 +13,14 @@ const STORE = (() => {
 
   const LS_KEY = 'np_portal_content';
 
+  let _cachedUserData = null;
+
   // ── Load user-created records from localStorage/Server ──
   function loadUserData() {
+    if (_cachedUserData) {
+      return JSON.parse(JSON.stringify(_cachedUserData));
+    }
+
     let data = null;
 
     // 1. Try fetching from server data.php synchronously
@@ -198,10 +204,14 @@ const STORE = (() => {
     if (modified) {
       saveUserData(data);
     }
+    
+    _cachedUserData = JSON.parse(JSON.stringify(data));
     return data;
   }
 
   function saveUserData(data) {
+    _cachedUserData = JSON.parse(JSON.stringify(data));
+    
     // 1. Save to server database (asynchronous POST to data.php)
     try {
       const xhr = new XMLHttpRequest();
