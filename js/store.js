@@ -200,6 +200,17 @@ const STORE = (() => {
         m.title = m.client_name;
         modified = true;
       }
+      
+      // Migrate 'Design' to 'Web / Landing Pages'
+      if (m.services_provided && Array.isArray(m.services_provided)) {
+        const designIdx = m.services_provided.indexOf('Design');
+        if (designIdx !== -1) {
+          m.services_provided[designIdx] = 'Web / Landing Pages';
+          // Deduplicate if they already had both
+          m.services_provided = Array.from(new Set(m.services_provided));
+          modified = true;
+        }
+      }
     });
 
     const seenRefIds = new Set();
