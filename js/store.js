@@ -210,6 +210,18 @@ const STORE = (() => {
   }
 
   function saveUserData(data) {
+    // Sanitize any massive Base64 images from old buggy uploads to prevent crashing the DB
+    if (data && data.materials) {
+      data.materials.forEach(m => {
+        if (m.thumbnail_url && m.thumbnail_url.startsWith('data:image') && m.thumbnail_url.length > 50000) {
+          m.thumbnail_url = ''; // Wipe out massive base64 string
+        }
+        if (m.file_url && m.file_url.startsWith('data:image') && m.file_url.length > 50000) {
+          m.file_url = '';
+        }
+      });
+    }
+
     _cachedUserData = JSON.parse(JSON.stringify(data));
     
     // 1. Save to server database (asynchronous POST to data.php)
