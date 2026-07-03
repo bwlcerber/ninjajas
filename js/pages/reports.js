@@ -4,7 +4,7 @@
 const PAGE_REPORTS = (() => {
 
   const CATEGORIES = [
-    { id: 'all', label: 'All Reports' },
+    { id: 'all', label: 'All Docs' },
     { id: 'report', label: 'Performance Reports' },
     { id: 'influencer', label: 'Influencer Marketing' },
     { id: 'media-plan', label: 'Media Plans' },
@@ -63,7 +63,7 @@ const PAGE_REPORTS = (() => {
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <div class="search-bar" style="flex:1;min-width:240px">
             ${ICONS.search}
-            <input id="reports-search" type="text" placeholder="Search reports…" value="${_query}" autocomplete="off">
+            <input id="reports-search" type="text" placeholder="Search client docs…" value="${_query}" autocomplete="off">
           </div>
         </div>
 
@@ -165,7 +165,7 @@ const PAGE_REPORTS = (() => {
       list.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">${ICONS.reports}</div>
-          <div class="empty-title">No reports found</div>
+          <div class="empty-title">No client docs found</div>
           <div class="empty-sub">Try adjusting your filters or search query.</div>
         </div>`;
       return;
@@ -349,7 +349,7 @@ const PAGE_REPORTS = (() => {
     `;
 
     openModal({
-      title: 'Upload Reports / Documents',
+      title: 'Upload Client Docs',
       body: modalBody,
       footer: modalFooter,
       size: 'medium'
@@ -629,7 +629,7 @@ const PAGE_REPORTS = (() => {
     STORE.syncClientGeo(clientName, geo);
 
     closeModal();
-    showToast(`Successfully uploaded ${successCount} reports/documents`, 'success');
+    showToast(`Successfully uploaded ${successCount} client docs`, 'success');
     _uploadedReportFiles = [];
 
     const container = document.getElementById('page-container');
