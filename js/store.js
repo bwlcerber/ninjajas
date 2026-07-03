@@ -201,13 +201,24 @@ const STORE = (() => {
         modified = true;
       }
       
-      // Migrate 'Design' to 'Web / Landing Pages'
+      // Migrate 'Design' and 'Web / Landing Pages' to 'Web Design / Landing Pages'
       if (m.services_provided && Array.isArray(m.services_provided)) {
+        let changed = false;
+        
         const designIdx = m.services_provided.indexOf('Design');
         if (designIdx !== -1) {
-          m.services_provided[designIdx] = 'Web / Landing Pages';
-          // Deduplicate if they already had both
-          m.services_provided = Array.from(new Set(m.services_provided));
+          m.services_provided[designIdx] = 'Web Design / Landing Pages';
+          changed = true;
+        }
+        
+        const webIdx = m.services_provided.indexOf('Web / Landing Pages');
+        if (webIdx !== -1) {
+          m.services_provided[webIdx] = 'Web Design / Landing Pages';
+          changed = true;
+        }
+        
+        if (changed) {
+          m.services_provided = Array.from(new Set(m.services_provided)); // Deduplicate
           modified = true;
         }
       }
