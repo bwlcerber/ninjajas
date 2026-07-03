@@ -412,10 +412,10 @@ const PAGE_BRANDING = (() => {
     STORE.addMaterial(item);
     STORE.syncClientGeo(client, geoStr);
     
-    // Save client website URL if provided
-    if (website && client !== 'Internal' && client !== 'Client Name Not Available') {
+    // Sync client reference (website & thumbnail)
+    if (client !== 'Internal' && client !== 'Client Name Not Available') {
       let cleanUrl = website;
-      if (!/^https?:\/\//i.test(cleanUrl)) {
+      if (cleanUrl && !/^https?:\/\//i.test(cleanUrl)) {
         cleanUrl = 'https://' + cleanUrl;
       }
       const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === client.toLowerCase());
@@ -423,19 +423,24 @@ const PAGE_BRANDING = (() => {
       if (existingRef) {
         const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
         if (refIdx !== -1) {
-          ud.clientRefs[refIdx].website_url = cleanUrl;
+          if (cleanUrl) ud.clientRefs[refIdx].website_url = cleanUrl;
+          if (thumb) ud.clientRefs[refIdx].thumbnail_url = thumb;
+        } else {
+          ud.clientRefs.push({ ...existingRef, ...(cleanUrl ? {website_url: cleanUrl} : {}), ...(thumb ? {thumbnail_url: thumb} : {}) });
         }
-      } else {
+        STORE.saveUserData(ud);
+      } else if (cleanUrl) {
         ud.clientRefs.push({
           id: `ref-user-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
           client_name: client,
           website_url: cleanUrl,
+          thumbnail_url: thumb,
           geo: geoStr,
           vertical: vertical,
           services_provided: services.length ? services : ['PR']
         });
+        STORE.saveUserData(ud);
       }
-      STORE.saveUserData(ud);
     }
     
     closeModal();
@@ -556,26 +561,34 @@ const PAGE_BRANDING = (() => {
       return;
     }
 
-    // Sync client website URL if reference profile exists
+    // Sync client reference (website & thumbnail)
     if (client !== 'Internal' && client !== 'Client Name Not Available') {
       let cleanUrl = website;
-      if (cleanUrl) {
-        if (!/^https?:\/\//i.test(cleanUrl)) {
-          cleanUrl = 'https://' + cleanUrl;
-        }
+      if (cleanUrl && !/^https?:\/\//i.test(cleanUrl)) {
+        cleanUrl = 'https://' + cleanUrl;
       }
       const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === client.toLowerCase());
+      const ud = STORE.loadUserData();
       if (existingRef) {
-        existingRef.website_url = cleanUrl;
-        const ud = STORE.loadUserData();
         const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
         if (refIdx !== -1) {
-          ud.clientRefs[refIdx].website_url = cleanUrl;
-          STORE.saveUserData(ud);
+          if (cleanUrl) ud.clientRefs[refIdx].website_url = cleanUrl;
+          if (thumb) ud.clientRefs[refIdx].thumbnail_url = thumb;
         } else {
-          ud.clientRefs.push({ ...existingRef, website_url: cleanUrl });
-          STORE.saveUserData(ud);
+          ud.clientRefs.push({ ...existingRef, ...(cleanUrl ? {website_url: cleanUrl} : {}), ...(thumb ? {thumbnail_url: thumb} : {}) });
         }
+        STORE.saveUserData(ud);
+      } else if (cleanUrl) {
+        ud.clientRefs.push({
+          id: `ref-user-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+          client_name: client,
+          website_url: cleanUrl,
+          thumbnail_url: thumb,
+          geo: geoStr,
+          vertical: selectedVerticals[0] || 'Other',
+          services_provided: services.length ? services : ['PR']
+        });
+        STORE.saveUserData(ud);
       }
     }
 
