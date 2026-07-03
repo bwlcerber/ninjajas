@@ -103,6 +103,14 @@ const ROUTER = (() => {
     const container = document.getElementById('page-container');
     if (!container) return;
 
+    // Cleanup video elements to free memory and prevent lag before unmounting
+    const videos = container.querySelectorAll('video');
+    videos.forEach(v => {
+      v.pause();
+      v.removeAttribute('src');
+      v.load();
+    });
+
     container.innerHTML = '';
     container.className = 'page-content animate-fade';
 
