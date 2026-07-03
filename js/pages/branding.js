@@ -420,7 +420,7 @@ const PAGE_BRANDING = (() => {
     const websiteUrl = ref ? ref.website_url : '';
 
     const modalBody = `
-      <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_BRANDING.handlePaste(event, 'edit-branding-thumb')">
         <div class="form-grid">
           <div class="input-group span-2">
             <span class="input-label">Case Title *</span>
@@ -461,8 +461,8 @@ const PAGE_BRANDING = (() => {
             </div>
           </div>
           <div class="input-group span-2">
-            <span class="input-label">Thumbnail Image URL</span>
-            <input class="input" type="url" id="edit-branding-thumb" value="${mat.thumbnail_url || ''}">
+            <span class="input-label">Thumbnail Image URL (or paste image anywhere in this window)</span>
+            <input class="input" type="text" id="edit-branding-thumb" value="${mat.thumbnail_url || ''}" placeholder="URL or Base64... (Paste an image to auto-fill)">
           </div>
           <div class="input-group span-2">
             <span class="input-label">Description / Summary</span>
@@ -490,6 +490,7 @@ const PAGE_BRANDING = (() => {
       title: `Edit Case study: ${mat.client_name}`,
       body: modalBody,
       footer: `
+        <button class="btn btn-sm btn-ghost" style="color:var(--danger); margin-right:auto" onclick="PAGE_BRANDING.deleteCase('${mat.id}')">Delete Case</button>
         <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
         <button class="btn btn-primary btn-sm" onclick="PAGE_BRANDING.saveCaseEdit('${mat.id}')">Save Changes</button>
       `,
@@ -571,18 +572,66 @@ const PAGE_BRANDING = (() => {
     }
   }
 
-  return { 
-    render, 
-    toggleTag, 
-    removeTag, 
+  function deleteCase(matId) {
+    if (!confirm('Are you sure you want to delete this case?')) return;
+    STORE.deleteMaterial(matId);
+    closeModal();
+    showToast('Case deleted successfully', 'success');
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
+  function handlePaste(e, targetId) {
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (const item of items) {
+      if (item.type.indexOf('image') === 0) {
+        const blob = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            // Resize to max 600px width to save localStorage space
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const MAX_WIDTH = 600;
+            let width = img.width;
+            let height = img.height;
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            const input = document.getElementById(targetId);
+            if (input) {
+              input.value = dataUrl;
+              showToast('Image pasted and resized successfully!', 'success');
+            }
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(blob);
+        e.preventDefault();
+        break;
+      }
+    }
+  }
+
+  return {
+    render,
+    toggleTag,
+    removeTag,
     clearAllTags,
     openAddCaseModal,
+    openEditCaseModal,
     fetchCaseMetadata,
     saveNewCase,
-    openEditCaseModal,
-    saveCaseEdit
+    saveCaseEdit,
+    deleteCase,
+    handlePaste
   };
 })();
 
 window.PAGE_BRANDING = PAGE_BRANDING;
-
