@@ -723,18 +723,16 @@ const DRAG_DROP = {
       const draggedIdx = allCards.indexOf(this.draggedItem);
       const targetIdx = allCards.indexOf(targetCard);
       
+      const position = draggedIdx < targetIdx ? 'after' : 'before';
       if (draggedIdx < targetIdx) {
         targetCard.after(this.draggedItem);
       } else {
         targetCard.before(this.draggedItem);
       }
       
-      // Build new order array based on DOM order
-      const newOrder = Array.from(grid.querySelectorAll('.card')).map(card => card.dataset.id);
-      
-      // Save order
-      if (window.STORE && window.STORE.reorderMaterials) {
-        window.STORE.reorderMaterials(type, newOrder);
+      // Save order using explicit move operation on the global array
+      if (window.STORE && window.STORE.moveMaterial) {
+        window.STORE.moveMaterial(type, this.draggedItem.dataset.id, targetCard.dataset.id, position);
       }
       if (window.ROUTER) {
         setTimeout(() => window.ROUTER.render(), 100);
