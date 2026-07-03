@@ -77,11 +77,11 @@ const PAGE_CREATIVES = (() => {
       if (!window.CAN_MANAGE && hiddenList.includes(m.id)) return false;
       const type = getCreativeType(m);
       
-      const creativeTypes = ['creative', 'video', 'image', 'deck', 'template'];
-      const isCreativeRel = creativeTypes.includes(m.asset_type) || creativeTypes.includes(m.file_type);
+      const creativeTypes = ['creative', 'video', 'image'];
+      const isCreativeRel = creativeTypes.includes(m.asset_type);
       
       const isContentCal = type === 'content-calendar';
-      const isOthersMatch = type === 'others' && (m.asset_type === 'deck' || m.file_type === 'pdf' || m.asset_type === 'template');
+      const isOthersMatch = type === 'others' && m.asset_type === 'creative';
       return isCreativeRel || isContentCal || isOthersMatch;
     });
     const verticals = window.PORTAL_DATA.VERTICALS;

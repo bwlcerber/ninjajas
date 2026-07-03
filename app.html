@@ -197,7 +197,7 @@
       background: rgba(0,0,0,0.4);
       z-index: 5;
       pointer-events: none;
-      transition: background 0.2s ease, transform 0.2s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
     .static-video-wrapper .video-play-button svg {
       width: 22px;
@@ -205,12 +205,14 @@
       fill: #fff;
       margin-left: 4px; /* visually center play triangle */
     }
-    .creative-card-item:hover .static-video-wrapper .video-play-button {
-      background: rgba(0,0,0,0.7);
-      transform: translate(-50%, -50%) scale(1.1);
+    .card:hover .static-video-wrapper .video-play-button,
+    .creative-list-item:hover .static-video-wrapper .video-play-button {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
     }
-    .creative-card-item:hover .static-video-wrapper video {
-      filter: brightness(0.6);
+    .card:hover .static-video-wrapper video,
+    .creative-list-item:hover .static-video-wrapper video {
+      filter: none;
     }
     .static-video-wrapper video {
       transition: filter 0.3s ease;
