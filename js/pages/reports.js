@@ -9,7 +9,6 @@ const PAGE_REPORTS = (() => {
     { id: 'influencer', label: 'Influencer Marketing' },
     { id: 'media-plan', label: 'Media Plans' },
     { id: 'deck', label: 'Strategy Decks' },
-    { id: 'offer-prep', label: 'Offer Preparation' },
     { id: 'other', label: 'Other Documents' },
   ];
 
