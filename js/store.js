@@ -237,6 +237,20 @@ const STORE = (() => {
       saveUserData(data);
     }
     
+    // Sanitize customOrder to prevent v2 ghost IDs breaking drag-and-drop
+    if (data.customOrder) {
+      const idMap = {
+        'mat-wafee-v2': 'mat-wafee-v3',
+        'mat-b01': 'mat-wafee-v3',
+        'mat-voto-v2': 'mat-voto-v3',
+        'mat-b03': 'mat-voto-v3'
+      };
+      for (let type in data.customOrder) {
+        data.customOrder[type] = data.customOrder[type].map(id => idMap[id] || id);
+        data.customOrder[type] = Array.from(new Set(data.customOrder[type]));
+      }
+    }
+    
     _cachedUserData = JSON.parse(JSON.stringify(data));
     return data;
   }
@@ -567,12 +581,17 @@ const STORE = (() => {
         ud.recycleBin.materials.push({ ...material, deleted_at_time: Date.now() });
       }
     }
-    const wasUser = ud.materials.some(m => m.id === id);
     ud.materials = ud.materials.filter(m => m.id !== id);
-    if (!wasUser) {
-      ud._deletedSeeds = ud._deletedSeeds || [];
-      if (!ud._deletedSeeds.includes(id)) ud._deletedSeeds.push(id);
+    ud._deletedSeeds = ud._deletedSeeds || [];
+    if (!ud._deletedSeeds.includes(id)) ud._deletedSeeds.push(id);
+    
+    // Also remove from any customOrder arrays so it doesn't leave gaps
+    if (ud.customOrder) {
+      for (let t in ud.customOrder) {
+        ud.customOrder[t] = ud.customOrder[t].filter(mId => mId !== id);
+      }
     }
+    
     saveUserData(ud);
     resetState();
   }
