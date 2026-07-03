@@ -227,31 +227,39 @@ const STORE = (() => {
       const deleted = user._deletedSeeds || [];
 
       // Materials override matching id
-      const userMatIds = new Set(user.materials.map(m => m.id));
-      const seededMaterials = seed.materials.filter(m => !deleted.includes(m.id) && !userMatIds.has(m.id));
+      const userMatsMap = new Map(user.materials.map(m => [m.id, m]));
+      const resolvedMaterials = seed.materials.filter(m => !deleted.includes(m.id)).map(m => userMatsMap.has(m.id) ? userMatsMap.get(m.id) : m);
+      const seedMatIds = new Set(seed.materials.map(m => m.id));
+      const userOnlyMats = user.materials.filter(m => !seedMatIds.has(m.id));
 
       // Client references override matching client_name or id
-      const userRefKeys = new Set(user.clientRefs.map(r => r.client_name.toLowerCase()));
-      const userRefIds = new Set(user.clientRefs.map(r => r.id));
-      const seededRefs = seed.clientRefs.filter(r => 
-        !deleted.includes(r.id) && 
-        !userRefIds.has(r.id) && 
-        !userRefKeys.has(r.client_name.toLowerCase())
-      );
+      const userRefsMap = new Map(user.clientRefs.map(r => [r.id, r]));
+      const userRefKeys = new Map(user.clientRefs.map(r => [r.client_name.toLowerCase(), r]));
+      const resolvedRefs = seed.clientRefs.filter(r => !deleted.includes(r.id)).map(r => {
+        if (userRefsMap.has(r.id)) return userRefsMap.get(r.id);
+        if (userRefKeys.has(r.client_name.toLowerCase())) return userRefKeys.get(r.client_name.toLowerCase());
+        return r;
+      });
+      const seedRefIds = new Set(seed.clientRefs.map(r => r.id));
+      const seedRefKeys = new Set(seed.clientRefs.map(r => r.client_name.toLowerCase()));
+      const userOnlyRefs = user.clientRefs.filter(r => !seedRefIds.has(r.id) && !seedRefKeys.has(r.client_name.toLowerCase()));
 
       // Client profiles override matching client_name or id
-      const userProfKeys = new Set(user.clientProfiles.map(p => p.client_name.toLowerCase()));
-      const userProfIds = new Set(user.clientProfiles.map(p => p.id));
-      const seededProfiles = seed.clientProfiles.filter(p => 
-        !deleted.includes(p.id) && 
-        !userProfIds.has(p.id) && 
-        !userProfKeys.has(p.client_name.toLowerCase())
-      );
+      const userProfsMap = new Map(user.clientProfiles.map(p => [p.id, p]));
+      const userProfKeys = new Map(user.clientProfiles.map(p => [p.client_name.toLowerCase(), p]));
+      const resolvedProfiles = seed.clientProfiles.filter(p => !deleted.includes(p.id)).map(p => {
+        if (userProfsMap.has(p.id)) return userProfsMap.get(p.id);
+        if (userProfKeys.has(p.client_name.toLowerCase())) return userProfKeys.get(p.client_name.toLowerCase());
+        return p;
+      });
+      const seedProfIds = new Set(seed.clientProfiles.map(p => p.id));
+      const seedProfKeys = new Set(seed.clientProfiles.map(p => p.client_name.toLowerCase()));
+      const userOnlyProfs = user.clientProfiles.filter(p => !seedProfIds.has(p.id) && !seedProfKeys.has(p.client_name.toLowerCase()));
 
       _state = {
-        materials:      [...seededMaterials, ...user.materials],
-        clientRefs:     [...seededRefs,      ...user.clientRefs],
-        clientProfiles: [...seededProfiles,  ...user.clientProfiles]
+        materials:      [...resolvedMaterials, ...userOnlyMats],
+        clientRefs:     [...resolvedRefs,      ...userOnlyRefs],
+        clientProfiles: [...resolvedProfiles,  ...userOnlyProfs]
       };
     }
     return _state;
