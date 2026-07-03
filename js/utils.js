@@ -730,9 +730,12 @@ const DRAG_DROP = {
         targetCard.before(this.draggedItem);
       }
       
-      // Save order using explicit move operation on the global array
-      if (window.STORE && window.STORE.moveMaterial) {
-        window.STORE.moveMaterial(type, this.draggedItem.dataset.id, targetCard.dataset.id, position);
+      // Build new order array based on DOM order
+      const newOrder = Array.from(grid.querySelectorAll('.card')).map(card => card.dataset.id);
+      
+      // Save order
+      if (window.STORE && window.STORE.reorderMaterials) {
+        window.STORE.reorderMaterials(type, newOrder);
       }
       if (window.ROUTER) {
         setTimeout(() => window.ROUTER.render(), 100);

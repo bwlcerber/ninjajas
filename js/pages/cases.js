@@ -5,6 +5,7 @@ const PAGE_CASES = (() => {
 
   let _vertical = 'all';
   let _service  = 'all';
+  let _sort     = 'custom';
   let _query    = '';
   const _selectedTags = new Set();
 
@@ -33,6 +34,11 @@ const PAGE_CASES = (() => {
             <option value="all">All Services</option>
             ${window.PORTAL_DATA.SERVICES.map(s => `<option value="${s}" ${_service === s ? 'selected':''}>${s}</option>`).join('')}
           </select>
+          <select class="select" id="cases-sort" style="width:160px">
+            <option value="custom" ${_sort === 'custom' ? 'selected':''}>Custom Order</option>
+            <option value="recent" ${_sort === 'recent' ? 'selected':''}>Recently Added</option>
+            <option value="alpha" ${_sort === 'alpha' ? 'selected':''}>Alphabetical</option>
+          </select>
         </div>
 
         <!-- Selected multi-select tags container -->
@@ -46,6 +52,7 @@ const PAGE_CASES = (() => {
     container.querySelector('#cases-search').addEventListener('input',   e => { _query    = e.target.value;  renderGrid(container); });
     container.querySelector('#cases-vertical').addEventListener('change', e => { _vertical = e.target.value; renderGrid(container); });
     container.querySelector('#cases-service').addEventListener('change',  e => { _service  = e.target.value; renderGrid(container); });
+    container.querySelector('#cases-sort').addEventListener('change',     e => { _sort     = e.target.value; renderGrid(container); });
 
     renderGrid(container);
     renderActiveFilters(container);
@@ -132,6 +139,15 @@ const PAGE_CASES = (() => {
       });
     }
 
+    // Apply sorting
+    if (_sort === 'alpha') {
+      items.sort((a, b) => (a.client_name || a.title || '').localeCompare(b.client_name || b.title || ''));
+    } else if (_sort === 'recent') {
+      // Reverse the default custom order so newest (bottom of DB) appears first
+      items.reverse();
+    }
+    // If 'custom', they are already in custom order from STORE.getByType()
+
     const grid        = container.querySelector('#cases-grid');
     const countEl     = container.querySelector('#cases-result-count');
     const total       = STORE.getByType('case').length;
@@ -187,7 +203,7 @@ const PAGE_CASES = (() => {
 
     return `
       <div class="card animate-fade" data-id="${mat.id}" 
-           draggable="${window.CAN_MANAGE ? 'true' : 'false'}"
+           draggable="${window.CAN_MANAGE && _sort === 'custom' ? 'true' : 'false'}"
            ondragstart="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragStart(event)"
            ondragover="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragOver(event)"
            ondragleave="window.CAN_MANAGE && window.DRAG_DROP && window.DRAG_DROP.dragLeave(event)"

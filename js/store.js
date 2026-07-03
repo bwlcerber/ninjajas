@@ -416,42 +416,6 @@ const STORE = (() => {
     resetState();
   }
 
-  function moveMaterial(type, draggedId, targetId, position) {
-    const ud = loadUserData();
-    ud.customOrder = ud.customOrder || {};
-    
-    let oldOrder = ud.customOrder[type];
-    const seed = window.PORTAL_DATA;
-    const allMats = [...seed.materials, ...(ud.materials || [])].filter(m => m.asset_type === type).map(m => m.id);
-    const uniqueMats = Array.from(new Set(allMats));
-    
-    if (!oldOrder || oldOrder.length === 0) {
-      oldOrder = uniqueMats;
-    } else {
-      const missing = uniqueMats.filter(id => !oldOrder.includes(id));
-      oldOrder = oldOrder.concat(missing);
-    }
-    
-    const arr = [...oldOrder];
-    const draggedIdx = arr.indexOf(draggedId);
-    if (draggedIdx > -1) arr.splice(draggedIdx, 1);
-    
-    const targetIdx = arr.indexOf(targetId);
-    if (targetIdx > -1) {
-      if (position === 'after') {
-        arr.splice(targetIdx + 1, 0, draggedId);
-      } else {
-        arr.splice(targetIdx, 0, draggedId);
-      }
-    } else {
-      arr.push(draggedId);
-    }
-    
-    ud.customOrder[type] = arr;
-    saveUserData(ud);
-    resetState();
-  }
-
   // ── Getters ──
   function getMaterials() {
     const mats = getState().materials;
@@ -790,10 +754,9 @@ const STORE = (() => {
     getByType, getByVertical, getByTypes, getById, getMaterialById, getProfileForClient,
     addMaterial, addClientRef, addClientProfile,
     updateMaterial, deleteMaterial, deleteClientRef, deleteClientProfile,
-    moveMaterial,
+    reorderMaterials,
     getDeletedClientNames, getRecycleBin, restoreRecord, purgeRecord,
     syncClientGeo,
-    reorderMaterials,
     getStats,
     loadUserData, saveUserData, resetState
   };
