@@ -4,12 +4,15 @@
 const PAGE_REPORTS = (() => {
 
   const CATEGORIES = [
-    { id: 'all', label: 'All Docs' },
-    { id: 'report', label: 'Performance Reports' },
+    { id: 'all', label: 'All Files' },
+    { id: 'report', label: 'Performance Marketing' },
     { id: 'influencer', label: 'Influencer Marketing' },
-    { id: 'media-plan', label: 'Media Plans' },
-    { id: 'deck', label: 'Strategy Decks' },
-    { id: 'other', label: 'Other Documents' },
+    { id: 'seo', label: 'SEO/GEO' },
+    { id: 'media-plan', label: 'PPC Media Plans' },
+    { id: 'smm', label: 'SMM' },
+    { id: 'gtm', label: 'GTMs' },
+    { id: 'pr', label: 'PR Demos' },
+    { id: 'other', label: 'Other files' },
   ];
 
   let _activeCategory = 'all';
@@ -17,6 +20,7 @@ const PAGE_REPORTS = (() => {
   const _selectedVerticals = new Set();
   const _selectedServices = new Set();
   const _selectedGeos = new Set();
+  let _editReportId = null;
 
   function render(container) {
     const allReports = STORE.getMaterials().filter(m => !['case', 'creative', 'video', 'image'].includes(m.asset_type));
@@ -27,7 +31,7 @@ const PAGE_REPORTS = (() => {
         <div class="page-header-row">
             <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Performance reports, media plans, strategy decks, and case-study documents.</div>
           ${window.CAN_MANAGE ? `<button class="btn btn-primary" onclick="PAGE_REPORTS.openUploadModal()">
-            ${ICONS.plus} Upload Report
+            ${ICONS.plus} Add Files
           </button>` : ''}
         </div>
 
@@ -75,8 +79,23 @@ const PAGE_REPORTS = (() => {
         </div>
       </div>
 
-      <div id="reports-list" class="reports-list"></div>
+      <div style="display:grid; grid-template-columns:1fr ${_editReportId ? '400px' : '0px'}; gap:${_editReportId ? '24px' : '0px'}; align-items:start; transition: all 0.3s ease;">
+        <div id="reports-list" class="reports-list" style="min-width:0;"></div>
+        
+        ${_editReportId ? `
+          <div id="reports-edit-wrap" style="position: sticky; top: 20px; align-self: start; background:var(--bg-2); border:1px solid var(--border-subtle); border-radius:var(--r-md); padding:16px; overflow:hidden;">
+            ${renderInlineEditForm(STORE.getMaterialById(_editReportId))}
+          </div>
+        ` : ''}
+      </div>
     `;
+
+    if (_editReportId) {
+      setTimeout(() => {
+        const wrap = container.querySelector('#reports-edit-wrap');
+        if (wrap) bindInlineEditForm(wrap, STORE.getMaterialById(_editReportId));
+      }, 0);
+    }
 
     // Events
     container.querySelector('#reports-search').addEventListener('input', (e) => {
@@ -126,8 +145,23 @@ const PAGE_REPORTS = (() => {
     if (_activeCategory !== 'all') {
       if (_activeCategory === 'influencer') {
         items = items.filter(m => (m.services_provided || []).includes('Influencer Marketing') || (m.tags || []).includes('influencer'));
+      } else if (_activeCategory === 'seo') {
+        items = items.filter(m => (m.services_provided || []).includes('SEO'));
+      } else if (_activeCategory === 'smm') {
+        items = items.filter(m => (m.services_provided || []).includes('Social Media'));
+      } else if (_activeCategory === 'gtm') {
+        items = items.filter(m => (m.asset_type === 'gtm') || (m.tags || []).includes('gtm'));
+      } else if (_activeCategory === 'pr') {
+        items = items.filter(m => (m.services_provided || []).includes('PR') || (m.tags || []).includes('pr'));
       } else if (_activeCategory === 'other') {
-        items = items.filter(m => !['report', 'media-plan', 'deck', 'offer-prep'].includes(m.asset_type) && !((m.services_provided || []).includes('Influencer Marketing') || (m.tags || []).includes('influencer')));
+        items = items.filter(m => 
+          !['report', 'media-plan'].includes(m.asset_type) && 
+          !(m.services_provided || []).includes('Influencer Marketing') &&
+          !(m.services_provided || []).includes('SEO') &&
+          !(m.services_provided || []).includes('Social Media') &&
+          !(m.services_provided || []).includes('PR') &&
+          m.asset_type !== 'gtm'
+        );
       } else {
         items = items.filter(m => m.asset_type === _activeCategory);
       }
@@ -226,7 +260,7 @@ const PAGE_REPORTS = (() => {
             </button>
           ` : ''}
           ${window.CAN_MANAGE ? `
-            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); PAGE_REPORTS.openEditModal('${mat.id}')" title="Edit Metadata" style="color:var(--accent); display:inline-flex; align-items:center; justify-content:center; padding:4px;">
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); PAGE_REPORTS.setEditReport('${mat.id}')" title="Edit Metadata" style="color:var(--accent); display:inline-flex; align-items:center; justify-content:center; padding:4px;">
               ${ICONS.edit}
             </button>
             <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); checkSuperAdminAction(() => { if (confirm('Are you sure you want to delete this material? This action cannot be undone.')) { STORE.deleteMaterial('${mat.id}'); showToast('Material moved to Recycle Bin', 'success'); ROUTER.render(); } })" title="Delete Material" style="color:var(--danger); display:inline-flex; align-items:center; justify-content:center; padding:4px;">
@@ -636,192 +670,188 @@ const PAGE_REPORTS = (() => {
     if (container) render(container);
   }
 
-  function openEditModal(matId) {
-    const mat = STORE.getMaterialById(matId);
-    if (!mat) return;
-
-    const verticals = window.PORTAL_DATA.VERTICALS;
-    const services = window.PORTAL_DATA.SERVICES;
-    const matVerts = mat.verticals || (mat.vertical ? [mat.vertical] : []);
-    const matServices = mat.services_provided || [];
-
-    const modalBody = `
-      <div style="display:flex; flex-direction:column; gap:16px;">
-        <div style="background: var(--bg-3); padding: 14px; border-radius: var(--r-md); border: 1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
-          
-          <div style="display:flex; flex-direction:column; gap:6px;">
-            <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Industry / Category * (Select multiple)</span>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-report-verticals">
-              ${(() => {
-                const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-                if (verticals.includes('Other')) sorted.push('Other');
-                return sorted.map(v => `
-                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                    <input type="checkbox" value="${v}" style="accent-color:var(--accent);" ${matVerts.includes(v) ? 'checked' : ''}> ${v}
-                  </label>
-                `).join('');
-              })()}
-            </div>
-          </div>
-          
-          <div class="input-group">
-            <span class="input-label" style="font-size:11px;">Asset Type *</span>
-            <select class="select" id="edit-report-assettype" style="height:34px; font-size:12px;">
-              ${[
-                { value: 'contract', label: 'Contract' },
-                { value: 'deck', label: 'Strategy Deck' },
-                { value: 'media-plan', label: 'Media Plan' },
-                { value: 'process-doc', label: 'Process Doc' },
-                { value: 'report', label: 'Performance Report' },
-                { value: 'template', label: 'Template' }
-              ].sort((a, b) => a.label.localeCompare(b.label)).map(t => `<option value="${t.value}" ${mat.asset_type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
-            </select>
-          </div>
-
-          <div class="input-group">
-            <span class="input-label" style="font-size:11px;">Services Provided *</span>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-report-services">
-              ${[...services].sort().map(s => `
-                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                  <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${matServices.includes(s) ? 'checked' : ''}> ${s}
-                </label>
-              `).join('')}
-            </div>
-          </div>
-
-          <div style="display:flex; flex-direction:column; gap:6px;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-              <div class="input-group">
-                <span class="input-label" style="font-size:11px;">Client Name *</span>
-                <input class="input" type="text" id="edit-report-client" value="${mat.client_name || 'Internal'}" style="height:34px; font-size:12px;">
-              </div>
-              <div class="input-group">
-                <span class="input-label" style="font-size:11px;">Client Website URL</span>
-                <input class="input" type="text" id="edit-report-website" placeholder="https://example.com" value="${(() => {
-                  const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === (mat.client_name || '').toLowerCase());
-                  return ref ? ref.website_url : '';
-                })()}" style="height:34px; font-size:12px;">
-              </div>
-              <div class="input-group">
-                <span class="input-label" style="font-size:11px;">Geo *</span>
-                <select class="select" id="edit-report-geo" style="height:34px; font-size:12px;">
-                  ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}" ${(mat.geo || 'Global') === g ? 'selected' : ''}>${g}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    openModal({
-      title: 'Edit Document Metadata',
-      body: modalBody,
-      footer: `
-        <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary btn-sm" onclick="PAGE_REPORTS.saveReportEdit('${mat.id}')">Save Changes</button>
-      `,
-      size: 'medium'
-    });
-  }
-
-  function saveReportEdit(matId) {
-    const mat = STORE.getMaterialById(matId);
-    if (!mat) return;
-
-    const checkedVerts = document.querySelectorAll('#edit-report-verticals input[type="checkbox"]:checked');
-    const selectedVerticals = Array.from(checkedVerts).map(cb => cb.value);
-    const assetType = document.getElementById('edit-report-assettype').value;
-    const checkedServices = document.querySelectorAll('#edit-report-services input[type="checkbox"]:checked');
-    const services = Array.from(checkedServices).map(cb => cb.value);
-    const clientName = document.getElementById('edit-report-client').value.trim() || 'Internal';
-    const clientWebsite = document.getElementById('edit-report-website').value.trim();
-    const geo = document.getElementById('edit-report-geo').value || 'Global';
-
-    if (selectedVerticals.length === 0) {
-      showToast('Please select at least one vertical', 'error');
-      return;
-    }
-
-    // Sync client website URL if reference profile exists, or create new ones if they don't exist yet
-    if (clientName !== 'Internal' && clientName !== 'Client Name Not Available') {
-      let cleanUrl = clientWebsite.trim();
-      if (cleanUrl) {
-        if (!/^https?:\/\//i.test(cleanUrl)) {
-          cleanUrl = 'https://' + cleanUrl;
-        }
-      }
-
-      const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase());
-      if (existingRef) {
-        existingRef.website_url = cleanUrl;
-        // Save to user storage
-        const ud = STORE.loadUserData();
-        const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
-        if (refIdx !== -1) {
-          ud.clientRefs[refIdx].website_url = cleanUrl;
-          STORE.saveUserData(ud);
-        } else {
-          // If reference exists in seed, add override to clientRefs
-          ud.clientRefs.push({ ...existingRef, website_url: cleanUrl });
-          STORE.saveUserData(ud);
-        }
-      } else if (cleanUrl) {
-        STORE.addClientRef({
-          client_name: clientName,
-          website_url: cleanUrl,
-          vertical: selectedVerticals[0] || 'Other',
-          geo: 'Global',
-          ai_summary: `Newly registered client profile for ${clientName}.`,
-          services_provided: services.length ? services : ['SEO'],
-          thumbnail_url: ''
-        });
-        STORE.addClientProfile({
-          client_name: clientName,
-          vertical: selectedVerticals[0] || 'Other',
-          geo: 'Global',
-          website_url: cleanUrl,
-          services_provided: services.length ? services : ['SEO'],
-          notes: `Added automatically during document upload.`,
-          budget_range: '$10k-$25k',
-          contacts: []
-        });
-      }
-    }
-
-    const oldClient = mat.client_name || '';
-    const isGeneric = !mat.title ||
-                      /drive\.google/i.test(mat.title) || 
-                      mat.title.toLowerCase().includes('google.com') ||
-                      mat.title.toLowerCase().includes('file') || 
-                      mat.title.toLowerCase().startsWith('link') ||
-                      mat.title.toLowerCase() === 'drive' ||
-                      mat.title === oldClient;
-
-    let updatedTitle = mat.title;
-    if (isGeneric && clientName && clientName !== 'Internal' && clientName !== 'Client Name Not Available') {
-      updatedTitle = clientName;
-    }
-
-    STORE.updateMaterial(matId, {
-      title: updatedTitle,
-      client_name: clientName,
-      geo: geo,
-      vertical: selectedVerticals[0] || 'Other',
-      verticals: selectedVerticals,
-      services_provided: services,
-      asset_type: assetType,
-      tags: [...selectedVerticals, assetType, ...services]
-    });
-
-    STORE.syncClientGeo(clientName, geo);
-
-    closeModal();
-    showToast('Document metadata updated successfully', 'success');
-
+  function setEditReport(id) {
+    _editReportId = id;
     const container = document.getElementById('page-container');
     if (container) render(container);
   }
+
+  function closeEditReport() {
+    _editReportId = null;
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
+  function renderInlineEditForm(data) {
+    if (!data) return '';
+    return `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="margin:0; font-size:15px; font-weight:700; color:var(--text-primary);">Edit Metadata</h3>
+        <button class="btn btn-ghost" style="padding:4px;" onclick="PAGE_REPORTS.closeEditReport()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        
+        <!-- ROW 1 -->
+        <div class="input-group">
+          <label class="input-label" style="font-size:11px; font-weight:700;">DOCUMENT TITLE *</label>
+          <input class="input" id="report-edit-title" type="text" value="${data.title || ''}" style="font-size:13px; padding:10px;">
+        </div>
+
+        <!-- ROW 2 -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <label class="input-label" style="font-size:11px; font-weight:700;">CLIENT / BRAND *</label>
+            <input class="input" id="report-edit-client" type="text" value="${data.client_name || ''}" placeholder="Internal" style="font-size:13px; padding:10px;">
+          </div>
+          <div class="input-group">
+            <label class="input-label" style="font-size:11px; font-weight:700;">VISIBILITY STATUS *</label>
+            <select class="select" id="report-edit-vis" style="font-size:13px; padding:10px;">
+              <option value="internal" ${data.visibility_status === 'internal' ? 'selected' : ''}>Internal Only (Ninjajas)</option>
+              <option value="public" ${data.visibility_status === 'public' ? 'selected' : ''}>Public (Clients & Ninjajas)</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- ROW 3 -->
+        <div class="input-group">
+          <label class="input-label" style="font-size:11px; font-weight:700;">ASSET TYPE *</label>
+          <select class="select" id="report-edit-type" style="font-size:13px; padding:10px;">
+            ${[
+              { value: 'contract', label: 'Contract' },
+              { value: 'deck', label: 'Strategy Deck' },
+              { value: 'media-plan', label: 'Media Plan' },
+              { value: 'process-doc', label: 'Process Doc' },
+              { value: 'report', label: 'Performance Report' },
+              { value: 'template', label: 'Template' }
+            ].sort((a,b)=>a.label.localeCompare(b.label)).map(t => `<option value="${t.value}" ${data.asset_type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
+          </select>
+        </div>
+
+        <!-- ROW 4 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">GEO *</label>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="report-edit-geos">
+            ${window.PORTAL_DATA.GEOS.map(g => {
+              const isChecked = (data.geos || []).includes(g) || data.geo === g;
+              return `
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
+                <input type="checkbox" value="${g}" style="accent-color:var(--accent);" ${isChecked ? 'checked' : ''}> ${g}
+              </label>
+              `
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- ROW 5 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">VERTICALS / INDUSTRIES *</label>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="report-edit-verticals">
+            ${window.PORTAL_DATA.VERTICALS.map(v => `
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
+                <input type="checkbox" value="${v}" style="accent-color:var(--accent);" ${(data.verticals || []).includes(v) || data.vertical === v ? 'checked' : ''}> ${v}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- ROW 6 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">SERVICES PROVIDED *</label>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="report-edit-services">
+            ${window.PORTAL_DATA.SERVICES.map(s => `
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
+                <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${(data.services_provided || []).includes(s) ? 'checked' : ''}> ${s}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- ROW 7 -->
+        <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
+          <label class="input-label" style="font-size:11px; font-weight:700;">FILE URL / LINK *</label>
+          <input class="input" id="report-edit-url" type="url" placeholder="https://…" value="${data.file_url || ''}" style="font-size:13px; padding:10px;">
+        </div>
+
+        <!-- ROW 8 -->
+        <div class="input-group">
+          <label class="input-label" style="font-size:11px; font-weight:700;">DESCRIPTION</label>
+          <textarea class="input" id="report-edit-desc" rows="3" placeholder="Short description…" style="font-size:13px; padding:10px; line-height:1.4;">${data.description || ''}</textarea>
+        </div>
+
+        <div style="display:flex; justify-content:center; margin-top:16px;">
+          <button class="btn btn-primary" id="report-edit-save-btn" style="padding:10px 32px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px; width:100%; max-width:240px;">
+            Save Changes
+          </button>
+        </div>
+        <div id="report-edit-error" class="login-error" style="margin-top:10px; display:none; text-align:center;"></div>
+      </div>
+    `;
+  }
+
+  function bindInlineEditForm(wrap, originalData) {
+    const btn = wrap.querySelector('#report-edit-save-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+      const title = wrap.querySelector('#report-edit-title').value.trim();
+      const url = wrap.querySelector('#report-edit-url').value.trim();
+      const err = wrap.querySelector('#report-edit-error');
+
+      if (!title || !url) {
+        err.style.display = 'block';
+        err.textContent = 'Title and File URL are required.';
+        return;
+      }
+      err.style.display = 'none';
+
+      const checkedVerts = wrap.querySelectorAll('#report-edit-verticals input[type="checkbox"]:checked');
+      const parsedVerticals = Array.from(checkedVerts).map(cb => cb.value);
+      const firstVertical = parsedVerticals[0] || 'Other';
+
+      const checkedServices = wrap.querySelectorAll('#report-edit-services input[type="checkbox"]:checked');
+      const services = Array.from(checkedServices).map(cb => cb.value);
+      
+      const checkedGeos = wrap.querySelectorAll('#report-edit-geos input[type="checkbox"]:checked');
+      const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+      const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
+
+      const assetType = wrap.querySelector('#report-edit-type').value || 'other';
+
+      let fileType = originalData.file_type || 'pdf';
+      const urlLower = url.toLowerCase();
+      if (urlLower.includes('docs.google.com/document') || urlLower.includes('drive.google.com/file')) fileType = 'doc-link';
+      else if (urlLower.includes('docs.google.com/spreadsheets') || urlLower.includes('docs.google.com/sheet')) fileType = 'spreadsheet-link';
+      
+      const record = {
+        title,
+        client_name: wrap.querySelector('#report-edit-client').value.trim() || 'Internal',
+        geo: geoStr,
+        geos: parsedGeos,
+        vertical: firstVertical,
+        verticals: parsedVerticals.length ? parsedVerticals : [firstVertical],
+        asset_type: assetType,
+        visibility_status: wrap.querySelector('#report-edit-vis').value,
+        file_type: fileType,
+        file_url: url,
+        thumbnail_url: originalData.thumbnail_url || '',
+        description: wrap.querySelector('#report-edit-desc').value.trim(),
+        tags: [...parsedVerticals, assetType, ...services],
+        services_provided: services,
+        related_assets: originalData.related_assets || []
+      };
+
+      STORE.updateMaterial(originalData.id, record);
+      STORE.syncClientGeo(record.client_name, geoStr);
+      showToast('Metadata updated successfully', 'success');
+      
+      closeEditReport();
+    });
+  }
+
+
 
   return { 
     render, 
@@ -835,8 +865,8 @@ const PAGE_REPORTS = (() => {
     addReportLinkItem,
     removeFileFromBatch,
     saveBatchUpload,
-    openEditModal,
-    saveReportEdit
+    setEditReport,
+    closeEditReport
   };
 })();
 

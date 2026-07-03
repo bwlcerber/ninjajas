@@ -234,21 +234,25 @@
       <div class="nav-item" data-page="client-search" onclick="ROUTER.navigate('client-search')" role="button" tabindex="0">
         <span id="nav-icon-client-search"></span> Global Search
       </div>
+      <div class="nav-item" data-page="cases" onclick="ROUTER.navigate('cases')" role="button" tabindex="0">
+        <span id="nav-icon-cases"></span> Cases
+        <span class="nav-item-badge" id="badge-cases">—</span>
+      </div>
       <div class="nav-item" data-page="reports" onclick="ROUTER.navigate('reports')" role="button" tabindex="0">
-        <span id="nav-icon-reports"></span> Client Docs
+        <span id="nav-icon-reports"></span> Client Files
         <span class="nav-item-badge" id="badge-reports">—</span>
+      </div>
+      <div class="nav-item" data-page="clientrefs" onclick="ROUTER.navigate('clientrefs')" role="button" tabindex="0">
+        <span id="nav-icon-refs"></span> Client References
+        <span class="nav-item-badge" id="badge-refs">—</span>
       </div>
       <div class="nav-item" data-page="creatives" onclick="ROUTER.navigate('creatives')" role="button" tabindex="0">
         <span id="nav-icon-creatives"></span> Creatives
         <span class="nav-item-badge" id="badge-creatives">—</span>
       </div>
-      <div class="nav-item" data-page="cases" onclick="ROUTER.navigate('cases')" role="button" tabindex="0">
-        <span id="nav-icon-cases"></span> Cases
-        <span class="nav-item-badge" id="badge-cases">—</span>
-      </div>
-      <div class="nav-item" data-page="clientrefs" onclick="ROUTER.navigate('clientrefs')" role="button" tabindex="0">
-        <span id="nav-icon-refs"></span> Client References
-        <span class="nav-item-badge" id="badge-refs">—</span>
+      <div class="nav-item" data-page="branding" onclick="ROUTER.navigate('branding')" role="button" tabindex="0">
+        <span id="nav-icon-branding"></span> Design & Branding
+        <span class="nav-item-badge" id="badge-branding">—</span>
       </div>
 
 
@@ -259,7 +263,7 @@
       </div>
       <div id="internal-portal-items" style="display: none; flex-direction: column; gap: 1px;">
         <div class="nav-item" data-page="docs" id="nav-item-docs" onclick="ROUTER.navigate('docs')" role="button" tabindex="0">
-          <span id="nav-icon-docs"></span> Internal Docs
+          <span id="nav-icon-docs"></span> Internal Files
           <span class="nav-item-badge" id="badge-docs">—</span>
         </div>
         <div class="nav-item" data-page="call-library" id="nav-item-call-library" onclick="ROUTER.navigate('call-library')" role="button" tabindex="0">
@@ -399,6 +403,8 @@
 <script src="js/pages/cases.js"></script>
 <script src="js/pages/clientrefs.js"></script>
 <script src="js/pages/miniprofiles.js"></script>
+<script src="js/pages/creatives.js"></script>
+<script src="js/pages/branding.js"></script>
 <script src="js/pages/admin.js"></script>
 <script src="js/pages/console.js"></script>
 <script src="js/pages/calllibrary.js"></script>

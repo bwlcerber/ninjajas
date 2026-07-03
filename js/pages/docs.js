@@ -72,7 +72,7 @@ const PAGE_DOCS = (() => {
               </button>
             ` : ''}
             <button class="btn btn-primary" onclick="checkSuperAdminAction(() => PAGE_DOCS.openAddDocModal())">
-              ${ICONS.plus} Add Document
+              ${ICONS.plus} Add Files
             </button>
           </div>
         </div>
@@ -787,7 +787,7 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
 
         <div style="display:flex; justify-content:center; margin-top:16px;">
           <button class="btn btn-primary" id="doc-edit-save-btn" style="padding:10px 32px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px; width:100%; max-width:240px;">
-            Update Document
+            Save Changes
           </button>
         </div>
         <div id="doc-edit-error" class="login-error" style="margin-top:10px; display:none; text-align:center;"></div>

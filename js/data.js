@@ -32,12 +32,12 @@ const VERTICALS = [
 ];
 
 const SERVICES = [
-  'Analytics', 'Content', 'Design', 'Email Marketing', 'Influencer Marketing',
+  'Analytics', 'Branding', 'Content', 'Design', 'Email Marketing', 'Influencer Marketing',
   'NDA', 'PPC', 'PR', 'SEO', 'Social Media', 'Web / Landing Pages'
 ];
 
 const ASSET_TYPES = [
-  'report', 'creative', 'case', 'deck', 'template',
+  'report', 'creative', 'case', 'branding', 'deck', 'template',
   'contract', 'process-doc', 'media-plan', 'training',
   'video', 'image', 'pdf', 'spreadsheet-link', 'doc-link', 'offer-prep', 'social-media-link'
 ];
@@ -47,6 +47,116 @@ const ASSET_TYPES = [
 // ─────────────────────────────────────────────
 
 const SEED_MATERIALS = [
+  // ── BRANDING ──
+  {
+    id: 'mat-b01',
+    title: 'Brand Identity & Design — X',
+    client_name: 'X',
+    geo: 'Global',
+    vertical: 'FinTech',
+    verticals: ['FinTech', 'Web3'],
+    services_provided: ['Branding', 'Design'],
+    asset_type: 'branding',
+    visibility_status: 'public',
+    description: 'Comprehensive brand identity and visual design system overhaul for X.',
+    file_type: 'image',
+    file_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/69fcbb206232233.Y3JvcCwxNDAwLDEwOTUsMCwyNzQ.png',
+    thumbnail_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/69fcbb206232233.Y3JvcCwxNDAwLDEwOTUsMCwyNzQ.png',
+    tags: ['branding', 'design', 'fintech'],
+    related_assets: [],
+    created_at: '2025-10-10'
+  },
+  {
+    id: 'mat-b02',
+    title: 'Visual Identity — B',
+    client_name: 'B',
+    geo: 'Europe',
+    vertical: 'eCommerce',
+    verticals: ['eCommerce'],
+    services_provided: ['Branding'],
+    asset_type: 'branding',
+    visibility_status: 'public',
+    description: 'Modernizing the visual identity for B, focusing on minimalist aesthetics.',
+    file_type: 'image',
+    file_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/28fc2b206232431.Y3JvcCwxMDQ2LDgxOCwxNzcsMA.jpg',
+    thumbnail_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/28fc2b206232431.Y3JvcCwxMDQ2LDgxOCwxNzcsMA.jpg',
+    tags: ['branding', 'ecommerce', 'visual'],
+    related_assets: [],
+    created_at: '2025-10-09'
+  },
+  {
+    id: 'mat-b03',
+    title: 'Corporate Rebranding — K',
+    client_name: 'K',
+    geo: 'Global',
+    vertical: 'SaaS',
+    verticals: ['SaaS'],
+    services_provided: ['Branding', 'Design'],
+    asset_type: 'branding',
+    visibility_status: 'public',
+    description: 'Full corporate rebranding, logo redesign, and style guide creation for K.',
+    file_type: 'image',
+    file_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/8f8b3c206232679.Y3JvcCwxMDQ2LDgxOCwwLDA.png',
+    thumbnail_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/8f8b3c206232679.Y3JvcCwxMDQ2LDgxOCwwLDA.png',
+    tags: ['branding', 'saas', 'logo'],
+    related_assets: [],
+    created_at: '2025-10-08'
+  },
+  {
+    id: 'mat-b04',
+    title: 'Brand Refresh — Close-ins',
+    client_name: 'Close-ins',
+    geo: 'North America',
+    vertical: 'Real Estate',
+    verticals: ['Real Estate'],
+    services_provided: ['Branding'],
+    asset_type: 'branding',
+    visibility_status: 'public',
+    description: 'Refreshing the visual presence and marketing collateral for Close-ins.',
+    file_type: 'image',
+    file_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/7f5e1b206232923.Y3JvcCwxMDQ2LDgxOCwwLDA.jpg',
+    thumbnail_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/7f5e1b206232923.Y3JvcCwxMDQ2LDgxOCwwLDA.jpg',
+    tags: ['branding', 'real-estate'],
+    related_assets: [],
+    created_at: '2025-10-07'
+  },
+  {
+    id: 'mat-b05',
+    title: 'Logo & Identity — Switch',
+    client_name: 'Switch',
+    geo: 'APAC',
+    vertical: 'Gaming',
+    verticals: ['Gaming'],
+    services_provided: ['Branding', 'Design'],
+    asset_type: 'branding',
+    visibility_status: 'public',
+    description: 'Dynamic and bold logo and identity design for gaming platform Switch.',
+    file_type: 'image',
+    file_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/b5c92c206233075.Y3JvcCwxMDQ2LDgxOCwxNzcsMA.png',
+    thumbnail_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/b5c92c206233075.Y3JvcCwxMDQ2LDgxOCwxNzcsMA.png',
+    tags: ['branding', 'gaming'],
+    related_assets: [],
+    created_at: '2025-10-06'
+  },
+  {
+    id: 'mat-b06',
+    title: 'Healthcare Branding — Denti-AI',
+    client_name: 'Denti-AI',
+    geo: 'Global',
+    vertical: 'Healthcare',
+    verticals: ['Healthcare', 'AI'],
+    services_provided: ['Branding', 'Design'],
+    asset_type: 'branding',
+    visibility_status: 'public',
+    description: 'Trust-building brand identity and color scheme for Denti-AI.',
+    file_type: 'image',
+    file_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/f4e24f206233215.Y3JvcCwxMDQ2LDgxOCwwLDA.jpg',
+    thumbnail_url: 'https://mir-s3-cdn-cf.behance.net/projects/404/f4e24f206233215.Y3JvcCwxMDQ2LDgxOCwwLDA.jpg',
+    tags: ['branding', 'healthcare', 'ai'],
+    related_assets: [],
+    created_at: '2025-10-05'
+  },
+
   // ── REPORTS ──
   {
     id: 'mat-001',

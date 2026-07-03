@@ -17,6 +17,7 @@ const ROUTER = (() => {
     cases: 'Cases',
     clientrefs: 'Client References',
     admin: 'Admin',
+    'branding': 'Design & Branding',
     'call-library': 'Call Library',
     'enablement-tracker': 'Team Tracker'
   };
@@ -92,7 +93,8 @@ const ROUTER = (() => {
         docs: 'Internal',
         cases: 'Proof Materials',
         clientrefs: 'Live Examples',
-        admin: 'Admin'
+        admin: 'Admin',
+        branding: 'Design & Branding'
       };
       topTag.textContent = tagMap[page] || '';
     }
@@ -115,6 +117,7 @@ const ROUTER = (() => {
       cases: () => PAGE_CASES.render(container),
       clientrefs: () => PAGE_CLIENTREFS.render(container, param),
       admin: () => PAGE_ADMIN.render(container, param),
+      'branding': () => PAGE_BRANDING.render(container),
       'call-library': () => PAGE_CALLLIBRARY.render(container),
       'enablement-tracker': () => PAGE_ENABLEMENT.render(container)
     };

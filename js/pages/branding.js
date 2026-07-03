@@ -1,7 +1,7 @@
 /** PAGE: Cases — NinjaPromo Real Case Studies */
 'use strict';
 
-const PAGE_CASES = (() => {
+const PAGE_BRANDING = (() => {
 
   let _vertical = 'all';
   let _service  = 'all';
@@ -14,10 +14,10 @@ const PAGE_CASES = (() => {
     container.innerHTML = `
       <div class="page-header">
         <div class="page-header-row">
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Real NinjaPromo case studies — proof of performance across every vertical and service. <span style="font-size:13px;font-weight:400;color:var(--text-tertiary);font-family:var(--font-mono);margin-left:6px">${total} total</span></div>
-          <button class="btn btn-primary" onclick="checkSuperAdminAction(() => PAGE_CASES.openAddCaseModal())">
-            ${ICONS.plus} Add Case
-          </button>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Visual identities, logotypes, and design systems.</div>
+          ${window.CAN_MANAGE ? `<button class="btn btn-primary" onclick="PAGE_BRANDING.openAddCaseModal()">
+            ${ICONS.plus} Add Branding Project
+          </button>` : ''}
         </div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -97,10 +97,10 @@ const PAGE_CASES = (() => {
       ${Array.from(_selectedTags).map(t => `
         <span class="filter-badge">
           ${t}
-          <span class="filter-badge-remove" onclick="PAGE_CASES.removeTag('${t}')">✕</span>
+          <span class="filter-badge-remove" onclick="PAGE_BRANDING.removeTag('${t}')">✕</span>
         </span>
       `).join('')}
-      <a style="font-size:11px; color:var(--danger); cursor:pointer; margin-left:8px; font-family:var(--font-mono)" onclick="PAGE_CASES.clearAllTags()">Clear All</a>
+      <a style="font-size:11px; color:var(--danger); cursor:pointer; margin-left:8px; font-family:var(--font-mono)" onclick="PAGE_BRANDING.clearAllTags()">Clear All</a>
     `;
   }
 
@@ -173,13 +173,13 @@ const PAGE_CASES = (() => {
     const caseVerts = mat.verticals || [mat.vertical];
     const verticalTag = caseVerts.map(v => `
       <span class="tag ${getVerticalClass(v)} tag-interactive ${_selectedTags.has(v) ? 'active' : ''}" 
-            onclick="PAGE_CASES.toggleTag('${v}')" style="font-size:9px">
+            onclick="PAGE_BRANDING.toggleTag('${v}')" style="font-size:9px">
         ${v}
       </span>`).join('');
 
     const serviceTags = (mat.services_provided || []).map(s => {
       const active = _selectedTags.has(s);
-      return `<span class="tag tag-info tag-interactive ${active ? 'active' : ''}" onclick="PAGE_CASES.toggleTag('${s}')" style="font-size:9px">${s}</span>`;
+      return `<span class="tag tag-info tag-interactive ${active ? 'active' : ''}" onclick="PAGE_BRANDING.toggleTag('${s}')" style="font-size:9px">${s}</span>`;
     }).join('');
 
     return `
@@ -226,7 +226,7 @@ const PAGE_CASES = (() => {
             </button>
           ` : ''}
           ${window.CAN_MANAGE ? `
-            <button class="btn btn-sm btn-ghost" ${!profile ? 'style="margin-left:auto"' : ''} onclick="PAGE_CASES.openEditCaseModal('${mat.id}')" title="Edit Metadata" style="color:var(--accent)">
+            <button class="btn btn-sm btn-ghost" ${!profile ? 'style="margin-left:auto"' : ''} onclick="PAGE_BRANDING.openEditCaseModal('${mat.id}')" title="Edit Metadata" style="color:var(--accent)">
               ✏️
             </button>
           ` : ''}
@@ -244,24 +244,24 @@ const PAGE_CASES = (() => {
       <div style="display:flex; flex-direction:column; gap:14px;">
         <div style="display:flex; gap:8px;">
           <input class="input" type="url" id="case-fetch-url" placeholder="Paste ninjapromo.io case study URL..." style="flex:1;">
-          <button class="btn btn-primary" onclick="PAGE_CASES.fetchCaseMetadata()">Fetch Metadata</button>
+          <button class="btn btn-primary" onclick="PAGE_BRANDING.fetchCaseMetadata()">Fetch Metadata</button>
         </div>
-        <p style="font-size:10px; color:var(--text-tertiary); margin-top:-6px; font-family:var(--font-mono)">e.g. https://ninjapromo.io/our-cases/htx</p>
+        <p style="font-size:10px; color:var(--text-tertiary); margin-top:-6px; font-family:var(--font-mono)">e.g. https://ninjapromo.io/design-branding/htx</p>
 
         <div id="case-preview-fields" style="display:none; border-top: 1px solid var(--border-subtle); padding-top:14px; margin-top:6px;">
           <div style="font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui); margin-bottom:12px;">✏️ REVIEW AND STRUCTURE CASE DATA</div>
           <div class="form-grid">
             <div class="input-group span-2">
               <span class="input-label">Case Title *</span>
-              <input class="input" type="text" id="case-new-title" required>
+              <input class="input" type="text" id="branding-new-title" required>
             </div>
             <div class="input-group">
               <span class="input-label">Client / Brand Name *</span>
-              <input class="input" type="text" id="case-new-client" required>
+              <input class="input" type="text" id="branding-new-client" required>
             </div>
             <div class="input-group span-2">
               <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="case-new-geo-checkboxes">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="branding-new-geo-checkboxes">
                 ${window.PORTAL_DATA.GEOS.map(g => `
                   <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
                     <input type="checkbox" value="${g}" style="accent-color:var(--accent);"> ${g}
@@ -271,7 +271,7 @@ const PAGE_CASES = (() => {
             </div>
             <div class="input-group">
               <span class="input-label">Vertical</span>
-              <select class="select" id="case-new-vertical">
+              <select class="select" id="branding-new-vertical">
                 ${(() => {
                   const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
                   if (verticals.includes('Other')) sorted.push('Other');
@@ -281,7 +281,7 @@ const PAGE_CASES = (() => {
             </div>
             <div class="input-group span-2">
               <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Services Provided *</span>
-              <div style="display:flex; flex-wrap:wrap; gap:8px;" id="case-new-services-checkboxes">
+              <div style="display:flex; flex-wrap:wrap; gap:8px;" id="branding-new-services-checkboxes">
                 ${window.PORTAL_DATA.SERVICES.map(s => `
                   <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
                     <input type="checkbox" value="${s}" style="accent-color:var(--accent);"> ${s}
@@ -291,11 +291,11 @@ const PAGE_CASES = (() => {
             </div>
             <div class="input-group span-2">
               <span class="input-label">Thumbnail Image URL</span>
-              <input class="input" type="url" id="case-new-thumb">
+              <input class="input" type="url" id="branding-new-thumb">
             </div>
             <div class="input-group span-2">
               <span class="input-label">Description / Summary</span>
-              <textarea class="input" id="case-new-desc" rows="3" required></textarea>
+              <textarea class="input" id="branding-new-desc" rows="3" required></textarea>
             </div>
           </div>
         </div>
@@ -304,11 +304,11 @@ const PAGE_CASES = (() => {
 
     const modalFooter = `
       <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary btn-sm" onclick="PAGE_CASES.saveNewCase()" id="case-save-btn" disabled>Save Case</button>
+      <button class="btn btn-primary btn-sm" onclick="PAGE_BRANDING.saveNewCase()" id="branding-save-btn" disabled>Save Project</button>
     `;
 
     openModal({
-      title: 'Add Success Case Study',
+      title: 'Add Branding Project',
       body: modalBody,
       footer: modalFooter,
       size: 'medium'
@@ -346,18 +346,18 @@ const PAGE_CASES = (() => {
       const wrap = document.getElementById('case-preview-fields');
       if (wrap) wrap.style.display = 'block';
 
-      document.getElementById('case-new-title').value = _fetchedCaseData.title;
-      document.getElementById('case-new-client').value = _fetchedCaseData.client_name;
+      document.getElementById('branding-new-title').value = _fetchedCaseData.title;
+      document.getElementById('branding-new-client').value = _fetchedCaseData.client_name;
       
-      const geoCheckboxes = document.querySelectorAll('#case-new-geo-checkboxes input[type="checkbox"]');
+      const geoCheckboxes = document.querySelectorAll('#branding-new-geo-checkboxes input[type="checkbox"]');
       geoCheckboxes.forEach(cb => cb.checked = (_fetchedCaseData.geos || []).includes(cb.value) || _fetchedCaseData.geo === cb.value);
-      document.getElementById('case-new-vertical').value = _fetchedCaseData.vertical;
-      const servicesCheckboxes = document.querySelectorAll('#case-new-services-checkboxes input[type="checkbox"]');
+      document.getElementById('branding-new-vertical').value = _fetchedCaseData.vertical;
+      const servicesCheckboxes = document.querySelectorAll('#branding-new-services-checkboxes input[type="checkbox"]');
       servicesCheckboxes.forEach(cb => cb.checked = (_fetchedCaseData.services || []).includes(cb.value));
-      document.getElementById('case-new-thumb').value = _fetchedCaseData.thumbnail_url;
-      document.getElementById('case-new-desc').value = _fetchedCaseData.description;
+      document.getElementById('branding-new-thumb').value = _fetchedCaseData.thumbnail_url;
+      document.getElementById('branding-new-desc').value = _fetchedCaseData.description;
 
-      const saveBtn = document.getElementById('case-save-btn');
+      const saveBtn = document.getElementById('branding-save-btn');
       if (saveBtn) saveBtn.disabled = false;
 
       showToast('Case study metadata resolved successfully!', 'success');
@@ -365,17 +365,17 @@ const PAGE_CASES = (() => {
   }
 
   function saveNewCase() {
-    const title = document.getElementById('case-new-title').value.trim();
-    const client = document.getElementById('case-new-client').value.trim();
-    const checkedGeos = document.querySelectorAll('#case-new-geo-checkboxes input[type="checkbox"]:checked');
+    const title = document.getElementById('branding-new-title').value.trim();
+    const client = document.getElementById('branding-new-client').value.trim();
+    const checkedGeos = document.querySelectorAll('#branding-new-geo-checkboxes input[type="checkbox"]:checked');
     const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
     const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
-    const vertical = document.getElementById('case-new-vertical').value;
-    const checkedServices = document.querySelectorAll('#case-new-services-checkboxes input[type="checkbox"]:checked');
+    const vertical = document.getElementById('branding-new-vertical').value;
+    const checkedServices = document.querySelectorAll('#branding-new-services-checkboxes input[type="checkbox"]:checked');
     const services = Array.from(checkedServices).map(cb => cb.value);
-    const thumb = document.getElementById('case-new-thumb').value.trim();
-    const desc = document.getElementById('case-new-desc').value.trim();
-    const url = document.getElementById('case-fetch-url').value.trim() || 'https://ninjapromo.io/our-cases';
+    const thumb = document.getElementById('branding-new-thumb').value.trim();
+    const desc = document.getElementById('branding-new-desc').value.trim();
+    const url = document.getElementById('case-fetch-url').value.trim() || 'https://ninjapromo.io/design-branding';
 
     if (!title || !client || !desc) {
       showToast('Please fill out all required fields', 'error');
@@ -424,19 +424,19 @@ const PAGE_CASES = (() => {
         <div class="form-grid">
           <div class="input-group span-2">
             <span class="input-label">Case Title *</span>
-            <input class="input" type="text" id="edit-case-title" value="${mat.title || ''}" required>
+            <input class="input" type="text" id="edit-branding-title" value="${mat.title || ''}" required>
           </div>
           <div class="input-group">
             <span class="input-label">Client / Brand Name *</span>
-            <input class="input" type="text" id="edit-case-client" value="${mat.client_name || ''}" required>
+            <input class="input" type="text" id="edit-branding-client" value="${mat.client_name || ''}" required>
           </div>
           <div class="input-group">
             <span class="input-label">Client Website URL</span>
-            <input class="input" type="text" id="edit-case-website" placeholder="https://example.com" value="${websiteUrl}">
+            <input class="input" type="text" id="edit-branding-website" placeholder="https://example.com" value="${websiteUrl}">
           </div>
           <div class="input-group span-2">
             <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="edit-case-geo-checkboxes">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="edit-branding-geo-checkboxes">
               ${window.PORTAL_DATA.GEOS.map(g => {
                 const isChecked = (mat.geos || []).includes(g) || (mat.geo || 'Global') === g;
                 return `
@@ -449,7 +449,7 @@ const PAGE_CASES = (() => {
           </div>
           <div class="input-group span-2">
             <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Services Provided *</span>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-case-services-checkboxes">
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-branding-services-checkboxes">
               ${window.PORTAL_DATA.SERVICES.map(s => {
                 const isChecked = (mat.services_provided || []).includes(s);
                 return `
@@ -462,15 +462,15 @@ const PAGE_CASES = (() => {
           </div>
           <div class="input-group span-2">
             <span class="input-label">Thumbnail Image URL</span>
-            <input class="input" type="url" id="edit-case-thumb" value="${mat.thumbnail_url || ''}">
+            <input class="input" type="url" id="edit-branding-thumb" value="${mat.thumbnail_url || ''}">
           </div>
           <div class="input-group span-2">
             <span class="input-label">Description / Summary</span>
-            <textarea class="input" id="edit-case-desc" rows="3" required>${mat.description || ''}</textarea>
+            <textarea class="input" id="edit-branding-desc" rows="3" required>${mat.description || ''}</textarea>
           </div>
           <div style="display:flex; flex-direction:column; gap:6px;" class="span-2">
             <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Vertical / Industry *</span>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-case-verticals">
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="edit-branding-verticals">
               ${(() => {
                 const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
                 if (verticals.includes('Other')) sorted.push('Other');
@@ -491,24 +491,24 @@ const PAGE_CASES = (() => {
       body: modalBody,
       footer: `
         <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary btn-sm" onclick="PAGE_CASES.saveCaseEdit('${mat.id}')">Save Changes</button>
+        <button class="btn btn-primary btn-sm" onclick="PAGE_BRANDING.saveCaseEdit('${mat.id}')">Save Changes</button>
       `,
       size: 'medium'
     });
   }
 
   function saveCaseEdit(matId) {
-    const title = document.getElementById('edit-case-title').value.trim();
-    const client = document.getElementById('edit-case-client').value.trim();
-    const website = document.getElementById('edit-case-website').value.trim();
-    const checkedGeos = document.querySelectorAll('#edit-case-geo-checkboxes input[type="checkbox"]:checked');
+    const title = document.getElementById('edit-branding-title').value.trim();
+    const client = document.getElementById('edit-branding-client').value.trim();
+    const website = document.getElementById('edit-branding-website').value.trim();
+    const checkedGeos = document.querySelectorAll('#edit-branding-geo-checkboxes input[type="checkbox"]:checked');
     const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
     const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
-    const checkedServices = document.querySelectorAll('#edit-case-services-checkboxes input[type="checkbox"]:checked');
+    const checkedServices = document.querySelectorAll('#edit-branding-services-checkboxes input[type="checkbox"]:checked');
     const services = Array.from(checkedServices).map(cb => cb.value);
-    const thumb = document.getElementById('edit-case-thumb').value.trim();
-    const desc = document.getElementById('edit-case-desc').value.trim();
-    const checkedVerts = document.querySelectorAll('#edit-case-verticals input[type="checkbox"]:checked');
+    const thumb = document.getElementById('edit-branding-thumb').value.trim();
+    const desc = document.getElementById('edit-branding-desc').value.trim();
+    const checkedVerts = document.querySelectorAll('#edit-branding-verticals input[type="checkbox"]:checked');
     const selectedVerticals = Array.from(checkedVerts).map(cb => cb.value);
 
     if (!title || !client || !desc) {
@@ -584,5 +584,5 @@ const PAGE_CASES = (() => {
   };
 })();
 
-window.PAGE_CASES = PAGE_CASES;
+window.PAGE_BRANDING = PAGE_BRANDING;
 
