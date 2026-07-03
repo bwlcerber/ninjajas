@@ -142,6 +142,16 @@ const STORE = (() => {
           data.clientProfiles = data.clientProfiles.filter(p => !binned.has(p.id) && !deleted.has(p.id));
         }
 
+        // Sanitize clientRefs website_url
+        if (data.clientRefs) {
+          data.clientRefs.forEach(r => {
+            if (r.website_url && r.website_url.includes('ninjapromo.io')) {
+              r.website_url = '';
+            }
+          });
+          merged = true;
+        }
+
         // Merge customOrder
         if (localData.customOrder) {
           data.customOrder = data.customOrder || {};

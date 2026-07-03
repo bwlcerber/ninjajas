@@ -382,7 +382,8 @@ const PAGE_BRANDING = (() => {
     const services = Array.from(checkedServices).map(cb => cb.value);
     const thumb = document.getElementById('branding-new-thumb').value.trim();
     const desc = document.getElementById('branding-new-desc').value.trim();
-    const url = document.getElementById('case-fetch-url').value.trim() || 'https://ninjapromo.io/design-branding';
+    const website = document.getElementById('branding-new-website').value.trim();
+    const url = document.getElementById('case-fetch-url').value.trim();
 
     if (!title || !client || !desc) {
       showToast('Please fill out all required fields', 'error');
@@ -410,6 +411,33 @@ const PAGE_BRANDING = (() => {
 
     STORE.addMaterial(item);
     STORE.syncClientGeo(client, geoStr);
+    
+    // Save client website URL if provided
+    if (website && client !== 'Internal' && client !== 'Client Name Not Available') {
+      let cleanUrl = website;
+      if (!/^https?:\/\//i.test(cleanUrl)) {
+        cleanUrl = 'https://' + cleanUrl;
+      }
+      const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === client.toLowerCase());
+      const ud = STORE.loadUserData();
+      if (existingRef) {
+        const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
+        if (refIdx !== -1) {
+          ud.clientRefs[refIdx].website_url = cleanUrl;
+        }
+      } else {
+        ud.clientRefs.push({
+          id: `ref-user-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+          client_name: client,
+          website_url: cleanUrl,
+          geo: geoStr,
+          vertical: vertical,
+          services_provided: services.length ? services : ['PR']
+        });
+      }
+      STORE.saveUserData(ud);
+    }
+    
     closeModal();
     showToast('Success case study saved successfully!', 'success');
 
