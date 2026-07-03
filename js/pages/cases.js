@@ -620,24 +620,24 @@ const PAGE_CASES = (() => {
       return;
     }
 
-    // Sync client reference (website & thumbnail)
+    // Load user data ONCE — apply ALL changes atomically to avoid race conditions
+    const ud = STORE.loadUserData();
+
+    // ① Update clientRef (website URL & thumbnail)
     if (client !== 'Internal' && client !== 'Client Name Not Available') {
       let cleanUrl = website;
       if (cleanUrl && !/^https?:\/\//i.test(cleanUrl)) {
         cleanUrl = 'https://' + cleanUrl;
       }
       const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === client.toLowerCase());
-      const ud = STORE.loadUserData();
       if (existingRef) {
         const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
         if (refIdx !== -1) {
-          // Always update website_url (even if blank, to allow clearing it)
           ud.clientRefs[refIdx].website_url = cleanUrl || '';
           if (thumb) ud.clientRefs[refIdx].thumbnail_url = thumb;
         } else {
           ud.clientRefs.push({ ...existingRef, website_url: cleanUrl || '', ...(thumb ? {thumbnail_url: thumb} : {}) });
         }
-        STORE.saveUserData(ud);
       } else if (cleanUrl) {
         ud.clientRefs.push({
           id: `ref-user-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
@@ -648,11 +648,11 @@ const PAGE_CASES = (() => {
           vertical: selectedVerticals[0] || 'Other',
           services_provided: services.length ? services : ['PR']
         });
-        STORE.saveUserData(ud);
       }
     }
 
-    STORE.updateMaterial(matId, {
+    // ② Update material (in-memory on the same ud)
+    const matUpdates = {
       title,
       client_name: client,
       geo: geoStr,
@@ -663,7 +663,20 @@ const PAGE_CASES = (() => {
       thumbnail_url: thumb,
       description: desc,
       tags: [...selectedVerticals, ...services]
-    });
+    };
+    const matIdx = ud.materials.findIndex(m => m.id === matId);
+    if (matIdx !== -1) {
+      ud.materials[matIdx] = { ...ud.materials[matIdx], ...matUpdates };
+    } else {
+      const seed = window.PORTAL_DATA.materials.find(m => m.id === matId);
+      if (seed) {
+        ud.materials.push({ ...seed, ...matUpdates, _override: true });
+      }
+    }
+
+    // ③ Single save — no race condition
+    STORE.saveUserData(ud);
+    STORE.resetState();
 
     STORE.syncClientGeo(client, geoStr);
     closeModal();
