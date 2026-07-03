@@ -316,7 +316,11 @@ const STORE = (() => {
       if (user.customOrder) {
         for (let type in user.customOrder) {
           const orderArr = user.customOrder[type];
-          const orderMap = new Map(orderArr.map((id, index) => [id, index]));
+          const orderMap = new Map(orderArr.map((id, index) => {
+            if (id === 'mat-b01') return ['mat-wafee-v2', index];
+            if (id === 'mat-b03') return ['mat-voto-v2', index];
+            return [id, index];
+          }));
           
           materialsArr.sort((a, b) => {
             if (a.asset_type === type && b.asset_type === type) {
