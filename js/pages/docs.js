@@ -252,7 +252,7 @@ const PAGE_DOCS = (() => {
           </div>
           <div style="display:flex;gap:4px">
             <button class="btn btn-sm btn-pin ${m.pinned ? 'is-pinned' : ''}" onclick="event.stopPropagation();PAGE_DOCS.togglePin('${m.id}')" title="${m.pinned ? 'Unpin' : 'Pin'}" style="padding:4px;">
-              ${m.pinned ? ICONS.pinSolid || '📌' : ICONS.pinOutline || '📌'}
+              ${ICONS.pinSolid || '📌'}
             </button>
             <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();PAGE_DOCS.openDocumentViewer('${m.id}')">
               ${ICONS.eye} Open
