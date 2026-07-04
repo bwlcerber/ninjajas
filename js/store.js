@@ -369,7 +369,9 @@ const STORE = (() => {
       // Apply customOrder if exists
       materialsArr.sort((a, b) => {
         // Group by asset type first to preserve stable ordering across types
-        const typeDiff = a.asset_type.localeCompare(b.asset_type);
+        const aType = a.asset_type || '';
+        const bType = b.asset_type || '';
+        const typeDiff = aType.localeCompare(bType);
         if (typeDiff !== 0) return typeDiff;
 
         // Apply custom score if exists
