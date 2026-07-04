@@ -269,6 +269,59 @@ const STORE = (() => {
       saveUserData(data);
     }
     
+    
+    // ── AUTOMATED GLOBAL MIGRATIONS ──
+    const arraysToMigrate = [data.materials, data.clientRefs, data.clientDocs, data.clientProfiles];
+    arraysToMigrate.forEach(arr => {
+      if (arr && Array.isArray(arr)) {
+        arr.forEach(item => {
+          if (!item) return;
+          
+          // 1. Rename Web Design variations to Web & LP Design globally
+          const serviceFields = ['services_provided', 'verticals']; 
+          serviceFields.forEach(field => {
+            if (item[field] && Array.isArray(item[field])) {
+              let changed = false;
+              item[field] = item[field].map(svc => {
+                if (typeof svc === 'string' && svc.toLowerCase().includes('web design') && svc.toLowerCase().includes('landing pages')) {
+                  changed = true;
+                  return 'Web & LP Design';
+                }
+                if (typeof svc === 'string' && svc.toLowerCase().includes('web') && svc.toLowerCase().includes('landing pages')) {
+                  changed = true;
+                  return 'Web & LP Design';
+                }
+                return svc;
+              });
+              if (changed) {
+                item[field] = Array.from(new Set(item[field])); // dedupe
+                modified = true;
+              }
+            }
+          });
+
+          // Also check string fields just in case
+          const stringFields = ['vertical'];
+          stringFields.forEach(field => {
+            if (item[field] && typeof item[field] === 'string') {
+              if (item[field].toLowerCase().includes('web design') && item[field].toLowerCase().includes('landing pages')) {
+                item[field] = 'Web & LP Design';
+                modified = true;
+              }
+            }
+          });
+
+          // 2. Append 'Performance Report [Paid ads]' to Performance Marketing docs
+          if (item.asset_type === 'report' || item.asset_type === 'performance-marketing') {
+            if (item.title && typeof item.title === 'string' && !item.title.toLowerCase().includes('performance report')) {
+              item.title = item.title.trim() + ' Performance Report [Paid ads]';
+              modified = true;
+            }
+          }
+        });
+      }
+    });
+
     _cachedUserData = JSON.parse(JSON.stringify(data));
     return data;
   }
