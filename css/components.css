@@ -884,3 +884,20 @@ textarea.input { min-height: 80px; resize: vertical; line-height: 1.5; }
     flex-wrap: wrap !important;
   }
 }
+
+.btn-pin {
+  background: transparent;
+  color: var(--danger) !important;
+  border-color: transparent;
+}
+.btn-pin:hover {
+  background: rgba(224,80,57,0.1);
+  color: var(--danger) !important;
+}
+.btn-pin.is-pinned {
+  color: var(--accent) !important;
+}
+.btn-pin.is-pinned:hover {
+  background: rgba(10,200,100,0.1);
+  color: var(--accent) !important;
+}

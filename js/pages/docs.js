@@ -251,7 +251,7 @@ const PAGE_DOCS = (() => {
             ${verticalTag}
           </div>
           <div style="display:flex;gap:4px">
-            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();PAGE_DOCS.togglePin('${m.id}')" title="${m.pinned ? 'Unpin' : 'Pin'}" style="color:${m.pinned ? 'var(--accent)' : 'var(--danger)'}; padding:4px;">
+            <button class="btn btn-sm btn-pin ${m.pinned ? 'is-pinned' : ''}" onclick="event.stopPropagation();PAGE_DOCS.togglePin('${m.id}')" title="${m.pinned ? 'Unpin' : 'Pin'}" style="padding:4px;">
               ${m.pinned ? ICONS.pinSolid || '📌' : ICONS.pinOutline || '📌'}
             </button>
             <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();PAGE_DOCS.openDocumentViewer('${m.id}')">
