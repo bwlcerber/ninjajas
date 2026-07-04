@@ -148,7 +148,7 @@ const PAGE_REPORTS = (() => {
       } else if (_activeCategory === 'seo') {
         items = items.filter(m => (m.services_provided || []).includes('SEO'));
       } else if (_activeCategory === 'smm') {
-        items = items.filter(m => m.asset_type === 'social-media-link' || (m.asset_type !== 'other' && m.asset_type !== 'report' && m.asset_type !== 'media-plan' && (m.services_provided || []).includes('Social Media')));
+        items = items.filter(m => m.asset_type === 'social-media-link' || m.asset_type === 'social-media-profile' || m.asset_type === 'smm-profiles');
       } else if (_activeCategory === 'gtm') {
         items = items.filter(m => (m.asset_type === 'gtm') || (m.tags || []).includes('gtm'));
       } else if (_activeCategory === 'pr') {
