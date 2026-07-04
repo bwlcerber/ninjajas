@@ -201,19 +201,19 @@ const STORE = (() => {
         modified = true;
       }
       
-      // Migrate 'Design' and 'Web / Landing Pages' to 'Web Design / Landing Pages'
+      // Migrate 'Design' and 'Web / Landing Pages' to 'Web & LP Design'
       if (m.services_provided && Array.isArray(m.services_provided)) {
         let changed = false;
         
         const designIdx = m.services_provided.indexOf('Design');
         if (designIdx !== -1) {
-          m.services_provided[designIdx] = 'Web Design / Landing Pages';
+          m.services_provided[designIdx] = 'Web & LP Design';
           changed = true;
         }
         
         const webIdx = m.services_provided.indexOf('Web / Landing Pages');
         if (webIdx !== -1) {
-          m.services_provided[webIdx] = 'Web Design / Landing Pages';
+          m.services_provided[webIdx] = 'Web & LP Design';
           changed = true;
         }
         

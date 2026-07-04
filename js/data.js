@@ -29,7 +29,7 @@ window.PORTAL_DATA = {
     "PR",
     "SEO",
     "Social Media",
-    "Web Design / Landing Pages"
+    "Web & LP Design"
   ],
   "ASSET_TYPES": [
     "report",
@@ -71,7 +71,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -98,7 +98,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -125,7 +125,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -152,7 +152,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -178,7 +178,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -204,7 +204,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -230,7 +230,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -256,7 +256,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -282,7 +282,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -308,7 +308,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -334,7 +334,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -360,7 +360,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -386,7 +386,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -412,7 +412,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -438,7 +438,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -464,7 +464,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -490,7 +490,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -516,7 +516,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -542,7 +542,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -568,7 +568,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -594,7 +594,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -620,7 +620,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -646,7 +646,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -672,7 +672,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -698,7 +698,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -724,7 +724,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -750,7 +750,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -776,7 +776,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -802,7 +802,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -828,7 +828,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -854,7 +854,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -880,7 +880,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -906,7 +906,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -932,7 +932,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -958,7 +958,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -984,7 +984,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -1010,7 +1010,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -1036,7 +1036,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -1062,7 +1062,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -1088,7 +1088,7 @@ window.PORTAL_DATA = {
       ],
       "services_provided": [
         "Branding",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "branding",
       "visibility_status": "public",
@@ -1616,7 +1616,7 @@ window.PORTAL_DATA = {
       "geo": "Europe",
       "vertical": "SaaS",
       "services_provided": [
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "Content"
       ],
       "asset_type": "case",
@@ -2710,7 +2710,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -3084,7 +3084,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "iGaming",
       "services_provided": [
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -3110,7 +3110,7 @@ window.PORTAL_DATA = {
       "vertical": "FinTech",
       "services_provided": [
         "PPC",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "creative",
       "visibility_status": "internal-only",
@@ -3135,7 +3135,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Web3",
       "services_provided": [
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "creative",
       "visibility_status": "internal-only",
@@ -3160,7 +3160,7 @@ window.PORTAL_DATA = {
       "geo": "UK",
       "vertical": "iGaming",
       "services_provided": [
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "PPC"
       ],
       "asset_type": "creative",
@@ -3186,7 +3186,7 @@ window.PORTAL_DATA = {
       "geo": "Europe",
       "vertical": "Trading",
       "services_provided": [
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "Social Media"
       ],
       "asset_type": "video",
@@ -3212,7 +3212,7 @@ window.PORTAL_DATA = {
       "geo": "Europe",
       "vertical": "eCommerce",
       "services_provided": [
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "Social Media"
       ],
       "asset_type": "creative",
@@ -3238,7 +3238,7 @@ window.PORTAL_DATA = {
       "geo": "North America",
       "vertical": "Healthcare",
       "services_provided": [
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "Content"
       ],
       "asset_type": "creative",
@@ -3264,7 +3264,7 @@ window.PORTAL_DATA = {
       "geo": "North America",
       "vertical": "SaaS",
       "services_provided": [
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "asset_type": "video",
       "visibility_status": "client-safe",
@@ -3289,7 +3289,7 @@ window.PORTAL_DATA = {
       "geo": "UK",
       "vertical": "Sports Betting",
       "services_provided": [
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "Social Media"
       ],
       "asset_type": "creative",
@@ -3618,7 +3618,7 @@ window.PORTAL_DATA = {
         "PPC",
         "Social Media",
         "Email Marketing",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "thumbnail_url": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=80"
     },
@@ -3659,7 +3659,7 @@ window.PORTAL_DATA = {
       "ai_summary": "Sports betting operator covering 30+ sports markets with cash-out features, in-play betting, and UK regulatory compliance.",
       "services_provided": [
         "Social Media",
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "PR"
       ],
       "thumbnail_url": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80"
@@ -3795,7 +3795,7 @@ window.PORTAL_DATA = {
         "PPC",
         "Social Media",
         "Email Marketing",
-        "Web Design / Landing Pages"
+        "Web & LP Design"
       ],
       "related_assets": [
         "mat-004",
@@ -3845,7 +3845,7 @@ window.PORTAL_DATA = {
       "product_summary": "Sports betting operator, strong in UK football and horse racing. 220K active monthly bettors. Mobile app with cash-out and live stats.",
       "services_provided": [
         "Social Media",
-        "Web Design / Landing Pages",
+        "Web & LP Design",
         "PR"
       ],
       "related_assets": [
