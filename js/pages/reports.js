@@ -148,19 +148,22 @@ const PAGE_REPORTS = (() => {
       } else if (_activeCategory === 'seo') {
         items = items.filter(m => (m.services_provided || []).includes('SEO'));
       } else if (_activeCategory === 'smm') {
-        items = items.filter(m => m.asset_type === 'social-media-link' || ((m.services_provided || []).includes('Social Media') && m.asset_type !== 'report' && m.asset_type !== 'media-plan'));
+        items = items.filter(m => m.asset_type === 'social-media-link' || (m.asset_type !== 'other' && m.asset_type !== 'report' && m.asset_type !== 'media-plan' && (m.services_provided || []).includes('Social Media')));
       } else if (_activeCategory === 'gtm') {
         items = items.filter(m => (m.asset_type === 'gtm') || (m.tags || []).includes('gtm'));
       } else if (_activeCategory === 'pr') {
-        items = items.filter(m => (m.services_provided || []).includes('PR') || (m.tags || []).includes('pr'));
+        items = items.filter(m => m.asset_type !== 'other' && ((m.services_provided || []).includes('PR') || (m.tags || []).includes('pr')));
       } else if (_activeCategory === 'other') {
         items = items.filter(m => 
-          !['report', 'media-plan'].includes(m.asset_type) && 
-          !(m.services_provided || []).includes('Influencer Marketing') &&
-          !(m.services_provided || []).includes('SEO') &&
-          !(m.services_provided || []).includes('Social Media') &&
-          !(m.services_provided || []).includes('PR') &&
-          m.asset_type !== 'gtm'
+          m.asset_type === 'other' || 
+          (
+            !['report', 'media-plan'].includes(m.asset_type) && 
+            !(m.services_provided || []).includes('Influencer Marketing') &&
+            !(m.services_provided || []).includes('SEO') &&
+            !(m.services_provided || []).includes('Social Media') &&
+            !(m.services_provided || []).includes('PR') &&
+            m.asset_type !== 'gtm'
+          )
         );
       } else {
         items = items.filter(m => m.asset_type === _activeCategory);
@@ -697,8 +700,33 @@ const PAGE_REPORTS = (() => {
 
   function closeEditReport() {
     _editReportId = null;
+    if (typeof closeModal === 'function') closeModal();
     const container = document.getElementById('page-container');
     if (container) render(container);
+    if (window.location.hash.startsWith('#client-references') && window.PAGE_CLIENTREFS) {
+      window.PAGE_CLIENTREFS.render();
+    } else if (window.location.hash.startsWith('#miniprofiles') && window.PAGE_MINIPROFILES) {
+      window.PAGE_MINIPROFILES.render();
+    }
+  }
+
+  function openEditModal(matId) {
+    const mat = STORE.getMaterialById(matId);
+    if (!mat) return;
+    
+    openModal({
+      title: 'Edit Metadata',
+      body: \`<div id="global-edit-report-wrap">\${renderInlineEditForm(mat)}</div>\`,
+      footer: '',
+      size: 'medium'
+    });
+    
+    setTimeout(() => {
+      const wrap = document.getElementById('global-edit-report-wrap');
+      if (wrap) {
+        bindInlineEditForm(wrap, mat);
+      }
+    }, 0);
   }
 
   function renderInlineEditForm(data) {
@@ -892,6 +920,7 @@ const PAGE_REPORTS = (() => {
     saveBatchUpload,
     togglePin,
     setEditReport,
+    openEditModal,
     closeEditReport
   };
 })();
