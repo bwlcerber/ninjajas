@@ -730,12 +730,15 @@ const DRAG_DROP = {
         targetCard.before(this.draggedItem);
       }
       
-      // Build new order array based on DOM order
-      const newOrder = Array.from(grid.querySelectorAll('.card')).map(card => card.dataset.id);
+      // Fractional sorting: identify neighbors
+      const prevSibling = this.draggedItem.previousElementSibling;
+      const nextSibling = this.draggedItem.nextElementSibling;
+      const prevId = prevSibling && prevSibling.classList.contains('card') ? prevSibling.dataset.id : null;
+      const nextId = nextSibling && nextSibling.classList.contains('card') ? nextSibling.dataset.id : null;
       
       // Save order
-      if (window.STORE && window.STORE.reorderMaterials) {
-        window.STORE.reorderMaterials(type, newOrder);
+      if (window.STORE && window.STORE.moveMaterialScore) {
+        window.STORE.moveMaterialScore(type, this.draggedItem.dataset.id, prevId, nextId);
       }
       if (window.ROUTER) {
         setTimeout(() => window.ROUTER.render(), 100);

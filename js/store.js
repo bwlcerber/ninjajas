@@ -250,6 +250,24 @@ const STORE = (() => {
         data.customOrder[type] = Array.from(new Set(data.customOrder[type]));
       }
     }
+
+    // Migrate old customOrder to customScores (Fractional Sorting)
+    if (data.customOrder && !data.customScores) {
+      data.customScores = {};
+      for (let type in data.customOrder) {
+        data.customScores[type] = {};
+        let score = 1000;
+        for (let id of data.customOrder[type]) {
+          data.customScores[type][id] = score;
+          score += 1000;
+        }
+      }
+      modified = true;
+    }
+    
+    if (modified) {
+      saveUserData(data);
+    }
     
     _cachedUserData = JSON.parse(JSON.stringify(data));
     return data;
@@ -354,19 +372,23 @@ const STORE = (() => {
         const typeDiff = a.asset_type.localeCompare(b.asset_type);
         if (typeDiff !== 0) return typeDiff;
 
-        // Apply custom order if exists
+        // Apply custom score if exists
         const type = a.asset_type;
-        if (user.customOrder && user.customOrder[type]) {
-          const orderArr = user.customOrder[type];
-          const orderMap = new Map(orderArr.map((id, index) => {
-            if (id === 'mat-b01' || id === 'mat-wafee-v2') return ['mat-wafee-v3', index];
-            if (id === 'mat-b03' || id === 'mat-voto-v2') return ['mat-voto-v3', index];
-            return [id, index];
-          }));
+        if (user.customScores && user.customScores[type]) {
+          const scores = user.customScores[type];
           
-          const aIdx = orderMap.has(a.id) ? orderMap.get(a.id) : 999999;
-          const bIdx = orderMap.has(b.id) ? orderMap.get(b.id) : 999999;
-          if (aIdx !== bIdx) return aIdx - bIdx;
+          let aId = a.id;
+          let bId = b.id;
+          // Alias check for ghost IDs
+          if (aId === 'mat-b01' || aId === 'mat-wafee-v2') aId = 'mat-wafee-v3';
+          if (aId === 'mat-b03' || aId === 'mat-voto-v2') aId = 'mat-voto-v3';
+          if (bId === 'mat-b01' || bId === 'mat-wafee-v2') bId = 'mat-wafee-v3';
+          if (bId === 'mat-b03' || bId === 'mat-voto-v2') bId = 'mat-voto-v3';
+
+          const aScore = scores[aId] !== undefined ? scores[aId] : 999999;
+          const bScore = scores[bId] !== undefined ? scores[bId] : 999999;
+          
+          if (aScore !== bScore) return aScore - bScore;
         }
         return 0; // preserve original relative order for non-matching or un-ordered
       });
@@ -382,36 +404,38 @@ const STORE = (() => {
 
   function resetState() { _state = null; }
 
-  function reorderMaterials(type, newOrderIds) {
+  function moveMaterialScore(type, draggedId, previousId, nextId) {
     const ud = loadUserData();
-    ud.customOrder = ud.customOrder || {};
+    ud.customScores = ud.customScores || {};
     
-    let oldOrder = ud.customOrder[type];
-    const seed = window.PORTAL_DATA;
-    const allMats = [...seed.materials, ...(ud.materials || [])].filter(m => m.asset_type === type).map(m => m.id);
-    const uniqueMats = Array.from(new Set(allMats));
-    
-    if (!oldOrder || oldOrder.length === 0) {
-      oldOrder = uniqueMats;
-    } else {
-      // Heal oldOrder if it's missing items (due to the old subset dragging bug)
-      const missing = uniqueMats.filter(id => !oldOrder.includes(id));
-      oldOrder = oldOrder.concat(missing);
-    }
-    
-    const oldOrderArr = [...oldOrder];
-    const indices = newOrderIds.map(id => oldOrderArr.indexOf(id)).filter(i => i !== -1).sort((a,b) => a - b);
-    
-    let j = 0;
-    for (let id of newOrderIds) {
-      if (oldOrder.includes(id)) {
-        oldOrderArr[indices[j++]] = id;
+    if (!ud.customScores[type] || Object.keys(ud.customScores[type]).length === 0) {
+      // Initialize with natural order if missing
+      ud.customScores[type] = {};
+      const seed = window.PORTAL_DATA;
+      const allMats = [...seed.materials, ...(ud.materials || [])].filter(m => m.asset_type === type);
+      let s = 1000;
+      for (let m of allMats) {
+        ud.customScores[type][m.id] = s;
+        s += 1000;
       }
     }
     
-    const newItems = newOrderIds.filter(id => !oldOrder.includes(id));
-    ud.customOrder[type] = oldOrderArr.concat(newItems);
+    const scores = ud.customScores[type];
+    const prevScore = previousId && scores[previousId] !== undefined ? scores[previousId] : null;
+    const nextScore = nextId && scores[nextId] !== undefined ? scores[nextId] : null;
     
+    let newScore = 0;
+    if (prevScore !== null && nextScore !== null) {
+      newScore = (prevScore + nextScore) / 2;
+    } else if (prevScore !== null) {
+      newScore = prevScore + 1000;
+    } else if (nextScore !== null) {
+      newScore = nextScore - 1000;
+    } else {
+      newScore = 1000;
+    }
+    
+    scores[draggedId] = newScore;
     saveUserData(ud);
     resetState();
   }
@@ -754,7 +778,7 @@ const STORE = (() => {
     getByType, getByVertical, getByTypes, getById, getMaterialById, getProfileForClient,
     addMaterial, addClientRef, addClientProfile,
     updateMaterial, deleteMaterial, deleteClientRef, deleteClientProfile,
-    reorderMaterials,
+    moveMaterialScore,
     getDeletedClientNames, getRecycleBin, restoreRecord, purgeRecord,
     syncClientGeo,
     getStats,
