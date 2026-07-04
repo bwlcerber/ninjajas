@@ -340,21 +340,16 @@ const PAGE_CLIENTREFS = (() => {
       </div>`;
       } else {
         ingestionArea = `
-          <div class="admin-form animate-fade" style="margin-bottom:0; padding: 16px; border-radius: var(--r-lg);">
-            <h3 style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:12px; text-transform:uppercase; font-family:var(--font-mono); display:flex; align-items:center; gap:8px">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Ingest Website Reference / Paste Client URL
+          <div class="admin-form animate-fade" style="margin-bottom:0; padding: 12px; border-radius: var(--r-lg);">
+            <h3 style="font-size:11px; font-weight:700; color:var(--text-primary); margin-bottom:10px; text-transform:uppercase; font-family:var(--font-mono); display:flex; align-items:center; gap:8px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Paste Client URL
             </h3>
-            <form id="url-ingest-form" style="display:flex; gap:12px; align-items: flex-end; width: 100%;">
+            <form id="url-ingest-form" style="display:flex; gap:8px; align-items: stretch; width: 100%;">
               <div style="flex:1" class="input-group">
-                <input class="input" type="url" id="ingest-url" placeholder="https://example.com" required style="padding: 7px 10px; font-size:12px">
+                <input class="input" type="url" id="ingest-url" placeholder="https://..." required style="padding: 6px 8px; font-size:11px">
               </div>
-              <div class="input-group" style="width:160px">
-                <select class="select" id="ingest-vertical" style="padding: 7px 10px; font-size:12px; height: 32px; background-position: right 8px center;">
-                  ${window.PORTAL_DATA.VERTICALS.map(v => `<option value="${v}">${v}</option>`).join('')}
-                </select>
-              </div>
-              <button class="btn btn-primary" type="submit" style="height:32px; padding: 0 16px;">Fetch Metadata</button>
+              <button class="btn btn-primary" type="submit" style="height:32px; padding: 0 12px; font-size:11px">Fetch</button>
             </form>
           </div>`;
       }
@@ -371,21 +366,23 @@ const PAGE_CLIENTREFS = (() => {
           <button class="btn btn-primary" onclick="checkSuperAdminAction(() => ROUTER.navigate('admin'))">${ICONS.plus} Content Center</button>
         </div>
 
-        <div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:20px;">
-          <div style="flex:2;">${visibilityControl}</div>
-          <div style="flex:1;">${ingestionArea}</div>
-        </div>
-
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <div class="search-bar" style="flex:1;min-width:220px">
-            ${ICONS.search}
-            <input id="refs-search" type="text" placeholder="Search client references…" value="${_query}" autocomplete="off">
+        <div style="display:flex; gap:20px; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap;">
+          <div style="flex:2; min-width:300px;">
+            ${visibilityControl}
           </div>
-          
-          <select class="select" id="refs-sort" style="width:160px">
-            <option value="recent" ${_sortOrder === 'recent' ? 'selected':''}>Recently Added</option>
-            <option value="alpha" ${_sortOrder === 'alpha' ? 'selected':''}>Alphabetical Order</option>
-          </select>
+          <div style="flex:1; display:flex; flex-direction:column; gap:10px; min-width:300px; max-width:400px; margin-left:auto;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="search-bar" style="flex:1;">
+                ${ICONS.search}
+                <input id="refs-search" type="text" placeholder="Search references…" value="${_query}" autocomplete="off">
+              </div>
+              <select class="select" id="refs-sort" style="width:140px">
+                <option value="recent" ${_sortOrder === 'recent' ? 'selected':''}>Recently Added</option>
+                <option value="alpha" ${_sortOrder === 'alpha' ? 'selected':''}>Alphabetical Order</option>
+              </select>
+            </div>
+            ${ingestionArea}
+          </div>
         </div>
 
         <!-- Selected multi-select tags container -->
@@ -780,7 +777,7 @@ const PAGE_CLIENTREFS = (() => {
 
     // Query materials dynamically by client name, excluding cases/branding from related assets
     const materials = STORE.getMaterials().filter(m => 
-      m.client_name?.toLowerCase() === (decodedName || 'N/A').toLowerCase() && 
+      m.client_name?.trim().toLowerCase() === (decodedName || 'N/A').trim().toLowerCase() && 
       m.asset_type !== 'case' && 
       m.asset_type !== 'branding'
     );
@@ -793,7 +790,7 @@ const PAGE_CLIENTREFS = (() => {
         </button>
         ${AUTH.canManageContent() ? `
           <button class="btn btn-primary" onclick="PAGE_CLIENTREFS.openAddAssetModal('${displayClientName}')" style="display:inline-flex; align-items:center; gap:6px;">
-            ${ICONS.plus} Add Assets / Creatives
+            ${ICONS.plus} Add Files / Creatives
           </button>
         ` : ''}
       </div>
@@ -1311,7 +1308,7 @@ const PAGE_CLIENTREFS = (() => {
 
         <div class="form-grid">
           <div class="input-group span-2">
-            <span class="input-label">File Title * (Manual entry for single links)</span>
+            <span class="input-label">Asset Title * (Manual entry for single links)</span>
             <input class="input" type="text" id="add-asset-title" placeholder="e.g. Dplay Casino Banner Ad" style="height:34px; font-size:12px;">
           </div>
           <div class="input-group">
@@ -1338,13 +1335,10 @@ const PAGE_CLIENTREFS = (() => {
             </select>
           </div>
           <div class="input-group span-2">
-            <span class="input-label">File URL * (Manual entry for single links)</span>
+            <span class="input-label">Asset URL * (Manual entry for single links)</span>
             <input class="input" type="url" id="add-asset-url" placeholder="https://..." style="height:34px; font-size:12px;">
           </div>
-          <div class="input-group span-2">
-            <span class="input-label">Thumbnail URL (Optional)</span>
-            <input class="input" type="url" id="add-asset-thumb" placeholder="https://..." style="height:34px; font-size:12px;">
-          </div>
+
           <div class="input-group span-2">
             <span class="input-label">Description (Optional)</span>
             <textarea class="input" id="add-asset-desc" rows="2" placeholder="Description of the asset..."></textarea>
