@@ -361,28 +361,29 @@ const PAGE_CLIENTREFS = (() => {
       <div class="page-header">
         <div class="page-header-row">
           <div>
-            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Live client websites.</div>
+            <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:850px; line-height:1.3; margin-top:0;">Live Client References.</div>
           </div>
           <button class="btn btn-primary" onclick="checkSuperAdminAction(() => ROUTER.navigate('admin'))">${ICONS.plus} Content Center</button>
         </div>
 
-        <div style="display:flex; gap:20px; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap;">
+        <div style="display:flex; gap:20px; align-items:flex-end; margin-bottom:12px; flex-wrap:wrap;">
           <div style="flex:2; min-width:300px;">
             ${visibilityControl}
           </div>
           <div style="flex:1; display:flex; flex-direction:column; gap:10px; min-width:300px; max-width:400px; margin-left:auto;">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <div class="search-bar" style="flex:1;">
-                ${ICONS.search}
-                <input id="refs-search" type="text" placeholder="Search references…" value="${_query}" autocomplete="off">
-              </div>
-              <select class="select" id="refs-sort" style="width:140px">
-                <option value="recent" ${_sortOrder === 'recent' ? 'selected':''}>Recently Added</option>
-                <option value="alpha" ${_sortOrder === 'alpha' ? 'selected':''}>Alphabetical Order</option>
-              </select>
-            </div>
             ${ingestionArea}
           </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap; margin-bottom:20px; width:100%;">
+          <div class="search-bar" style="flex:1;">
+            ${ICONS.search}
+            <input id="refs-search" type="text" placeholder="Search Live Client References…" value="${_query}" autocomplete="off">
+          </div>
+          <select class="select" id="refs-sort" style="width:160px">
+            <option value="recent" ${_sortOrder === 'recent' ? 'selected':''}>Recently Added</option>
+            <option value="alpha" ${_sortOrder === 'alpha' ? 'selected':''}>Alphabetical Order</option>
+          </select>
         </div>
 
         <!-- Selected multi-select tags container -->
