@@ -300,6 +300,8 @@
   border: none !important;
 }
 
+
+
 .material-row-icon svg { width: 20px; height: 20px; }
 
 .material-row-info { flex: 1; min-width: 0; }
@@ -857,16 +859,32 @@ textarea.input { min-height: 80px; resize: vertical; line-height: 1.5; }
 .masonry-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
 .masonry-sub { font-size: 10px; color: var(--text-secondary); font-family: var(--font-mono); }
 
- @ m e d i a   ( m a x - w i d t h :   1 1 0 0 p x )   { 
-     . m a t e r i a l - r o w   { 
-         f l e x - w r a p :   w r a p ; 
-     } 
-     . m a t e r i a l - r o w - i n f o   { 
-         m i n - w i d t h :   2 5 0 p x ; 
-     } 
-     . m a t e r i a l - r o w - t a g s   { 
-         f l e x - w r a p :   w r a p ; 
-     } 
- } 
-  
- 
+@media (max-width: 1100px) {
+  .material-row {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    grid-template-areas: 
+      "checkbox icon info"
+      "tags tags tags"
+      "actions actions actions";
+    gap: 12px;
+  }
+  .material-row > div:nth-child(1) { grid-area: checkbox; }
+  .material-row > div:nth-child(2) { grid-area: icon; }
+  .material-row > div:nth-child(3) { grid-area: info; }
+  .material-row > div:nth-child(4) { grid-area: tags; margin-top: 4px; }
+  .material-row > div:nth-child(5) { 
+    grid-area: actions; 
+    justify-content: flex-end; 
+    border-top: 1px dashed var(--border-subtle);
+    padding-top: 10px;
+    margin-top: 4px;
+    width: 100%;
+  }
+  .tabs {
+    flex-wrap: wrap;
+  }
+  .filter-row {
+    flex-wrap: wrap !important;
+  }
+}
