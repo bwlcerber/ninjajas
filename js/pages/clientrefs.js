@@ -638,6 +638,7 @@ const PAGE_CLIENTREFS = (() => {
     // Deduplicate case-insensitively while preserving standard casing
     const normalizedMap = new Map();
     allTags.forEach(t => {
+      if (typeof t !== 'string') return;
       const lower = t.toLowerCase();
       if (!normalizedMap.has(lower)) {
         let displayTag = t;
