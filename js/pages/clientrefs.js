@@ -14,7 +14,7 @@ const PAGE_CLIENTREFS = (() => {
   function getHiddenVerticals() {
     try {
       const raw = localStorage.getItem('np_hidden_verticals');
-      return raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       return [];
     }
@@ -39,7 +39,7 @@ const PAGE_CLIENTREFS = (() => {
   function getHiddenRefs() {
     try {
       const raw = localStorage.getItem('np_hidden_refs');
-      return raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       return [];
     }
@@ -80,6 +80,7 @@ const PAGE_CLIENTREFS = (() => {
   }
 
   function syncClients() {
+    try {
     // Scan all materials in STORE for unique client names (excluding Internal, NDA generics)
     const deletedNames = STORE.getDeletedClientNames() || [];
     const materials = STORE.getMaterials() || [];
@@ -136,16 +137,21 @@ const PAGE_CLIENTREFS = (() => {
         });
       } else {
         // Update existing ref description/thumbnail if they contain the placeholder/generic text
-        if (!existingRef.thumbnail_url || existingRef.thumbnail_url.includes('picsum.photos') || existingRef.ai_summary.includes('Newly synchronized')) {
+        if (!existingRef.thumbnail_url || existingRef.thumbnail_url.includes('picsum.photos') || (existingRef.ai_summary || '').includes('Newly synchronized')) {
           if (thumbnail) {
             existingRef.thumbnail_url = thumbnail;
           }
-          if (desc && (existingRef.ai_summary.includes('Newly synchronized') || existingRef.ai_summary.length > 130)) {
+          if (desc && ((existingRef.ai_summary || '').includes('Newly synchronized') || (existingRef.ai_summary || '').length > 130)) {
             existingRef.ai_summary = desc;
           }
         }
       }
     });
+  }
+
+    } catch (e) {
+      console.error('syncClients CRASH:', e);
+    }
   }
 
   function render(container, focusClientName = null) {
@@ -262,7 +268,7 @@ const PAGE_CLIENTREFS = (() => {
                 <div style="display:flex; flex-wrap:wrap; gap:8px;" id="pref-services">
                   ${window.PORTAL_DATA.SERVICES.map(s => `
                     <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                      <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${_fetchedData.services_provided.includes(s) ? 'checked' : ''}> ${s}
+                      <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${(_fetchedData.services_provided || []).includes(s) ? 'checked' : ''}> ${s}
                     </label>
                   `).join('')}
                 </div>

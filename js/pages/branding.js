@@ -488,7 +488,8 @@ const PAGE_BRANDING = (() => {
     const matVerts = mat.verticals || (mat.vertical ? [mat.vertical] : []);
     const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && mat.client_name && typeof mat.client_name === 'string' && r.client_name.toLowerCase() === mat.client_name.toLowerCase());
     let websiteUrl = ref ? ref.website_url : '';
-    if (websiteUrl && websiteUrl.toLowerCase().includes('ninjapromo.io')) websiteUrl = '';
+    if (websiteUrl && websiteUrl.toLowerCase().includes('ninjapromo.io')) websiteUrl = 'N/A';
+    if (!websiteUrl) websiteUrl = 'N/A';
 
     const allItems = STORE.getByType(mat.asset_type);
     const currentIndex = allItems.findIndex(m => m.id === mat.id);
