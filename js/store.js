@@ -318,6 +318,40 @@ const STORE = (() => {
               modified = true;
             }
           }
+
+          // 3. Migrate old Asset Types to new clean ones
+          if (item.asset_type && typeof item.asset_type === 'string') {
+            const oldType = item.asset_type.toLowerCase();
+            const typeMap = {
+              'report': 'performance-report',
+              'analytics': 'performance-report',
+              'case': 'case-study',
+              'branding': 'design-branding',
+              'creative': 'creative-asset',
+              'image': 'creative-asset',
+              'video': 'creative-asset',
+              'deck': 'media-plan-strategy',
+              'media-plan': 'media-plan-strategy',
+              'contract': 'legal-admin',
+              'process-doc': 'internal-process',
+              'training': 'internal-process',
+              'offer-prep': 'internal-process',
+              'template': 'internal-process',
+              'social-media-link': 'social-media-profile',
+              'smm': 'social-media-profile',
+              'pdf': 'other',
+              'spreadsheet-link': 'other',
+              'doc-link': 'other'
+            };
+            if (typeMap[oldType]) {
+              item.asset_type = typeMap[oldType];
+              modified = true;
+            } else if (!Object.values(typeMap).includes(oldType)) {
+              item.asset_type = 'other';
+              modified = true;
+            }
+          }
+
         });
       }
     });

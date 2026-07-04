@@ -32,23 +32,15 @@ window.PORTAL_DATA = {
     "Web & LP Design"
   ],
   "ASSET_TYPES": [
-    "report",
-    "creative",
-    "case",
-    "branding",
-    "deck",
-    "template",
-    "contract",
-    "process-doc",
-    "media-plan",
-    "training",
-    "video",
-    "image",
-    "pdf",
-    "spreadsheet-link",
-    "doc-link",
-    "offer-prep",
-    "social-media-link"
+    "case-study",
+    "performance-report",
+    "media-plan-strategy",
+    "design-branding",
+    "creative-asset",
+    "social-media-profile",
+    "legal-admin",
+    "internal-process",
+    "other"
   ],
   "GEOS": [
     "Global",
