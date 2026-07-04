@@ -10,6 +10,7 @@ const PAGE_CLIENTREFS = (() => {
   // Ingestion temporary state
   let _fetchedData = null;
   let _isFetching = false;
+  let _sortOrder = 'recent';
 
   function getHiddenVerticals() {
     try {
@@ -382,6 +383,10 @@ const PAGE_CLIENTREFS = (() => {
             <option value="all">All Verticals</option>
             ${visibleVerticals.map(v => `<option value="${v}" ${_vertical === v ? 'selected':''}>${v}</option>`).join('')}
           </select>
+          <select class="select" id="refs-sort" style="width:160px">
+            <option value="recent" ${_sortOrder === 'recent' ? 'selected':''}>Recently Added</option>
+            <option value="alpha" ${_sortOrder === 'alpha' ? 'selected':''}>Alphabetical Order</option>
+          </select>
         </div>
 
         <!-- Selected multi-select tags container -->
@@ -401,6 +406,7 @@ const PAGE_CLIENTREFS = (() => {
 
     // Hook listeners
     container.querySelector('#refs-search').addEventListener('input', e => { _query = e.target.value; renderGrid(container); });
+    container.querySelector('#refs-sort').addEventListener('change', e => { _sortOrder = e.target.value; renderGrid(container); });
     container.querySelector('#refs-vertical').addEventListener('change', e => {
       _vertical = e.target.value;
       updateChips(container);
@@ -602,6 +608,17 @@ const PAGE_CLIENTREFS = (() => {
       items = items.filter(r =>
         [r.client_name, r.vertical, r.geo, r.ai_summary, ...(r.services_provided || [])].join(' ').toLowerCase().includes(q)
       );
+    }
+
+    // Apply sort
+    if (_sortOrder === 'recent') {
+      items.sort((a, b) => {
+        const timeA = a.updated_at || (a.id ? parseInt(String(a.id).replace(/\D/g, '')) || 0 : 0);
+        const timeB = b.updated_at || (b.id ? parseInt(String(b.id).replace(/\D/g, '')) || 0 : 0);
+        return timeB - timeA;
+      });
+    } else if (_sortOrder === 'alpha') {
+      items.sort((a, b) => (a.client_name || '').localeCompare(b.client_name || ''));
     }
 
     const grid = container.querySelector('#refs-grid');

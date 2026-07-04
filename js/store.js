@@ -518,6 +518,7 @@ const STORE = (() => {
   }
 
   function addClientRef(record) {
+    record.updated_at = Date.now();
     record.id = record.id || `ref-user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const ud = _getUserData();
     ud.clientRefs.push(record);
