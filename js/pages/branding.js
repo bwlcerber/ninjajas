@@ -490,12 +490,22 @@ const PAGE_BRANDING = (() => {
     let websiteUrl = ref ? ref.website_url : '';
     if (websiteUrl && websiteUrl.toLowerCase().includes('ninjapromo.io')) websiteUrl = '';
 
+    const allItems = STORE.getByType(mat.asset_type);
+    const currentIndex = allItems.findIndex(m => m.id === mat.id);
+    const currentOrder = currentIndex !== -1 ? currentIndex + 1 : allItems.length + 1;
+
     const modalBody = `
       <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_BRANDING.handlePaste(event, 'edit-branding-thumb')">
         <div class="form-grid">
-          <div class="input-group span-2">
-            <span class="input-label">Case Title *</span>
-            <input class="input" type="text" id="edit-branding-title" value="${mat.title || ''}" required>
+          <div class="input-group span-2" style="display:flex; gap:16px;">
+            <div style="flex:1;">
+              <span class="input-label">Case Title *</span>
+              <input class="input" type="text" id="edit-branding-title" value="${mat.title || ''}" required>
+            </div>
+            <div style="width:120px;">
+              <span class="input-label" style="color:var(--accent);">Order #</span>
+              <input class="input" type="number" id="edit-branding-order" value="${currentOrder}" min="1" required>
+            </div>
           </div>
           <div class="input-group">
             <span class="input-label">Client / Brand Name *</span>
@@ -653,6 +663,27 @@ const PAGE_BRANDING = (() => {
     // ④ Single save — no race condition
     STORE.saveUserData(ud);
     STORE.resetState();
+
+    // ⑤ Process explicit numerical order change (Fractional Shift)
+    const orderInput = document.getElementById('edit-branding-order');
+    if (orderInput) {
+      const newOrder = parseInt(orderInput.value, 10);
+      const allItems = STORE.getByType(mat.asset_type);
+      const currentIndex = allItems.findIndex(m => m.id === matId);
+      const currentOrder = currentIndex !== -1 ? currentIndex + 1 : allItems.length + 1;
+      
+      if (!isNaN(newOrder) && newOrder !== currentOrder) {
+        let targetIndex = newOrder - 1;
+        if (targetIndex < 0) targetIndex = 0;
+        if (targetIndex > allItems.length) targetIndex = allItems.length;
+        
+        const itemsWithoutSelf = allItems.filter(m => m.id !== matId);
+        const prevItem = targetIndex > 0 ? itemsWithoutSelf[targetIndex - 1] : null;
+        const nextItem = targetIndex < itemsWithoutSelf.length ? itemsWithoutSelf[targetIndex] : null;
+        
+        STORE.moveMaterialScore(mat.asset_type, matId, prevItem ? prevItem.id : null, nextItem ? nextItem.id : null);
+      }
+    }
 
     closeModal();
     showToast('Case study metadata updated successfully!', 'success');
