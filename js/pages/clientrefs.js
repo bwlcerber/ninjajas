@@ -628,22 +628,63 @@ const PAGE_CLIENTREFS = (() => {
     const relatedMaterials = STORE.getMaterials().filter(m => m.client_name?.toLowerCase() === ref.client_name?.toLowerCase());
     const relatedAssetIds = relatedMaterials.map(m => m.id);
 
-    // Clickable tags
-    const verticalTag = `
-      <span class="tag ${getVerticalClass(ref.vertical)} tag-interactive ${_selectedTags.has(ref.vertical) ? 'active' : ''}" 
-            onclick="PAGE_CLIENTREFS.toggleTag('${ref.vertical}')">
-        ${getVerticalEmoji(ref.vertical)} ${ref.vertical}
-      </span>`;
+    // Consolidate all tags to prevent duplicates and separate industries from services
+    const allTags = new Set();
+    if (ref.vertical) allTags.add(ref.vertical);
+    if (Array.isArray(ref.verticals)) ref.verticals.forEach(t => allTags.add(t));
+    if (Array.isArray(ref.services_provided)) ref.services_provided.forEach(t => allTags.add(t));
+    if (Array.isArray(ref.tags)) ref.tags.forEach(t => allTags.add(t));
 
-    const serviceTags = (ref.services_provided || []).map(s => {
-      const active = _selectedTags.has(s);
-      if (s === 'NDA') {
-        return `<span class="tag tag-danger tag-interactive ${active ? 'active' : ''}" onclick="PAGE_CLIENTREFS.toggleTag('${s}')">${s}</span>`;
+    // Deduplicate case-insensitively while preserving standard casing
+    const normalizedMap = new Map();
+    allTags.forEach(t => {
+      const lower = t.toLowerCase();
+      if (!normalizedMap.has(lower)) {
+        let displayTag = t;
+        const vMatch = window.PORTAL_DATA.VERTICALS.find(v => v.toLowerCase() === lower);
+        if (vMatch) displayTag = vMatch;
+        else {
+          const sMatch = window.PORTAL_DATA.SERVICES.find(s => s.toLowerCase() === lower);
+          if (sMatch) displayTag = sMatch;
+        }
+        normalizedMap.set(lower, displayTag);
       }
-      return `<span class="tag tag-info tag-interactive ${active ? 'active' : ''}" onclick="PAGE_CLIENTREFS.toggleTag('${s}')">${s}</span>`;
-    }).join('');
+    });
 
-    const isChecked = window.CALL_PREP_BASKET && window.CALL_PREP_BASKET.has(ref.id);
+    const industryTagsHTML = [];
+    const serviceTagsHTML = [];
+
+    normalizedMap.forEach((displayTag, lower) => {
+      // Determine if this tag is an industry/vertical
+      const isIndustry = window.PORTAL_DATA.VERTICALS.some(v => v.toLowerCase() === lower) || 
+                         ['b2b', 'b2c', 'web3', 'fintech', 'igaming', 'cyber security', 'ecommerce', 'ai', 'apps', 'saas', 'trading'].includes(lower);
+
+      const activeClass = _selectedTags.has(displayTag) ? 'active' : '';
+
+      if (isIndustry) {
+        let emoji = getVerticalEmoji(displayTag);
+        if (emoji.includes('ref-thumb-placeholder')) emoji = ''; // fallback just in case
+        
+        industryTagsHTML.push(`
+          <span class="tag ${getVerticalClass(displayTag)} tag-interactive ${activeClass}" 
+                onclick="PAGE_CLIENTREFS.toggleTag('${displayTag}')">
+            ${emoji} ${displayTag}
+          </span>`);
+      } else {
+        let extraStyle = '';
+        if (displayTag.toUpperCase() === 'NDA') {
+          extraStyle = 'background: rgba(255,255,255,0.1) !important; color: #fff !important; border: 1px dashed rgba(255,255,255,0.4) !important;';
+        }
+        serviceTagsHTML.push(`
+          <span class="tag tag-service tag-interactive ${activeClass}" style="${extraStyle}" 
+                onclick="PAGE_CLIENTREFS.toggleTag('${displayTag}')">
+            ${displayTag}
+          </span>`);
+      }
+    });
+
+    const verticalTag = industryTagsHTML.join('');
+    const serviceTags = serviceTagsHTML.join('');
 
     return `
       <div class="ref-card animate-fade ${isHidden ? 'is-hidden' : ''}" style="cursor:pointer; position:relative;" onclick="ROUTER.navigate('clientrefs','${encodeURIComponent(ref.client_name)}')">
@@ -670,7 +711,7 @@ const PAGE_CLIENTREFS = (() => {
           </div>
           <div class="ref-summary">${ref.ai_summary}</div>
           
-          <div class="ref-services" style="margin-top: 10px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;">
+          <div class="ref-services" style="margin-top: auto; margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;">
             <div class="vertical-row" style="display: flex; flex-wrap: wrap; gap: 4px;" onclick="event.stopPropagation()">
               ${verticalTag}
             </div>
