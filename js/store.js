@@ -319,7 +319,7 @@ const STORE = (() => {
             }
           }
 
-          // 3. Un-migrate broken asset types
+                    // 3. Un-migrate broken asset types (v4)
           if (item.asset_type && typeof item.asset_type === 'string') {
             const originalItem = window.PORTAL_DATA.materials.find(d => d.id === item.id);
             if (originalItem && originalItem.asset_type) {
@@ -328,30 +328,48 @@ const STORE = (() => {
                 modified = true;
               }
             } else {
-              // It's a user-added file that got migrated. Let's try to restore it based on tags or file_type
-              if (item.asset_type === 'others') {
-                if (item.file_type === 'pdf') item.asset_type = 'pdf';
-                else if (item.file_type === 'image') item.asset_type = 'image';
-                else if (item.file_type === 'video') item.asset_type = 'video';
-                else item.asset_type = 'other'; 
+              // User-added files recovery
+              const oldTypes = ['contract','offer-prep','deck','process-doc','template','training','social-media-link','doc-link','pdf','branding','creative','video','image','report','case','analytics','media-plan','smm'];
+              let recoveredType = null;
+              if (item.tags && Array.isArray(item.tags)) {
+                recoveredType = oldTypes.find(t => item.tags.includes(t));
+              }
+
+              if (item.asset_type === 'others' || item.asset_type === 'other') {
+                if (recoveredType) {
+                  item.asset_type = recoveredType;
+                } else if (item.file_type === 'pdf') {
+                  item.asset_type = 'pdf';
+                } else if (item.file_type === 'image') {
+                  item.asset_type = 'image';
+                } else if (item.file_type === 'video') {
+                  item.asset_type = 'video';
+                } else {
+                  item.asset_type = 'other';
+                }
                 modified = true;
               } else if (item.asset_type === 'creatives') {
-                if (item.tags && item.tags.includes('branding')) item.asset_type = 'branding';
-                else if (item.file_type === 'video') item.asset_type = 'video';
-                else if (item.file_type === 'image') item.asset_type = 'image';
-                else item.asset_type = 'creative';
+                if (recoveredType) {
+                  item.asset_type = recoveredType;
+                } else if (item.file_type === 'video') {
+                  item.asset_type = 'video';
+                } else if (item.file_type === 'image') {
+                  item.asset_type = 'image';
+                } else {
+                  item.asset_type = 'creative';
+                }
                 modified = true;
               } else if (item.asset_type === 'performance-marketing') {
-                item.asset_type = 'report';
+                item.asset_type = recoveredType || 'report';
                 modified = true;
               } else if (item.asset_type === 'case-study') {
-                item.asset_type = 'case';
+                item.asset_type = recoveredType || 'case';
                 modified = true;
               } else if (item.asset_type === 'ppc-media-plans') {
-                item.asset_type = 'media-plan';
+                item.asset_type = recoveredType || 'media-plan';
                 modified = true;
               } else if (item.asset_type === 'smm-profiles') {
-                item.asset_type = 'social-media-profile';
+                item.asset_type = recoveredType || 'social-media-profile';
                 modified = true;
               }
             }
