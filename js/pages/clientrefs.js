@@ -80,7 +80,6 @@ const PAGE_CLIENTREFS = (() => {
   }
 
   function syncClients() {
-    try {
     // Scan all materials in STORE for unique client names (excluding Internal, NDA generics)
     const deletedNames = STORE.getDeletedClientNames() || [];
     const materials = STORE.getMaterials() || [];
@@ -147,11 +146,6 @@ const PAGE_CLIENTREFS = (() => {
         }
       }
     });
-  }
-
-    } catch (e) {
-      console.error('syncClients CRASH:', e);
-    }
   }
 
   function render(container, focusClientName = null) {
