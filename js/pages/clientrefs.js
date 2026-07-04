@@ -221,7 +221,7 @@ const PAGE_CLIENTREFS = (() => {
     let visibilityControl = '';
     if (isSuperAdmin) {
       visibilityControl = `
-        <div class="admin-form animate-fade" style="margin-bottom:20px; padding: 14px; border-radius: var(--r-lg);">
+        <div class="admin-form animate-fade" style="margin-bottom:0; padding: 14px; border-radius: var(--r-lg);">
           <h3 style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:10px; text-transform:uppercase; font-family:var(--font-mono); display:flex; align-items:center; gap:8px">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Super Admin - Industry / Category Visibility Settings
@@ -265,13 +265,13 @@ const PAGE_CLIENTREFS = (() => {
     if (isSuperAdmin) {
       if (_isFetching) {
         ingestionArea = `
-          <div class="admin-form animate-fade" style="margin-bottom:20px; padding: 20px; border-radius: var(--r-lg); text-align: center;">
+          <div class="admin-form animate-fade" style="margin-bottom:0; padding: 20px; border-radius: var(--r-lg); text-align: center;">
             <div class="loader" style="margin: 0 auto 12px;"></div>
             <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-mono)">Fetching publicly available metadata and generating AI summary...</div>
           </div>`;
       } else if (_fetchedData) {
         ingestionArea = `
-          <div class="admin-form animate-fade" style="margin-bottom:20px; padding: 20px; border-radius: var(--r-lg); border: 1px solid var(--accent-dim);">
+          <div class="admin-form animate-fade" style="margin-bottom:0; padding: 20px; border-radius: var(--r-lg); border: 1px solid var(--accent-dim);">
             <h3 style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:14px; text-transform:uppercase; font-family:var(--font-mono)">
               ⚡ Preview Ingested Client Reference
             </h3>
@@ -340,10 +340,10 @@ const PAGE_CLIENTREFS = (() => {
       </div>`;
       } else {
         ingestionArea = `
-          <div class="admin-form animate-fade" style="margin-bottom:20px; padding: 16px; border-radius: var(--r-lg);">
+          <div class="admin-form animate-fade" style="margin-bottom:0; padding: 16px; border-radius: var(--r-lg);">
             <h3 style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:12px; text-transform:uppercase; font-family:var(--font-mono); display:flex; align-items:center; gap:8px">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Ingest Website Reference / Paste Client Tab
+              Ingest Website Reference / Paste Client URL
             </h3>
             <form id="url-ingest-form" style="display:flex; gap:12px; align-items: flex-end; width: 100%;">
               <div style="flex:1" class="input-group">
@@ -371,18 +371,17 @@ const PAGE_CLIENTREFS = (() => {
           <button class="btn btn-primary" onclick="checkSuperAdminAction(() => ROUTER.navigate('admin'))">${ICONS.plus} Content Center</button>
         </div>
 
-        ${visibilityControl}
-        ${ingestionArea}
+        <div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:20px;">
+          <div style="flex:2;">${visibilityControl}</div>
+          <div style="flex:1;">${ingestionArea}</div>
+        </div>
 
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <div class="search-bar" style="flex:1;min-width:220px">
             ${ICONS.search}
             <input id="refs-search" type="text" placeholder="Search client references…" value="${_query}" autocomplete="off">
           </div>
-          <select class="select" id="refs-vertical" style="width:160px">
-            <option value="all">All Verticals</option>
-            ${visibleVerticals.map(v => `<option value="${v}" ${_vertical === v ? 'selected':''}>${v}</option>`).join('')}
-          </select>
+          
           <select class="select" id="refs-sort" style="width:160px">
             <option value="recent" ${_sortOrder === 'recent' ? 'selected':''}>Recently Added</option>
             <option value="alpha" ${_sortOrder === 'alpha' ? 'selected':''}>Alphabetical Order</option>
@@ -407,16 +406,12 @@ const PAGE_CLIENTREFS = (() => {
     // Hook listeners
     container.querySelector('#refs-search').addEventListener('input', e => { _query = e.target.value; renderGrid(container); });
     container.querySelector('#refs-sort').addEventListener('change', e => { _sortOrder = e.target.value; renderGrid(container); });
-    container.querySelector('#refs-vertical').addEventListener('change', e => {
-      _vertical = e.target.value;
-      updateChips(container);
-      renderGrid(container);
-    });
+    
 
     container.querySelectorAll('.filter-chip[data-v]').forEach(chip => {
       chip.addEventListener('click', () => {
         _vertical = chip.dataset.v;
-        container.querySelector('#refs-vertical').value = _vertical;
+        
         updateChips(container);
         renderGrid(container);
       });
