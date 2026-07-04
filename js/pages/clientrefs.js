@@ -949,7 +949,7 @@ const PAGE_CLIENTREFS = (() => {
         if (immediateSave) {
           saveBase64Thumb(refId, evt.target.result);
         } else {
-          const input = document.getElementById('ref-detail-thumb-input');
+          const input = document.getElementById(prefix + '-thumb-input');
           if (input) input.value = evt.target.result;
           const preview = document.getElementById(prefix + '-thumb-preview-wrap');
           if (preview) preview.innerHTML = `<img src="${evt.target.result}" style="width:100%; height:100%; object-fit:cover">`;
@@ -961,7 +961,7 @@ const PAGE_CLIENTREFS = (() => {
       if (immediateSave) {
         saveBase64Thumb(refId, imageUrl);
       } else {
-        const input = document.getElementById('ref-detail-thumb-input');
+        const input = document.getElementById(prefix + '-thumb-input');
         if (input) input.value = imageUrl;
         const preview = document.getElementById(prefix + '-thumb-preview-wrap');
         if (preview) preview.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover">`;
