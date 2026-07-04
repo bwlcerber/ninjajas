@@ -716,7 +716,7 @@ const PAGE_REPORTS = (() => {
     
     openModal({
       title: 'Edit Metadata',
-      body: \`<div id="global-edit-report-wrap">\${renderInlineEditForm(mat)}</div>\`,
+      body: `<div id="global-edit-report-wrap">${renderInlineEditForm(mat)}</div>`,
       footer: '',
       size: 'medium'
     });
