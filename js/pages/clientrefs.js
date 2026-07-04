@@ -334,8 +334,9 @@ const PAGE_CLIENTREFS = (() => {
                 <button class="btn btn-secondary btn-sm" onclick="PAGE_CLIENTREFS.cancelIngest()">Cancel</button>
                 <button class="btn btn-primary btn-sm" onclick="PAGE_CLIENTREFS.saveIngest()">Save Reference</button>
               </div>
-            </div>
-          </div>`;
+          </div>
+        </div>
+      </div>`;
       } else {
         ingestionArea = `
           <div class="admin-form animate-fade" style="margin-bottom:20px; padding: 16px; border-radius: var(--r-lg);">
@@ -677,7 +678,7 @@ const PAGE_CLIENTREFS = (() => {
           extraStyle = 'background: rgba(255,255,255,0.1) !important; color: #fff !important; border: 1px dashed rgba(255,255,255,0.4) !important;';
         }
         serviceTagsHTML.push(`
-          <span class="tag tag-service tag-interactive ${activeClass}" style="${extraStyle}" 
+          <span class="tag tag-info tag-interactive ${activeClass}" style="${extraStyle}" 
                 onclick="PAGE_CLIENTREFS.toggleTag('${displayTag}')">
             ${displayTag}
           </span>`);
@@ -713,16 +714,17 @@ const PAGE_CLIENTREFS = (() => {
           </div>
           <div class="ref-summary">${ref.ai_summary}</div>
           
-          <div class="ref-services" style="margin-top: auto; margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;">
-            <div class="vertical-row" style="display: flex; flex-wrap: wrap; gap: 4px;" onclick="event.stopPropagation()">
-              ${verticalTag}
+          <div style="margin-top: auto; display: flex; flex-direction: column; gap: 16px;">
+            <div class="ref-services" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 6px;">
+              <div class="vertical-row" style="display: flex; flex-wrap: wrap; gap: 4px;" onclick="event.stopPropagation()">
+                ${verticalTag}
+              </div>
+              <div class="services-row" style="display: flex; flex-wrap: wrap; gap: 4px;" onclick="event.stopPropagation()">
+                ${serviceTags}
+              </div>
             </div>
-            <div class="services-row" style="display: flex; flex-wrap: wrap; gap: 4px;" onclick="event.stopPropagation()">
-              ${serviceTags}
-            </div>
-          </div>
-          
-          <div class="ref-actions" onclick="event.stopPropagation()">
+            
+            <div class="ref-actions" onclick="event.stopPropagation()" style="margin-top: 0 !important;">
             <a class="btn btn-sm btn-primary" href="${ref.website_url}" target="_blank" rel="noopener">
                Open Website
             </a>
@@ -731,6 +733,7 @@ const PAGE_CLIENTREFS = (() => {
                 ${ICONS.open_all} Open All Assets
               </button>
             ` : ''}
+          </div>
           </div>
         </div>
       </div>`;
