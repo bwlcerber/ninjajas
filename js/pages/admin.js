@@ -256,8 +256,7 @@ const PAGE_ADMIN = (() => {
       <div class="admin-form">
         <div class="admin-form-title">${data.id ? '✏️ Edit Material' : '+ Create Material'}</div>
         
-        <div style="margin-bottom:12px; font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui)">📋 BASIC INFORMATION</div>
-        <div class="form-grid" style="margin-bottom:16px">
+        <div class="form-grid" style="margin-bottom:8px">
           <div class="input-group span-2">
             <label class="input-label">Title *</label>
             <input class="input" id="mat-title" type="text" placeholder="Report, deck or case title" value="${data.title || ''}">
@@ -268,7 +267,7 @@ const PAGE_ADMIN = (() => {
           </div>
           <div class="input-group span-2">
             <label class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="mat-geos-checkboxes">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;" id="mat-geos-checkboxes">
               ${window.PORTAL_DATA.GEOS.map(g => {
                 const isChecked = (data.geos || []).includes(g) || (data.geo || 'Global') === g;
                 return `
@@ -281,11 +280,10 @@ const PAGE_ADMIN = (() => {
           </div>
         </div>
 
-        <div style="margin-bottom:12px; font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui)">🏷️ LINKAGE & CLASSIFICATION</div>
-        <div class="form-grid" style="margin-bottom:16px">
+        <div class="form-grid" style="margin-bottom:8px">
           <div class="input-group span-2">
             <label class="input-label" style="font-size:11px; margin-bottom: 4px;">Verticals / Industries *</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="mat-verticals-checkboxes">
+            <div style="display:flex; flex-wrap:wrap; gap:6px; row-gap:8px;" id="mat-verticals-checkboxes">
               ${(() => {
                 const matVerts = data.verticals || (data.vertical ? [data.vertical] : []);
                 const sorted = [...VERTICALS].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
@@ -315,7 +313,6 @@ const PAGE_ADMIN = (() => {
           </div>
         </div>
 
-        <div style="margin-bottom:12px; font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui)">🔗 MEDIA & ASSETS</div>
         <div class="form-grid">
           <div class="input-group span-2">
             <label class="input-label">File URL / Link *</label>
@@ -330,9 +327,9 @@ const PAGE_ADMIN = (() => {
             <textarea class="input" id="mat-desc" rows="2" placeholder="Short description…">${data.description || ''}</textarea>
           </div>
           
-          <div class="input-group span-2" style="margin-top:4px">
+          <div class="input-group span-2" style="margin-top:2px">
             <label class="input-label" style="font-size:11px; margin-bottom:4px;">Services Provided *</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="mat-services-checkboxes">
+            <div style="display:flex; flex-wrap:wrap; gap:6px; row-gap:8px;" id="mat-services-checkboxes">
               ${[...SERVICES].sort().map(s => {
                 const matServices = data.services_provided || [];
                 return `
