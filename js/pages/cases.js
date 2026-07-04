@@ -717,6 +717,7 @@ const PAGE_CASES = (() => {
     // ⑤ Process explicit numerical order change (Fractional Shift)
     const orderInput = document.getElementById('edit-case-order');
     if (orderInput) {
+      const mat = STORE.getMaterialById(matId);
       const newOrder = parseInt(orderInput.value, 10);
       const allItems = STORE.getByType(mat.asset_type);
       const currentIndex = allItems.findIndex(m => m.id === matId);

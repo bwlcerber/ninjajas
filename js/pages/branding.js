@@ -667,6 +667,7 @@ const PAGE_BRANDING = (() => {
     // ⑤ Process explicit numerical order change (Fractional Shift)
     const orderInput = document.getElementById('edit-branding-order');
     if (orderInput) {
+      const mat = STORE.getMaterialById(matId);
       const newOrder = parseInt(orderInput.value, 10);
       const allItems = STORE.getByType(mat.asset_type);
       const currentIndex = allItems.findIndex(m => m.id === matId);
