@@ -80,7 +80,6 @@ const PAGE_CLIENTREFS = (() => {
   }
 
   function syncClients() {
-    // Scan all materials in STORE for unique client names (excluding Internal, NDA generics)
     const deletedNames = STORE.getDeletedClientNames() || [];
     const materials = STORE.getMaterials() || [];
     materials.forEach(m => {
@@ -88,10 +87,11 @@ const PAGE_CLIENTREFS = (() => {
       if (!clientName || clientName === 'Internal' || (clientName || 'N/A').toLowerCase().includes('nda') || clientName === 'Client Name Not Available') return;
       if (deletedNames.includes((clientName || 'N/A').toLowerCase())) return;
 
-      // Find any case study for this client
-      const cases = materials.filter(x => x.asset_type === 'case' && x.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
-      // Find any creatives for this client
-      const creatives = materials.filter(x => ['creative', 'image', 'video'].includes(x.asset_type || x.file_type) && x.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
+      // Find all assets for this client
+      const clientAssets = materials.filter(x => x.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
+      
+      const cases = clientAssets.filter(x => ['case', 'branding'].includes(x.asset_type));
+      const creatives = clientAssets.filter(x => ['creative', 'image', 'video'].includes(x.asset_type || x.file_type));
 
       let thumbnail = '';
       let desc = '';
@@ -104,48 +104,107 @@ const PAGE_CLIENTREFS = (() => {
         desc = creatives[0].description || '';
       }
 
-      if (!desc || desc.includes('Newly synchronized')) {
+      if (!desc || desc === 'undefined' || desc.includes('Newly synchronized') || desc === 'N/A') {
         desc = `Showcase of premium digital marketing and design solutions executed for ${clientName}.`;
       }
 
-      // Condense description to strictly 3 lines or less (max 130 characters)
       if (desc.length > 130) {
         desc = desc.slice(0, 127) + '...';
       }
 
+      // Aggregate all tags, verticals, and services
+      const allTags = new Set();
+      clientAssets.forEach(a => {
+        if (a.vertical) allTags.add(a.vertical);
+        if (Array.isArray(a.verticals)) a.verticals.forEach(v => allTags.add(v));
+        if (Array.isArray(a.services_provided)) a.services_provided.forEach(s => allTags.add(s));
+        if (Array.isArray(a.tags)) a.tags.forEach(t => allTags.add(t));
+      });
+      const servicesArray = Array.from(allTags).filter(t => window.PORTAL_DATA.SERVICES.includes(t) || ['FINTECH', 'WEB3', 'IGAMING', 'ECOMMERCE', 'B2B', 'B2C', 'CYBER SECURITY'].includes(t.toUpperCase()) || window.PORTAL_DATA.VERTICALS.includes(t));
+
       const existingRef = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
+      
       if (!existingRef) {
         STORE.addClientRef({
           client_name: clientName,
-          website_url: 'https://ninjapromo.io',
+          website_url: 'N/A', // user prefers N/A for empty websites
           vertical: m.vertical || 'Other',
           geo: m.geo || 'Global',
           ai_summary: desc,
-          services_provided: m.services_provided || ['SEO'],
+          services_provided: servicesArray.length ? servicesArray : (m.services_provided || ['SEO']),
           thumbnail_url: thumbnail
         });
         STORE.addClientProfile({
           client_name: clientName,
           vertical: m.vertical || 'Other',
           geo: m.geo || 'Global',
-          website_url: 'https://ninjapromo.io',
-          services_provided: m.services_provided || ['SEO'],
+          website_url: 'N/A',
+          services_provided: servicesArray.length ? servicesArray : (m.services_provided || ['SEO']),
           notes: desc,
           budget_range: '$10k-$25k',
           contacts: []
         });
       } else {
-        // Update existing ref description/thumbnail if they contain the placeholder/generic text
-        if (!existingRef.thumbnail_url || existingRef.thumbnail_url.includes('picsum.photos') || (existingRef.ai_summary || '').includes('Newly synchronized')) {
-          if (thumbnail) {
-            existingRef.thumbnail_url = thumbnail;
-          }
-          if (desc && ((existingRef.ai_summary || '').includes('Newly synchronized') || (existingRef.ai_summary || '').length > 130)) {
-            existingRef.ai_summary = desc;
+        let changed = false;
+        
+        // Ensure ai_summary is valid
+        if (!existingRef.ai_summary || existingRef.ai_summary === 'undefined' || existingRef.ai_summary.includes('Newly synchronized')) {
+           existingRef.ai_summary = desc;
+           changed = true;
+        }
+
+        // Update thumbnail if missing
+        if ((!existingRef.thumbnail_url || existingRef.thumbnail_url.includes('picsum.photos')) && thumbnail) {
+           existingRef.thumbnail_url = thumbnail;
+           changed = true;
+        }
+
+        // Merge missing tags from materials into existing services_provided
+        if (!existingRef.services_provided) existingRef.services_provided = [];
+        let servicesChanged = false;
+        servicesArray.forEach(t => {
+           if (!existingRef.services_provided.includes(t)) {
+             existingRef.services_provided.push(t);
+             servicesChanged = true;
+           }
+        });
+        if (servicesChanged) changed = true;
+
+        if (changed) {
+          // If we modified existingRef directly by reference it doesn't auto-save to STORE
+          // So we should force a save.
+          const ud = STORE.loadUserData();
+          const refIdx = ud.clientRefs.findIndex(r => r.id === existingRef.id);
+          if (refIdx !== -1) {
+            ud.clientRefs[refIdx] = existingRef;
+            STORE.saveUserData(ud);
           }
         }
       }
     });
+
+    // Garbage collection: remove orphaned auto-generated client refs
+    const ud = STORE.loadUserData();
+    if (ud && ud.clientRefs) {
+      let cleaned = false;
+      ud.clientRefs = ud.clientRefs.filter(ref => {
+        // If it was manually ingested, we KEEP it (assume manual ingest has a real summary, or thumbnail, or it's a known URL)
+        // But if it's an auto-generated one with NO materials, and it has the generic text, we prune it.
+        const hasMaterials = materials.some(m => m.client_name?.toLowerCase() === (ref.client_name || '').toLowerCase());
+        const isGeneric = (ref.ai_summary || '').includes('Showcase of premium digital marketing and design solutions executed for');
+        const hasNoThumb = !ref.thumbnail_url || ref.thumbnail_url.includes('picsum.photos');
+        
+        if (!hasMaterials && isGeneric && hasNoThumb) {
+          cleaned = true;
+          return false; // delete it
+        }
+        return true; // keep it
+      });
+      if (cleaned) {
+        STORE.saveUserData(ud);
+        // also reload STORE data in memory if necessary
+      }
+    }
   }
 
   function render(container, focusClientName = null) {
