@@ -342,27 +342,27 @@ const STORE = (() => {
 
       // Client references override matching client_name or id
       const userRefsMap = new Map(user.clientRefs.map(r => [r.id, r]));
-      const userRefKeys = new Map(user.clientRefs.map(r => [r.client_name.toLowerCase(), r]));
+      const userRefKeys = new Map(user.clientRefs.map(r => [(r.client_name || 'N/A').toLowerCase(), r]));
       const resolvedRefs = seed.clientRefs.filter(r => !deleted.includes(r.id)).map(r => {
         if (userRefsMap.has(r.id)) return userRefsMap.get(r.id);
-        if (userRefKeys.has(r.client_name.toLowerCase())) return userRefKeys.get(r.client_name.toLowerCase());
+        if (userRefKeys.has((r.client_name || 'N/A').toLowerCase())) return userRefKeys.get((r.client_name || 'N/A').toLowerCase());
         return r;
       });
       const seedRefIds = new Set(seed.clientRefs.map(r => r.id));
-      const seedRefKeys = new Set(seed.clientRefs.map(r => r.client_name.toLowerCase()));
-      const userOnlyRefs = user.clientRefs.filter(r => !seedRefIds.has(r.id) && !seedRefKeys.has(r.client_name.toLowerCase()));
+      const seedRefKeys = new Set(seed.clientRefs.map(r => (r.client_name || 'N/A').toLowerCase()));
+      const userOnlyRefs = user.clientRefs.filter(r => !seedRefIds.has(r.id) && !seedRefKeys.has((r.client_name || 'N/A').toLowerCase()));
 
       // Client profiles override matching client_name or id
       const userProfsMap = new Map(user.clientProfiles.map(p => [p.id, p]));
-      const userProfKeys = new Map(user.clientProfiles.map(p => [p.client_name.toLowerCase(), p]));
+      const userProfKeys = new Map(user.clientProfiles.map(p => [(p.client_name || 'N/A').toLowerCase(), p]));
       const resolvedProfiles = seed.clientProfiles.filter(p => !deleted.includes(p.id)).map(p => {
         if (userProfsMap.has(p.id)) return userProfsMap.get(p.id);
-        if (userProfKeys.has(p.client_name.toLowerCase())) return userProfKeys.get(p.client_name.toLowerCase());
+        if (userProfKeys.has((p.client_name || 'N/A').toLowerCase())) return userProfKeys.get((p.client_name || 'N/A').toLowerCase());
         return p;
       });
       const seedProfIds = new Set(seed.clientProfiles.map(p => p.id));
-      const seedProfKeys = new Set(seed.clientProfiles.map(p => p.client_name.toLowerCase()));
-      const userOnlyProfs = user.clientProfiles.filter(p => !seedProfIds.has(p.id) && !seedProfKeys.has(p.client_name.toLowerCase()));
+      const seedProfKeys = new Set(seed.clientProfiles.map(p => (p.client_name || 'N/A').toLowerCase()));
+      const userOnlyProfs = user.clientProfiles.filter(p => !seedProfIds.has(p.id) && !seedProfKeys.has((p.client_name || 'N/A').toLowerCase()));
 
       const materialsArr = [...resolvedMaterials, ...userOnlyMats];
       
@@ -490,7 +490,7 @@ const STORE = (() => {
 
   function getProfileForClient(clientName) {
     return getClientProfiles().find(p =>
-      p.client_name.toLowerCase() === clientName.toLowerCase()
+      (p.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()
     ) || null;
   }
 
@@ -599,7 +599,7 @@ const STORE = (() => {
       // Store deleted client name to prevent auto-regeneration via syncClients
       if (ref.client_name) {
         ud.deletedClientNames = ud.deletedClientNames || [];
-        const lowerName = ref.client_name.toLowerCase();
+        const lowerName = (ref.client_name || 'N/A').toLowerCase();
         if (!ud.deletedClientNames.includes(lowerName)) {
           ud.deletedClientNames.push(lowerName);
         }
@@ -671,7 +671,7 @@ const STORE = (() => {
           ud._deletedSeeds = (ud._deletedSeeds || []).filter(sid => sid !== id);
         }
         if (record.client_name) {
-          ud.deletedClientNames = (ud.deletedClientNames || []).filter(name => name !== record.client_name.toLowerCase());
+          ud.deletedClientNames = (ud.deletedClientNames || []).filter(name => name !== (record.client_name || 'N/A').toLowerCase());
         }
       }
     } else if (type === 'clientProfile') {
@@ -708,13 +708,13 @@ const STORE = (() => {
 
     // 1. Update materials in user data
     ud.materials.forEach(m => {
-      if (m.client_name && typeof m.client_name === 'string' && m.client_name.toLowerCase() === clientName.toLowerCase()) {
+      if (m.client_name && typeof m.client_name === 'string' && (m.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()) {
         m.geo = geo;
       }
     });
     // Override seed materials matching this client
     window.PORTAL_DATA.materials.forEach(m => {
-      if (m.client_name && typeof m.client_name === 'string' && m.client_name.toLowerCase() === clientName.toLowerCase()) {
+      if (m.client_name && typeof m.client_name === 'string' && (m.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()) {
         const alreadyOverridden = ud.materials.some(um => um.id === m.id);
         if (!alreadyOverridden) {
           ud.materials.push({ ...m, geo: geo, _override: true });
@@ -724,12 +724,12 @@ const STORE = (() => {
 
     // 2. Update clientRefs in user data
     ud.clientRefs.forEach(r => {
-      if (r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase()) {
+      if (r.client_name && typeof r.client_name === 'string' && (r.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()) {
         r.geo = geo;
       }
     });
     window.PORTAL_DATA.clientRefs.forEach(r => {
-      if (r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase()) {
+      if (r.client_name && typeof r.client_name === 'string' && (r.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()) {
         const alreadyOverridden = ud.clientRefs.some(ur => ur.id === r.id);
         if (!alreadyOverridden) {
           ud.clientRefs.push({ ...r, geo: geo });
@@ -739,12 +739,12 @@ const STORE = (() => {
 
     // 3. Update clientProfiles in user data
     ud.clientProfiles.forEach(p => {
-      if (p.client_name && typeof p.client_name === 'string' && p.client_name.toLowerCase() === clientName.toLowerCase()) {
+      if (p.client_name && typeof p.client_name === 'string' && (p.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()) {
         p.geo = geo;
       }
     });
     window.PORTAL_DATA.clientProfiles.forEach(p => {
-      if (p.client_name && typeof p.client_name === 'string' && p.client_name.toLowerCase() === clientName.toLowerCase()) {
+      if (p.client_name && typeof p.client_name === 'string' && (p.client_name || 'N/A').toLowerCase() === clientName.toLowerCase()) {
         const alreadyOverridden = ud.clientProfiles.some(up => up.id === p.id);
         if (!alreadyOverridden) {
           ud.clientProfiles.push({ ...p, geo: geo });

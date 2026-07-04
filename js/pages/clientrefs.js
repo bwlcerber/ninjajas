@@ -85,13 +85,13 @@ const PAGE_CLIENTREFS = (() => {
     const materials = STORE.getMaterials() || [];
     materials.forEach(m => {
       const clientName = m.client_name;
-      if (!clientName || clientName === 'Internal' || clientName.toLowerCase().includes('nda') || clientName === 'Client Name Not Available') return;
-      if (deletedNames.includes(clientName.toLowerCase())) return;
+      if (!clientName || clientName === 'Internal' || (clientName || 'N/A').toLowerCase().includes('nda') || clientName === 'Client Name Not Available') return;
+      if (deletedNames.includes((clientName || 'N/A').toLowerCase())) return;
 
       // Find any case study for this client
-      const cases = materials.filter(x => x.asset_type === 'case' && x.client_name?.toLowerCase() === clientName.toLowerCase());
+      const cases = materials.filter(x => x.asset_type === 'case' && x.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
       // Find any creatives for this client
-      const creatives = materials.filter(x => ['creative', 'image', 'video'].includes(x.asset_type || x.file_type) && x.client_name?.toLowerCase() === clientName.toLowerCase());
+      const creatives = materials.filter(x => ['creative', 'image', 'video'].includes(x.asset_type || x.file_type) && x.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
 
       let thumbnail = '';
       let desc = '';
@@ -113,7 +113,7 @@ const PAGE_CLIENTREFS = (() => {
         desc = desc.slice(0, 127) + '...';
       }
 
-      const existingRef = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === clientName.toLowerCase());
+      const existingRef = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
       if (!existingRef) {
         STORE.addClientRef({
           client_name: clientName,
@@ -407,7 +407,7 @@ const PAGE_CLIENTREFS = (() => {
         geo: 'Global',
         ai_summary: summary,
         services_provided: ['SEO', 'Design', 'Web / Landing Pages'],
-        thumbnail_url: `https://picsum.photos/seed/${clientName.toLowerCase()}-ref/600/340`
+        thumbnail_url: `https://picsum.photos/seed/${(clientName || 'N/A').toLowerCase()}-ref/600/340`
       };
 
       _isFetching = false;
@@ -636,7 +636,7 @@ const PAGE_CLIENTREFS = (() => {
 
   function renderDetail(container, clientName) {
     const decodedName = decodeURIComponent(clientName);
-    const ref = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === decodedName.toLowerCase());
+    const ref = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === (decodedName || 'N/A').toLowerCase());
     const profile = STORE.getProfileForClient(decodedName);
 
     if (!ref && !profile) {
@@ -663,7 +663,7 @@ const PAGE_CLIENTREFS = (() => {
 
     // Query materials dynamically by client name, excluding cases/branding from related assets
     const materials = STORE.getMaterials().filter(m => 
-      m.client_name?.toLowerCase() === decodedName.toLowerCase() && 
+      m.client_name?.toLowerCase() === (decodedName || 'N/A').toLowerCase() && 
       m.asset_type !== 'case' && 
       m.asset_type !== 'branding'
     );
@@ -900,8 +900,8 @@ const PAGE_CLIENTREFS = (() => {
   }
 
   function openEditClientModal(clientName) {
-    const ref = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === clientName.toLowerCase());
-    const profile = STORE.getClientProfiles().find(p => p.client_name?.toLowerCase() === clientName.toLowerCase());
+    const ref = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
+    const profile = STORE.getClientProfiles().find(p => p.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
     if (!ref && !profile) {
       showToast('Client not found', 'error');
       return;
@@ -1024,7 +1024,7 @@ const PAGE_CLIENTREFS = (() => {
     const ud = STORE.loadUserData();
 
     // 1. Update clientRefs in localStorage/state
-    const ref = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === oldClientName.toLowerCase());
+    const ref = STORE.getClientRefs().find(r => r.client_name?.toLowerCase() === (oldClientName || 'N/A').toLowerCase());
     const updatedRef = {
       id: ref ? ref.id : `ref-user-${Date.now()}`,
       client_name: name,
@@ -1046,7 +1046,7 @@ const PAGE_CLIENTREFS = (() => {
     }
 
     // 2. Update clientProfiles in localStorage/state
-    const profile = STORE.getClientProfiles().find(p => p.client_name?.toLowerCase() === oldClientName.toLowerCase());
+    const profile = STORE.getClientProfiles().find(p => p.client_name?.toLowerCase() === (oldClientName || 'N/A').toLowerCase());
     const updatedProfile = {
       id: profile ? profile.id : `profile-user-${Date.now()}`,
       client_name: name,
@@ -1067,7 +1067,7 @@ const PAGE_CLIENTREFS = (() => {
     }
 
     // 3. Update all materials associated with this client to the new name!
-    const materials = STORE.getMaterials().filter(m => m.client_name?.toLowerCase() === oldClientName.toLowerCase());
+    const materials = STORE.getMaterials().filter(m => m.client_name?.toLowerCase() === (oldClientName || 'N/A').toLowerCase());
     materials.forEach(m => {
       m.client_name = name;
       const idx = ud.materials.findIndex(mat => mat.id === m.id);
@@ -1106,14 +1106,14 @@ const PAGE_CLIENTREFS = (() => {
     
     // Delete associated materials
     if (clientName) {
-      const materials = STORE.getMaterials().filter(m => m.client_name && m.client_name?.toLowerCase() === clientName.toLowerCase());
+      const materials = STORE.getMaterials().filter(m => m.client_name && m.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
       materials.forEach(m => {
         STORE.deleteMaterial(m.id);
       });
       // Prevent syncClients from regenerating it
       const ud = STORE.loadUserData();
       ud.deletedClientNames = ud.deletedClientNames || [];
-      const lowerName = clientName.toLowerCase();
+      const lowerName = (clientName || 'N/A').toLowerCase();
       if (!ud.deletedClientNames.includes(lowerName)) {
         ud.deletedClientNames.push(lowerName);
       }
@@ -1194,7 +1194,7 @@ const PAGE_CLIENTREFS = (() => {
             <span class="input-label" style="font-size:11px; margin-bottom:4px;">Verticals / Industries * (Select multiple)</span>
             <div style="display:flex; flex-wrap:wrap; gap:8px;" id="add-asset-verticals">
               ${(() => {
-                const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name?.toLowerCase() === clientName.toLowerCase());
+                const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
                 const clientVerts = ref ? (ref.verticals || [ref.vertical]) : [];
                 const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
                 if (verticals.includes('Other')) sorted.push('Other');
@@ -1267,7 +1267,7 @@ const PAGE_CLIENTREFS = (() => {
       });
     }
 
-    const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name?.toLowerCase() === client.toLowerCase());
+    const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name?.toLowerCase() === (client || 'N/A').toLowerCase());
     
     // Fallback to client profile if no verticals selected in the UI
     let finalVerticals = selectedVerticals.length > 0 ? selectedVerticals : (ref ? (ref.verticals || [ref.vertical]) : ['Other']);
