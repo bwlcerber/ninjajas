@@ -686,6 +686,7 @@ const PAGE_CLIENTREFS = (() => {
 
     const verticalTag = industryTagsHTML.join('');
     const serviceTags = serviceTagsHTML.join('');
+    const isChecked = window.CALL_PREP_BASKET && window.CALL_PREP_BASKET.has(ref.id);
 
     return `
       <div class="ref-card animate-fade ${isHidden ? 'is-hidden' : ''}" style="cursor:pointer; position:relative;" onclick="ROUTER.navigate('clientrefs','${encodeURIComponent(ref.client_name)}')">
