@@ -1311,7 +1311,7 @@ const PAGE_CLIENTREFS = (() => {
 
         <div class="form-grid">
           <div class="input-group span-2">
-            <span class="input-label">Asset Title * (Manual entry for single links)</span>
+            <span class="input-label">File Title * (Manual entry for single links)</span>
             <input class="input" type="text" id="add-asset-title" placeholder="e.g. Dplay Casino Banner Ad" style="height:34px; font-size:12px;">
           </div>
           <div class="input-group">
@@ -1338,7 +1338,7 @@ const PAGE_CLIENTREFS = (() => {
             </select>
           </div>
           <div class="input-group span-2">
-            <span class="input-label">File / Image URL * (Manual entry for single links)</span>
+            <span class="input-label">File URL * (Manual entry for single links)</span>
             <input class="input" type="url" id="add-asset-url" placeholder="https://..." style="height:34px; font-size:12px;">
           </div>
           <div class="input-group span-2">
@@ -1380,11 +1380,11 @@ const PAGE_CLIENTREFS = (() => {
     `;
 
     openModal({
-      title: `Add Assets / Creatives for ${clientName}`,
+      title: `Add Files / Creatives for ${clientName}`,
       body: body,
       footer: `
         <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary btn-sm" onclick="PAGE_CLIENTREFS.saveNewAsset()">Save Asset(s)</button>
+        <button class="btn btn-primary btn-sm" onclick="PAGE_CLIENTREFS.saveNewAsset()">Save File(s)</button>
       `,
       size: 'medium'
     });
@@ -1395,7 +1395,7 @@ const PAGE_CLIENTREFS = (() => {
     const geo = document.getElementById('add-asset-geo').value;
     const type = document.getElementById('add-asset-type').value;
     const vis = document.getElementById('add-asset-vis').value;
-    const thumb = document.getElementById('add-asset-thumb').value.trim();
+    const thumb = '';
     const desc = document.getElementById('add-asset-desc').value.trim();
     const checkedServices = document.querySelectorAll('#add-asset-services input[type="checkbox"]:checked');
     const services = Array.from(checkedServices).map(cb => cb.value);
