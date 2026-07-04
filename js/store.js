@@ -312,6 +312,11 @@ const STORE = (() => {
           });
 
           // 2. Append 'Performance Report [Paid ads]' to Performance Marketing docs
+          if (item.title === 'Reply Guy report' && item.client_name === 'Top Casino Rewards' && item.asset_type === 'case') {
+            item.asset_type = 'other';
+            modified = true;
+          }
+
           if (item.asset_type === 'report' || item.asset_type === 'performance-marketing') {
             if (item.title && typeof item.title === 'string' && !item.title.toLowerCase().includes('performance report')) {
               item.title = item.title.trim() + ' Performance Report [Paid ads]';

@@ -1325,6 +1325,7 @@ const PAGE_CLIENTREFS = (() => {
           <div class="input-group">
             <span class="input-label">Asset Type *</span>
             <select class="select" id="add-asset-type" style="height:34px; font-size:12px;">
+              <option value="" disabled selected>Select Asset Type...</option>
               ${assetTypes.map(t => `<option value="${t}">${assetTypeLabel(t)}</option>`).join('')}
             </select>
           </div>
@@ -1389,6 +1390,12 @@ const PAGE_CLIENTREFS = (() => {
     const client = document.getElementById('add-asset-client').value.trim();
     const geo = document.getElementById('add-asset-geo').value;
     const type = document.getElementById('add-asset-type').value;
+    
+    if (!type) {
+      showToast('Please select an Asset Type', 'error');
+      return;
+    }
+
     const vis = document.getElementById('add-asset-vis').value;
     const thumb = '';
     const desc = document.getElementById('add-asset-desc').value.trim();
