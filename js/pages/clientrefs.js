@@ -949,7 +949,7 @@ const PAGE_CLIENTREFS = (() => {
         if (immediateSave) {
           saveBase64Thumb(refId, evt.target.result);
         } else {
-          const input = document.getElementById(prefix + '-thumb-input');
+          const input = document.getElementById('ref-detail-thumb-input');
           if (input) input.value = evt.target.result;
           const preview = document.getElementById(prefix + '-thumb-preview-wrap');
           if (preview) preview.innerHTML = `<img src="${evt.target.result}" style="width:100%; height:100%; object-fit:cover">`;
@@ -961,7 +961,7 @@ const PAGE_CLIENTREFS = (() => {
       if (immediateSave) {
         saveBase64Thumb(refId, imageUrl);
       } else {
-        const input = document.getElementById(prefix + '-thumb-input');
+        const input = document.getElementById('ref-detail-thumb-input');
         if (input) input.value = imageUrl;
         const preview = document.getElementById(prefix + '-thumb-preview-wrap');
         if (preview) preview.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover">`;
@@ -991,8 +991,36 @@ const PAGE_CLIENTREFS = (() => {
     }
   }
 
+  
+  function handleThumbDropEdit(e) {
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      uploadThumbnailFile(e.dataTransfer.files[0], null, false, 'edit-cli');
+    }
+  }
+
+  function handleThumbSelectEdit(e) {
+    if (e.target.files && e.target.files[0]) {
+      uploadThumbnailFile(e.target.files[0], null, false, 'edit-cli');
+    }
+  }
+
+  function handleThumbPasteEdit(e) {
+    const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.indexOf('image/') === 0) {
+        const file = item.getAsFile();
+        if (file) {
+          uploadThumbnailFile(file, null, false, 'edit-cli');
+          break;
+        }
+      }
+    }
+  }
+
   function saveDetailThumb(refId) {
-    const input = document.getElementById(prefix + '-thumb-input');
+    const input = document.getElementById('ref-detail-thumb-input');
     if (input) {
       saveBase64Thumb(refId, input.value.trim());
     }
