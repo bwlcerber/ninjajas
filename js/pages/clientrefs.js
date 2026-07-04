@@ -891,7 +891,7 @@ const PAGE_CLIENTREFS = (() => {
     if (!ref) return;
 
     const body = `
-      <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_CLIENTREFS.handleThumbPasteEdit(event)">
         <div class="input-group">
           <label class="input-label">Paste Image Link</label>
           <input class="input" id="ref-detail-thumb-input" type="url" placeholder="https://..." value="${ref.thumbnail_url || ''}" style="font-size:12px; padding:6px 10px">
@@ -922,7 +922,7 @@ const PAGE_CLIENTREFS = (() => {
     });
   }
 
-  async function uploadThumbnailFile(file, refId, immediateSave = false) {
+  async function uploadThumbnailFile(file, refId, immediateSave = false, prefix = 'ref-detail') {
     showToast('Uploading thumbnail to server...', 'info');
     
     let imageUrl = '';
@@ -949,10 +949,11 @@ const PAGE_CLIENTREFS = (() => {
         if (immediateSave) {
           saveBase64Thumb(refId, evt.target.result);
         } else {
-          const input = document.getElementById('ref-detail-thumb-input');
+          const input = document.getElementById(prefix + '-thumb-input');
           if (input) input.value = evt.target.result;
-          const preview = document.getElementById('ref-thumb-preview-wrap');
+          const preview = document.getElementById(prefix + '-thumb-preview-wrap');
           if (preview) preview.innerHTML = `<img src="${evt.target.result}" style="width:100%; height:100%; object-fit:cover">`;
+          preview.style.display = 'block';
         }
       };
       reader.readAsDataURL(file);
@@ -960,10 +961,11 @@ const PAGE_CLIENTREFS = (() => {
       if (immediateSave) {
         saveBase64Thumb(refId, imageUrl);
       } else {
-        const input = document.getElementById('ref-detail-thumb-input');
+        const input = document.getElementById(prefix + '-thumb-input');
         if (input) input.value = imageUrl;
-        const preview = document.getElementById('ref-thumb-preview-wrap');
+        const preview = document.getElementById(prefix + '-thumb-preview-wrap');
         if (preview) preview.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover">`;
+        preview.style.display = 'block';
         showToast('Thumbnail uploaded to server successfully!', 'success');
       }
     }
@@ -990,7 +992,7 @@ const PAGE_CLIENTREFS = (() => {
   }
 
   function saveDetailThumb(refId) {
-    const input = document.getElementById('ref-detail-thumb-input');
+    const input = document.getElementById(prefix + '-thumb-input');
     if (input) {
       saveBase64Thumb(refId, input.value.trim());
     }
@@ -1123,7 +1125,7 @@ const PAGE_CLIENTREFS = (() => {
     const checkedVerts = document.querySelectorAll('#edit-cli-verticals input[type="checkbox"]:checked');
     const selectedVerticals = Array.from(checkedVerts).map(cb => cb.value);
     const summary = document.getElementById('edit-cli-summary').value.trim();
-    const thumb = document.getElementById('edit-cli-thumb').value.trim();
+    const thumb = document.getElementById('edit-cli-thumb-input').value.trim();
     const checkedServices = document.querySelectorAll('#edit-cli-services input[type="checkbox"]:checked');
     const services = Array.from(checkedServices).map(cb => cb.value);
 
@@ -1498,6 +1500,9 @@ const PAGE_CLIENTREFS = (() => {
     handleThumbDropDetail,
     handleThumbDropModal,
     handleThumbSelectModal,
+    handleThumbDropEdit,
+    handleThumbSelectEdit,
+    handleThumbPasteEdit,
     saveDetailThumb,
     openEditClientModal,
     saveClientEdit,
