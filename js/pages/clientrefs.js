@@ -421,7 +421,8 @@ const PAGE_CLIENTREFS = (() => {
       ingestForm.addEventListener('submit', e => {
         e.preventDefault();
         const urlStr = container.querySelector('#ingest-url').value.trim();
-        const vert = container.querySelector('#ingest-vertical').value;
+        const vertInput = container.querySelector('#ingest-vertical');
+        const vert = vertInput ? vertInput.value : 'Other';
         startFetchMetadata(urlStr, vert, container);
       });
     }
