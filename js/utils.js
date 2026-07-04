@@ -264,14 +264,15 @@ function truncate(str, len = 80) {
 function assetTypeLabel(type) {
   const map = {
     'case-study': 'Case Study',
-    'performance-report': 'Performance Report',
-    'media-plan-strategy': 'Media Plan & Strategy',
-    'design-branding': 'Design & Branding',
-    'creative-asset': 'Creative Asset',
-    'social-media-profile': 'Social Media Profile',
-    'legal-admin': 'Legal & Admin',
-    'internal-process': 'Internal Process',
-    'other': 'Other'
+    'creatives': 'Creatives',
+    'performance-marketing': 'Performance Marketing',
+    'influencer-marketing': 'Influencer Marketing',
+    'seo-geo': 'SEO/GEO',
+    'ppc-media-plans': 'PPC Media Plans',
+    'smm-profiles': 'SMM Profiles',
+    'gtms': 'GTMs',
+    'pr-demos': 'PR Demos',
+    'others': 'Others'
   };
   return map[type] || type;
 }

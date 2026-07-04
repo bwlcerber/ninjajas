@@ -33,14 +33,15 @@ window.PORTAL_DATA = {
   ],
   "ASSET_TYPES": [
     "case-study",
-    "performance-report",
-    "media-plan-strategy",
-    "design-branding",
-    "creative-asset",
-    "social-media-profile",
-    "legal-admin",
-    "internal-process",
-    "other"
+    "creatives",
+    "performance-marketing",
+    "influencer-marketing",
+    "seo-geo",
+    "ppc-media-plans",
+    "smm-profiles",
+    "gtms",
+    "pr-demos",
+    "others"
   ],
   "GEOS": [
     "Global",

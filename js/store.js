@@ -323,31 +323,39 @@ const STORE = (() => {
           if (item.asset_type && typeof item.asset_type === 'string') {
             const oldType = item.asset_type.toLowerCase();
             const typeMap = {
-              'report': 'performance-report',
-              'analytics': 'performance-report',
+              'report': 'performance-marketing',
+              'performance-report': 'performance-marketing',
+              'analytics': 'performance-marketing',
               'case': 'case-study',
-              'branding': 'design-branding',
-              'creative': 'creative-asset',
-              'image': 'creative-asset',
-              'video': 'creative-asset',
-              'deck': 'media-plan-strategy',
-              'media-plan': 'media-plan-strategy',
-              'contract': 'legal-admin',
-              'process-doc': 'internal-process',
-              'training': 'internal-process',
-              'offer-prep': 'internal-process',
-              'template': 'internal-process',
-              'social-media-link': 'social-media-profile',
-              'smm': 'social-media-profile',
-              'pdf': 'other',
-              'spreadsheet-link': 'other',
-              'doc-link': 'other'
+              'case-study': 'case-study',
+              'creative': 'creatives',
+              'creative-asset': 'creatives',
+              'image': 'creatives',
+              'video': 'creatives',
+              'branding': 'creatives',
+              'design-branding': 'creatives',
+              'deck': 'creatives',
+              'media-plan': 'ppc-media-plans',
+              'media-plan-strategy': 'ppc-media-plans',
+              'contract': 'others',
+              'process-doc': 'others',
+              'training': 'others',
+              'offer-prep': 'others',
+              'template': 'others',
+              'internal-process': 'others',
+              'legal-admin': 'others',
+              'social-media-link': 'smm-profiles',
+              'social-media-profile': 'smm-profiles',
+              'smm': 'smm-profiles',
+              'pdf': 'others',
+              'spreadsheet-link': 'others',
+              'doc-link': 'others'
             };
             if (typeMap[oldType]) {
               item.asset_type = typeMap[oldType];
               modified = true;
-            } else if (!Object.values(typeMap).includes(oldType)) {
-              item.asset_type = 'other';
+            } else if (!Object.values(typeMap).includes(oldType) && oldType !== 'others' && oldType !== 'seo-geo' && oldType !== 'influencer-marketing' && oldType !== 'gtms' && oldType !== 'pr-demos') {
+              item.asset_type = 'others';
               modified = true;
             }
           }
