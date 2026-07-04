@@ -36,29 +36,29 @@ const PAGE_REPORTS = (() => {
         </div>
 
         <!-- Multi-select Filter Rows -->
-        <div style="margin-top:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">
+        <div style="margin-top:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:12px;">
           <!-- Industries -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Industries</span>
+          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Industries</span>
             ${window.PORTAL_DATA.VERTICALS.map(v => {
               const active = _selectedVerticals.has(v);
-              return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_REPORTS._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
             }).join('')}
           </div>
           <!-- Services -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Services</span>
+          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Services</span>
             ${window.PORTAL_DATA.SERVICES.map(s => {
               const active = _selectedServices.has(s);
-              return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS._toggleFilter('services', '${s}')">${s}</button>`;
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_REPORTS._toggleFilter('services', '${s}')">${s}</button>`;
             }).join('')}
           </div>
           <!-- Geos -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; text-transform:uppercase">Geos</span>
+          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Geos</span>
             ${window.PORTAL_DATA.GEOS.map(g => {
               const active = _selectedGeos.has(g);
-              return `<button class="filter-chip ${active ? 'active' : ''}" onclick="PAGE_REPORTS._toggleFilter('geos', '${g}')">${g}</button>`;
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_REPORTS._toggleFilter('geos', '${g}')">${g}</button>`;
             }).join('')}
           </div>
         </div>
@@ -246,13 +246,11 @@ const PAGE_REPORTS = (() => {
             ${clientLink 
               ? `<a href="${clientLink}" target="_blank" onclick="event.stopPropagation();" style="color:var(--accent); text-decoration:underline; font-weight:normal;">${mat.client_name}</a>` 
               : mat.client_name
-            } · ${matVerts.join(', ')} · ${mat.geo} · ${formatDate(mat.created_at)}
+            } · ${assetTypeLabel(mat.asset_type)} · ${formatDate(mat.created_at)}
           </div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+        <div class="material-row-tags" style="display:flex;gap:6px;align-items:center;flex-shrink:0; flex-wrap:wrap;">
           ${visibilityTag(mat.visibility_status)}
-          ${verticalTags}
-          ${assetTag}
           ${serviceTags}
         </div>
         <div style="display:flex;gap:4px">
@@ -812,8 +810,8 @@ const PAGE_REPORTS = (() => {
           <textarea class="input" id="report-edit-desc" rows="3" placeholder="Short description…" style="font-size:13px; padding:10px; line-height:1.4;">${data.description || ''}</textarea>
         </div>
 
-        <div style="display:flex; justify-content:center; margin-top:16px;">
-          <button class="btn btn-primary" id="report-edit-save-btn" style="padding:10px 32px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px; width:100%; max-width:240px;">
+        <div style="display:flex; justify-content:center; margin-top:20px;">
+          <button class="btn btn-primary" id="report-edit-save-btn" style="width:100%; display:flex; align-items:center; justify-content:center; padding:12px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px;">
             Save Changes
           </button>
         </div>

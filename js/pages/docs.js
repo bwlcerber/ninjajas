@@ -246,10 +246,9 @@ const PAGE_DOCS = (() => {
             <div class="material-row-title">${m.title}</div>
             <div class="material-row-sub">${m.client_name} · ${assetTypeLabel(m.asset_type)} · ${formatDate(m.created_at)}</div>
           </div>
-          <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+          <div class="material-row-tags" style="display:flex;gap:6px;align-items:center;flex-shrink:0; flex-wrap:wrap;">
             ${visibilityTag(m.visibility_status)}
             ${verticalTag}
-            ${assetTag}
           </div>
           <div style="display:flex;gap:4px">
             <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();PAGE_DOCS.togglePin('${m.id}')" title="${m.pinned ? 'Unpin' : 'Pin'}" style="color:${m.pinned ? 'var(--accent)' : 'var(--text-tertiary)'}; padding:4px;">
@@ -804,8 +803,8 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
           <textarea class="input" id="doc-edit-desc" rows="3" placeholder="Short description…" style="font-size:13px; padding:10px; line-height:1.4;">${data.description || ''}</textarea>
         </div>
 
-        <div style="display:flex; justify-content:center; margin-top:16px;">
-          <button class="btn btn-primary" id="doc-edit-save-btn" style="padding:10px 32px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px; width:100%; max-width:240px;">
+        <div style="display:flex; justify-content:center; margin-top:20px;">
+          <button class="btn btn-primary" id="doc-edit-save-btn" style="width:100%; display:flex; align-items:center; justify-content:center; padding:12px; font-size:14px; font-weight:600; border-radius:6px; letter-spacing:0.3px;">
             Save Changes
           </button>
         </div>

@@ -272,6 +272,7 @@
   border-radius: var(--r-md);
   cursor: pointer;
   transition: all var(--t-default);
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .material-row:hover {
@@ -855,3 +856,17 @@ textarea.input { min-height: 80px; resize: vertical; line-height: 1.5; }
 .masonry-info { display: flex; flex-direction: column; gap: 4px; }
 .masonry-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
 .masonry-sub { font-size: 10px; color: var(--text-secondary); font-family: var(--font-mono); }
+
+ @ m e d i a   ( m a x - w i d t h :   1 1 0 0 p x )   { 
+     . m a t e r i a l - r o w   { 
+         f l e x - w r a p :   w r a p ; 
+     } 
+     . m a t e r i a l - r o w - i n f o   { 
+         m i n - w i d t h :   2 5 0 p x ; 
+     } 
+     . m a t e r i a l - r o w - t a g s   { 
+         f l e x - w r a p :   w r a p ; 
+     } 
+ } 
+  
+ 
