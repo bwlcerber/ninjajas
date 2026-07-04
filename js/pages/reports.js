@@ -348,19 +348,15 @@ const PAGE_REPORTS = (() => {
             <span class="input-label" style="font-size:11px;">Asset Type *</span>
             <select class="select" id="upload-report-assettype" style="height:34px; font-size:12px;">
               ${[
-                { value: 'contract', label: 'Contract' },
-                { value: 'deck', label: 'Strategy Deck' },
-                { value: 'media-plan', label: 'Media Plan' },
-                { value: 'process-doc', label: 'Process Doc' },
-                { value: 'report', label: 'Performance Report' },
-                { value: 'template', label: 'Template' },
-                { value: 'gtm', label: 'GTM' },
-                { value: 'social-media-link', label: 'Social Media Links' },
-                { value: 'doc-link', label: 'Document' },
-                { value: 'spreadsheet-link', label: 'Spreadsheet' },
-                { value: 'pdf', label: 'PDF' },
-                { value: 'offer-prep', label: 'Offer Preparation' }
-              ].sort((a, b) => a.label.localeCompare(b.label)).map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
+                { value: 'performance-marketing', label: 'Performance Marketing' },
+                { value: 'influencer-marketing', label: 'Influencer Marketing' },
+                { value: 'seo-geo', label: 'SEO/GEO' },
+                { value: 'ppc-media-plans', label: 'PPC media plans' },
+                { value: 'smm-profiles', label: 'SMM profiles' },
+                { value: 'gtms', label: 'GTMs' },
+                { value: 'pr-demos', label: 'PR demos' },
+                { value: 'other-files', label: 'Other files' }
+              ].map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
             </select>
           </div>
 
