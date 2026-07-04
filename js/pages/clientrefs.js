@@ -1070,7 +1070,7 @@ const PAGE_CLIENTREFS = (() => {
     const services = window.PORTAL_DATA.SERVICES;
 
     const body = `
-      <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_CLIENTREFS.handleThumbPasteEdit(event)">
         <div class="form-grid">
           <div class="input-group">
             <span class="input-label">Client Name *</span>
@@ -1123,8 +1123,20 @@ const PAGE_CLIENTREFS = (() => {
             </div>
           </div>
           <div class="input-group span-2">
-            <span class="input-label">Thumbnail URL</span>
-            <input class="input" type="text" id="edit-cli-thumb" value="${thumbVal}">
+            <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Thumbnail URL</span>
+            <input class="input" type="text" id="edit-cli-thumb-input" value="${thumbVal}" placeholder="https://..." style="margin-bottom:8px;">
+            <div id="edit-cli-dropzone" 
+                 style="border:2px dashed var(--border-default); border-radius:var(--r-lg); padding:32px; text-align:center; cursor:pointer; font-size:12px; color:var(--text-secondary);"
+                 onclick="document.getElementById('edit-cli-file-input').click()"
+                 ondragover="event.preventDefault(); this.style.background='var(--bg-3)';"
+                 ondragleave="this.style.background='';"
+                 ondrop="event.preventDefault(); this.style.background=''; PAGE_CLIENTREFS.handleThumbDropEdit(event);">
+              <div>📁 Drag & Drop image file here, paste from clipboard, or click to browse</div>
+              <input type="file" id="edit-cli-file-input" accept="image/*" style="display:none" onchange="PAGE_CLIENTREFS.handleThumbSelectEdit(event)">
+            </div>
+            <div id="edit-cli-thumb-preview-wrap" style="margin-top:12px; height: 160px; border-radius: var(--r-md); overflow: hidden; display: ${thumbVal ? 'block' : 'none'}">
+              ${thumbVal ? `<img src="${thumbVal}" style="width:100%; height:100%; object-fit:cover">` : ''}
+            </div>
           </div>
         </div>
       </div>
@@ -1290,7 +1302,7 @@ const PAGE_CLIENTREFS = (() => {
     const assetTypes = window.PORTAL_DATA.ASSET_TYPES;
 
     const body = `
-      <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; flex-direction:column; gap:14px;" onpaste="PAGE_CLIENTREFS.handleThumbPasteEdit(event)">
         <!-- Drag and Drop Upload Zone -->
         <div id="client-asset-dragzone" 
              style="border:2px dashed var(--border-default); border-radius:var(--r-lg); padding:20px; text-align:center; cursor:pointer; font-size:12px; color:var(--text-secondary); background:var(--bg-3); transition:all 0.2s;"
