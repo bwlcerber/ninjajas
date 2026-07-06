@@ -607,9 +607,16 @@ const PAGE_CLIENTREFS = (() => {
     // Apply sort
     if (_sortOrder === 'recent') {
       items.sort((a, b) => {
-        const timeA = a.updated_at || (a.id ? parseInt(String(a.id).replace(/\D/g, '')) || 0 : 0);
-        const timeB = b.updated_at || (b.id ? parseInt(String(b.id).replace(/\D/g, '')) || 0 : 0);
-        return timeB - timeA;
+        const extractTime = (item) => {
+          if (item.updated_at) return item.updated_at;
+          if (item.created_at) return new Date(item.created_at).getTime();
+          if (item.id) {
+            const match = String(item.id).match(/\d{10,13}/);
+            if (match) return parseInt(match[0], 10);
+          }
+          return 0;
+        };
+        return extractTime(b) - extractTime(a);
       });
     } else if (_sortOrder === 'alpha') {
       items.sort((a, b) => (a.client_name || '').localeCompare(b.client_name || ''));
