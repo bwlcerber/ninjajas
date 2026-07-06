@@ -226,13 +226,42 @@ const PAGE_CLIENTREFS = (() => {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Super Admin - Industry / Category Visibility Settings
           </h3>
+          <style>
+            .super-admin-toggle-btn {
+              font-size: 11px; padding: 5px 10px; display: inline-flex; align-items: center; gap: 6px; 
+              border-radius: var(--r-md); border: 1px solid var(--border-color); 
+              background: transparent; color: var(--text-secondary); cursor: pointer;
+              transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .super-admin-toggle-btn:hover {
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+              color: var(--text-primary);
+            }
+            .super-admin-toggle-btn.active-select {
+              background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600;
+              box-shadow: 0 2px 8px rgba(0,200,100,0.3);
+            }
+            .super-admin-toggle-btn.active-select:hover { color: #fff; }
+            .super-admin-toggle-btn.active-deselect {
+              background: var(--danger); color: #fff; border-color: var(--danger); font-weight: 600;
+              box-shadow: 0 2px 8px rgba(255,50,50,0.3);
+            }
+            .super-admin-toggle-btn.active-deselect:hover { color: #fff; }
+          </style>
           <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-            <button class="btn btn-xs btn-outline" onclick="PAGE_CLIENTREFS.selectAllVerticals(true)" style="font-size:11px; padding:4px 8px; display:inline-flex; align-items:center; gap:6px; border-color:var(--accent) !important; color:var(--text-primary) !important; background:transparent;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg> Select All
-            </button>
-            <button class="btn btn-xs btn-outline" onclick="PAGE_CLIENTREFS.selectAllVerticals(false)" style="font-size:11px; padding:4px 8px; display:inline-flex; align-items:center; gap:6px; border-color:var(--danger) !important; color:var(--danger) !important; background:transparent;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> Deselect All
-            </button>
+            ${(() => {
+              const allSelected = hiddenVerts.length === 0;
+              const noneSelected = hiddenVerts.length === window.PORTAL_DATA.VERTICALS.length;
+              return `
+                <button class="super-admin-toggle-btn ${allSelected ? 'active-select' : ''}" onclick="PAGE_CLIENTREFS.selectAllVerticals(true)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="${allSelected ? 'currentColor' : 'none'}"/></svg> Select All
+                </button>
+                <button class="super-admin-toggle-btn ${noneSelected ? 'active-deselect' : ''}" onclick="PAGE_CLIENTREFS.selectAllVerticals(false)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> Deselect All
+                </button>
+              `;
+            })()}
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap">
             ${window.PORTAL_DATA.VERTICALS.map(v => {
