@@ -406,7 +406,8 @@ const PAGE_CASES = (() => {
     const services = Array.from(checkedServices).map(cb => cb.value);
     const thumb = document.getElementById('case-new-thumb').value.trim();
     const desc = document.getElementById('case-new-desc').value.trim();
-    const website = document.getElementById('case-new-website').value.trim();
+    const websiteEl = document.getElementById('case-new-website');
+    const website = websiteEl ? websiteEl.value.trim() : '';
     const url = document.getElementById('case-fetch-url').value.trim();
 
     if (!title || !client || !desc) {
