@@ -584,9 +584,34 @@ const PAGE_CLIENTREFS = (() => {
     const hiddenVerts = getHiddenVerticals();
 
     // Filter out hidden verticals for everyone
-    items = items.filter(r => !hiddenVerts.includes(r.vertical));
+    const hiddenVertsLower = hiddenVerts.map(v => v.toLowerCase());
+    if (hiddenVertsLower.length > 0) {
+      const allStandardLower = window.PORTAL_DATA.VERTICALS.map(v => v.toLowerCase());
+      items = items.filter(r => {
+        const allTags = new Set();
+        if (r.vertical) allTags.add(r.vertical.toLowerCase());
+        if (Array.isArray(r.verticals)) r.verticals.forEach(t => allTags.add(t.toLowerCase()));
+        if (Array.isArray(r.tags)) r.tags.forEach(t => allTags.add(t.toLowerCase()));
+        
+        const standardTags = Array.from(allTags).filter(t => allStandardLower.includes(t));
+        if (standardTags.length === 0) {
+          return hiddenVertsLower.length < allStandardLower.length;
+        }
+        return standardTags.some(t => !hiddenVertsLower.includes(t));
+      });
+    }
 
-    if (_vertical !== 'all') items = items.filter(r => r.vertical === _vertical);
+    // Apply public tab filtering
+    if (_vertical !== 'all') {
+      const vLower = _vertical.toLowerCase();
+      items = items.filter(r => {
+        const allTags = new Set();
+        if (r.vertical) allTags.add(r.vertical.toLowerCase());
+        if (Array.isArray(r.verticals)) r.verticals.forEach(t => allTags.add(t.toLowerCase()));
+        if (Array.isArray(r.tags)) r.tags.forEach(t => allTags.add(t.toLowerCase()));
+        return allTags.has(vLower);
+      });
+    }
 
     // Apply multi-select tags filtering (AND behavior)
     if (_selectedTags.size > 0) {
