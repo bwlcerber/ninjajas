@@ -69,7 +69,7 @@ function getFileIcon(fileType) {
 
 function getVerticalClass(vertical) {
   const map = {
-    'FinTech': 'tag-fintech',
+    'Fintech': 'tag-fintech',
     'Web3': 'tag-web3',
     'Trading': 'tag-trading',
     'eCommerce': 'tag-ecom',
@@ -91,7 +91,7 @@ function getVerticalClass(vertical) {
 function getVerticalEmoji(vertical) {
   const base = `style="display:inline-block;width:14px;height:14px;vertical-align:middle;margin-right:6px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"`;
   const map = {
-    'FinTech': `<svg ${base}><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
+    'Fintech': `<svg ${base}><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
     'Web3': `<svg ${base}><rect x="2" y="2" width="7" height="7" rx="1.5"></rect><rect x="15" y="2" width="7" height="7" rx="1.5"></rect><rect x="2" y="15" width="7" height="7" rx="1.5"></rect><rect x="15" y="15" width="7" height="7" rx="1.5"></rect><path d="M9 5.5h6M5.5 9v6M18.5 9v6M9 18.5h6"></path></svg>`,
     'Trading': `<svg ${base}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`,
     'eCommerce': `<svg ${base}><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>`,

@@ -7,7 +7,7 @@ window.PORTAL_DATA = {
     "Cyber Security",
     "eCommerce",
     "Education",
-    "FinTech",
+    "Fintech",
     "Gaming",
     "Healthcare",
     "iGaming",
@@ -58,9 +58,9 @@ window.PORTAL_DATA = {
       "title": "Wafee Banking App",
       "client_name": "Wafee",
       "geo": "Global",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "verticals": [
-        "FinTech"
+        "Fintech"
       ],
       "services_provided": [
         "Branding",
@@ -1098,10 +1098,10 @@ window.PORTAL_DATA = {
     },
     {
       "id": "mat-001",
-      "title": "FinTech PPC Q1 2025 Performance Report Performance Report [Paid ads]",
+      "title": "Fintech PPC Q1 2025 Performance Report Performance Report [Paid ads]",
       "client_name": "BankFlow",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "PPC"
       ],
@@ -1500,7 +1500,7 @@ window.PORTAL_DATA = {
       "title": "Credible Attracts 250K New Web Visitors in Just 4 Months",
       "client_name": "Credible",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "SEO",
         "Content",
@@ -1790,7 +1790,7 @@ window.PORTAL_DATA = {
       "title": "Rain-Proofing Conversions: DiscoverMarket's Winning Formula with PPC and CRO",
       "client_name": "DiscoverMarket",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "PPC",
         "Analytics"
@@ -2030,7 +2030,7 @@ window.PORTAL_DATA = {
       "title": "Cutting Auto Loan Costs by 42%: One Global Bank's Success Story",
       "client_name": "Global Bank (NDA)",
       "geo": "Global",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "PPC",
         "Analytics"
@@ -2646,7 +2646,7 @@ window.PORTAL_DATA = {
       "title": "Atom Bank's Brand Awareness Campaign Drives Over 15K New Interactions",
       "client_name": "Atom Bank",
       "geo": "UK",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "Social Media",
         "PPC",
@@ -2752,7 +2752,7 @@ window.PORTAL_DATA = {
       "title": "Wanbao's US Launch Attracts 50K Monthly Active Users",
       "client_name": "Wanbao Groups",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "PPC",
         "Social Media",
@@ -3097,10 +3097,10 @@ window.PORTAL_DATA = {
     },
     {
       "id": "mat-014",
-      "title": "FinTech Social Ad Set — Q2 2025",
+      "title": "Fintech Social Ad Set — Q2 2025",
       "client_name": "Clearflow",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "PPC",
         "Web & LP Design"
@@ -3529,10 +3529,10 @@ window.PORTAL_DATA = {
     },
     {
       "id": "mat-030",
-      "title": "Master Service Deck — FinTech",
+      "title": "Master Service Deck — Fintech",
       "client_name": "Internal",
       "geo": "Global",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "services_provided": [
         "SEO",
         "PPC",
@@ -3541,7 +3541,7 @@ window.PORTAL_DATA = {
       ],
       "asset_type": "deck",
       "visibility_status": "client-safe",
-      "description": "Presentation-ready pitch deck tailored for FinTech prospects. Includes vertical-specific case studies, service packages, and team intro slides.",
+      "description": "Presentation-ready pitch deck tailored for Fintech prospects. Includes vertical-specific case studies, service packages, and team intro slides.",
       "file_type": "pdf",
       "file_url": "https://docs.google.com/viewer",
       "thumbnail_url": "",
@@ -3563,7 +3563,7 @@ window.PORTAL_DATA = {
       "client_name": "Clearflow",
       "website_url": "https://stripe.com",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "ai_summary": "B2C fintech platform offering automated personal finance management and bank-linked budgeting tools for the US market.",
       "services_provided": [
         "PPC",
@@ -3676,7 +3676,7 @@ window.PORTAL_DATA = {
       "client_name": "BankFlow",
       "website_url": "https://chime.com",
       "geo": "North America",
-      "vertical": "FinTech",
+      "vertical": "Fintech",
       "ai_summary": "Neobank offering fee-free checking accounts, early paycheck access, and automated savings tools for underserved US consumers.",
       "services_provided": [
         "PPC",

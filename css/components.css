@@ -101,7 +101,6 @@
   border-radius: var(--r-xs);
   letter-spacing: 0.03em;
   white-space: nowrap;
-  text-transform: uppercase;
 }
 
 .tag-default {

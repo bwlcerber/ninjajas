@@ -23,7 +23,7 @@ const PAGE_CALLLIBRARY = (() => {
         followup_link: 'https://fathom.video/share/won-fintech-followup',
         prospect_link: 'https://fathom.video/share/won-fintech-presales',
         deal_size: '480 hours',
-        industries: ['FinTech', 'SaaS'],
+        industries: ['Fintech', 'SaaS'],
         salesperson: 'Julia',
         created_at: '2026-05-12'
       },
@@ -52,7 +52,7 @@ const PAGE_CALLLIBRARY = (() => {
   function render(container) {
     const allCalls = getCalls();
     const isSuperAdmin = AUTH.canManageContent();
-    const industries = window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['FinTech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other'];
+    const industries = window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['Fintech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other'];
 
     // Apply filtering
     const filteredCalls = allCalls.filter(c => {
@@ -182,7 +182,7 @@ const PAGE_CALLLIBRARY = (() => {
   }
 
   function openAddCallModal() {
-    const industries = window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['FinTech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other'];
+    const industries = window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['Fintech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other'];
     const packageSizes = ['120 hours', '240 hours', '480 hours', '960 hours', '1920 hours', 'commission'];
 
     const body = `

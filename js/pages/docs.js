@@ -771,7 +771,7 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
         <div class="input-group" style="padding-top:8px; border-top:1px solid var(--border-subtle);">
           <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">VERTICALS / INDUSTRIES *</label>
           <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="doc-edit-verticals">
-            ${['AI','Apps','B2B','B2C','Cyber Security','eCommerce','Education','FinTech','Gaming','Healthcare','iGaming','Real Estate','SaaS','Sports Betting','Trading','Web3','Other'].map(v => `
+            ${['AI','Apps','B2B','B2C','Cyber Security','eCommerce','Education','Fintech','Gaming','Healthcare','iGaming','Real Estate','SaaS','Sports Betting','Trading','Web3','Other'].map(v => `
               <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
                 <input type="checkbox" value="${v}" style="accent-color:var(--accent);" ${(data.verticals || []).includes(v) || data.vertical === v ? 'checked' : ''}> ${v}
               </label>
