@@ -58,7 +58,7 @@ const PAGE_DOCS = (() => {
   const _selectedTags = new Set();
 
   function render(container) {
-    const allDocs = STORE.getByTypes(getDocTypes());
+    const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
     const cats = getCategories();
 
     container.innerHTML = `
@@ -144,7 +144,7 @@ const PAGE_DOCS = (() => {
     const container = document.getElementById('page-container');
     if (container) {
       renderActiveFilters(container);
-      const allDocs = STORE.getByTypes(getDocTypes());
+      const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
       renderList(container, allDocs);
     }
   }
@@ -154,7 +154,7 @@ const PAGE_DOCS = (() => {
     const container = document.getElementById('page-container');
     if (container) {
       renderActiveFilters(container);
-      const allDocs = STORE.getByTypes(getDocTypes());
+      const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
       renderList(container, allDocs);
     }
   }
@@ -164,7 +164,7 @@ const PAGE_DOCS = (() => {
     const container = document.getElementById('page-container');
     if (container) {
       renderActiveFilters(container);
-      const allDocs = STORE.getByTypes(getDocTypes());
+      const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
       renderList(container, allDocs);
     }
   }
@@ -283,7 +283,7 @@ const PAGE_DOCS = (() => {
     STORE.updateMaterial(matId, { pinned: !mat.pinned });
     const container = document.getElementById('page-container');
     if (container) {
-      renderList(container, STORE.getByTypes(getDocTypes()));
+      renderList(container, STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal'));
     }
   }
 
