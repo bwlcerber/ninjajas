@@ -1476,12 +1476,13 @@ const PAGE_CLIENTREFS = (() => {
         return;
       }
       
-      let fileType = 'pdf';
+      let fileType = 'link';
       const urlLower = manualUrl.toLowerCase();
       if (urlLower.includes('docs.google.com/document') || urlLower.includes('drive.google.com/file')) fileType = 'doc-link';
       else if (urlLower.includes('docs.google.com/spreadsheets') || urlLower.includes('docs.google.com/sheet')) fileType = 'spreadsheet-link';
       else if (urlLower.match(/\.(mp4|mov|avi|webm)$/)) fileType = 'video';
       else if (urlLower.match(/\.(png|jpg|jpeg|gif|webp)$/)) fileType = 'image';
+      else if (urlLower.match(/\.(pdf)$/)) fileType = 'pdf';
 
       STAGED_ASSETS.push({
         name: manualTitle,

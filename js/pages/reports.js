@@ -139,7 +139,7 @@ const PAGE_REPORTS = (() => {
   }
 
   function renderList(container) {
-    let items = STORE.getMaterials().filter(m => m.visibility_status !== 'internal-only' && !['case', 'branding', 'creative', 'video', 'image'].includes(m.asset_type));
+    let items = STORE.getMaterials().filter(m => m.visibility_status !== 'internal-only' && m.client_name !== 'Internal' && !['case', 'branding', 'creative', 'video', 'image'].includes(m.asset_type));
 
     // Filter by category
     if (_activeCategory !== 'all') {
