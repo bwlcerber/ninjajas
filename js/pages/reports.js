@@ -567,7 +567,7 @@ const PAGE_REPORTS = (() => {
     const assetType = document.getElementById('upload-report-assettype').value;
     const checkedBoxes = document.querySelectorAll('#upload-report-services input[type="checkbox"]:checked');
     const services = Array.from(checkedBoxes).map(cb => cb.value);
-    const clientName = document.getElementById('upload-report-client').value.trim() || 'Internal';
+    let clientName = document.getElementById('upload-report-client').value.trim() || 'Internal';
     const clientWebsite = document.getElementById('upload-report-website').value.trim() || '';
     const geo = document.getElementById('upload-report-geo').value || 'Global';
 
@@ -584,8 +584,10 @@ const PAGE_REPORTS = (() => {
 
     // Auto-create client reference/profile if name is custom and doesn't exist yet
     if (clientName !== 'Internal' && clientName !== 'Client Name Not Available') {
-      const existingRef = STORE.getClientRefs().find(r => r.client_name.toLowerCase() === clientName.toLowerCase());
-      if (!existingRef) {
+      const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase());
+      if (existingRef) {
+        clientName = existingRef.client_name;
+      } else {
         STORE.addClientRef({
           client_name: clientName,
           website_url: clientWebsite || 'https://ninjapromo.io',

@@ -513,7 +513,7 @@ const PAGE_CREATIVES = (() => {
 
     const checkedBoxes = document.querySelectorAll('#batch-verticals-checkboxes input[type="checkbox"]:checked');
     const selectedVerticals = Array.from(checkedBoxes).map(cb => cb.value);
-    const clientName = document.getElementById('batch-creative-client').value.trim() || 'Internal';
+    let clientName = document.getElementById('batch-creative-client').value.trim() || 'Internal';
     const clientWebsite = document.getElementById('batch-creative-website').value.trim() || '';
 
     if (selectedVerticals.length === 0) {
@@ -532,7 +532,9 @@ const PAGE_CREATIVES = (() => {
 
     if (clientName !== 'Internal' && clientName !== 'Client Name Not Available') {
       const existingRef = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name.toLowerCase() === clientName.toLowerCase());
-      if (!existingRef) {
+      if (existingRef) {
+        clientName = existingRef.client_name;
+      } else {
         STORE.addClientRef({
           client_name: clientName,
           website_url: clientWebsite || 'https://ninjapromo.io',

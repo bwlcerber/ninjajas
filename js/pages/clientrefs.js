@@ -1426,11 +1426,15 @@ const PAGE_CLIENTREFS = (() => {
           <div class="input-group span-2">
             <span class="input-label" style="font-size:11px; margin-bottom:4px;">Services Provided * (Select multiple)</span>
             <div style="display:flex; flex-wrap:wrap; gap:8px;" id="add-asset-services">
-              ${services.map(s => `
-                <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                  <input type="checkbox" value="${s}" style="accent-color:var(--accent);"> ${s}
-                </label>
-              `).join('')}
+              ${(() => {
+                const ref = STORE.getClientRefs().find(r => r.client_name && typeof r.client_name === 'string' && r.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
+                const clientServices = ref ? (ref.services_provided || []) : [];
+                return services.map(s => `
+                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                    <input type="checkbox" value="${s}" style="accent-color:var(--accent);" ${clientServices.includes(s) ? 'checked' : ''}> ${s}
+                  </label>
+                `).join('');
+              })()}
             </div>
           </div>
         </div>
