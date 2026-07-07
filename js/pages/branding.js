@@ -234,6 +234,7 @@ const PAGE_BRANDING = (() => {
           <div style="margin-top:auto;padding-top:10px">
             <div style="display:flex;flex-wrap:wrap;gap:4px">
               ${serviceTags}
+              ${mat.hours_spent && String(mat.hours_spent).trim() !== '0' ? `<span class="tag" style="background:var(--bg-3); border-color:var(--border-default); color:var(--text-secondary); font-size:9px;" title="Hours spent on design work">⏱️ ${mat.hours_spent}h</span>` : ''}
             </div>
           </div>
         </div>
@@ -516,6 +517,10 @@ const PAGE_BRANDING = (() => {
             <span class="input-label">Client Website URL</span>
             <input class="input" type="text" id="edit-branding-website" placeholder="https://example.com" value="${websiteUrl}">
           </div>
+          <div class="input-group">
+            <span class="input-label">Hours Spent (Design only)</span>
+            <input class="input" type="number" id="edit-branding-hours" placeholder="e.g. 15" value="${mat.hours_spent || ''}" min="0" step="0.5">
+          </div>
           <div class="input-group span-2">
             <span class="input-label" style="font-size:11px; margin-bottom: 4px;">Geo *</span>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="edit-branding-geo-checkboxes">
@@ -593,6 +598,8 @@ const PAGE_BRANDING = (() => {
     const desc = document.getElementById('edit-branding-desc').value.trim();
     const checkedVerts = document.querySelectorAll('#edit-branding-verticals input[type="checkbox"]:checked');
     const selectedVerticals = Array.from(checkedVerts).map(cb => cb.value);
+    const hoursStr = document.getElementById('edit-branding-hours').value.trim();
+    const hoursSpent = hoursStr === '' || hoursStr === '0' ? null : Number(hoursStr);
 
     if (!title || !client || !desc) {
       showToast('Please fill out all required fields', 'error');
@@ -645,6 +652,7 @@ const PAGE_BRANDING = (() => {
       services_provided: services,
       thumbnail_url: thumb,
       description: desc,
+      hours_spent: hoursSpent,
       tags: [...selectedVerticals, ...services]
     };
     const matIdx = ud.materials.findIndex(m => m.id === matId);
