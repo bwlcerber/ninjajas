@@ -776,7 +776,7 @@ const PAGE_REPORTS = (() => {
               { value: 'report', label: 'Performance Report' },
               { value: 'template', label: 'Template' },
               { value: 'gtm', label: 'GTM' },
-              { value: 'social-media-link', label: 'Social Media Links' },
+              { value: 'smm-profiles', label: 'SMM Profiles' },
               { value: 'doc-link', label: 'Document' },
               { value: 'spreadsheet-link', label: 'Spreadsheet' },
               { value: 'pdf', label: 'PDF' },

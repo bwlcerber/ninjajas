@@ -300,6 +300,20 @@ const STORE = (() => {
             }
           });
 
+          // Migrate social-media-link to smm-profiles
+          if (item.asset_type === 'social-media-link' || item.asset_type === 'social-media-profile') {
+            item.asset_type = 'smm-profiles';
+            modified = true;
+          }
+          if (item.tags && Array.isArray(item.tags)) {
+            const smIdx = item.tags.indexOf('social-media-link');
+            if (smIdx !== -1) {
+              item.tags[smIdx] = 'smm-profiles';
+              item.tags = Array.from(new Set(item.tags)); // dedupe
+              modified = true;
+            }
+          }
+
           // Also check string fields just in case
           const stringFields = ['vertical'];
           stringFields.forEach(field => {
@@ -334,7 +348,7 @@ const STORE = (() => {
               }
             } else {
               // User-added files recovery
-              const oldTypes = ['contract','offer-prep','deck','process-doc','template','training','social-media-link','doc-link','pdf','branding','creative','video','image','report','case','analytics','media-plan','smm'];
+              const oldTypes = ['contract','offer-prep','deck','process-doc','template','training','doc-link','pdf','branding','creative','video','image','report','case','analytics','media-plan','smm','smm-profiles'];
               let recoveredType = null;
               if (item.tags && Array.isArray(item.tags)) {
                 recoveredType = oldTypes.find(t => item.tags.includes(t));

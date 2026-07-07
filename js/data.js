@@ -1219,7 +1219,7 @@ window.PORTAL_DATA = {
         "influencer",
         "healthcare",
         "instagram",
-        "social-media-link"
+        "smm-profiles"
       ],
       "related_assets": [],
       "created_at": "2025-03-12"
@@ -3192,7 +3192,7 @@ window.PORTAL_DATA = {
         "creative",
         "video",
         "trading",
-        "social-media-link",
+        "smm-profiles",
         "promo"
       ],
       "related_assets": [],

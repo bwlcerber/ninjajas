@@ -11,14 +11,14 @@ const PAGE_DOCS = (() => {
 
   function getCategories() {
     const defaults = [
-      { id: 'all', label: 'All Docs', types: ['contract','offer-prep','deck','process-doc','template','training','social-media-link','doc-link','pdf','other'] },
+      { id: 'all', label: 'All Docs', types: ['contract','offer-prep','deck','process-doc','template','training','smm-profiles','doc-link','pdf','other'] },
       { id: 'contract', label: 'Contracts & NDAs', types: ['contract'] },
       { id: 'offer-prep', label: 'Offer Preparation', types: ['offer-prep'] },
       { id: 'deck', label: 'Pitch Decks', types: ['deck'] },
       { id: 'process-doc', label: 'Process Docs', types: ['process-doc'] },
       { id: 'template', label: 'Templates', types: ['template'] },
       { id: 'training', label: 'Training', types: ['training'] },
-      { id: 'social-media-link', label: 'Social Media Links', types: ['social-media-link'] },
+      { id: 'smm-profiles', label: 'SMM Profiles', types: ['smm-profiles'] },
       { id: 'other', label: 'Other', types: ['other'] },
     ];
     const customWithTypes = _customCategories.map(c => ({
