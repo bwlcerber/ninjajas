@@ -1,7 +1,7 @@
 /** PAGE: Call Library V0 */
 'use strict';
 
-const PAGE_CALLLIBRARY0 = (() => {
+const PAGE_CALLLIBRARY1 = (() => {
 
   const SALESPEOPLE = ['Alex', 'Damon', 'Julia', 'Max', 'Maxime', 'Melina', 'Paul'];
   const OBJECTION_TYPES = ['!Think about it', 'Budget / Price', 'Competition', 'Decision Makers / Partner', 'Past Experience', 'Timing', 'Trust and Authority', 'Window Shopping'];
@@ -161,7 +161,7 @@ const PAGE_CALLLIBRARY0 = (() => {
 
     container.innerHTML = `
       <style>
-        .cl0-container {
+        .cl1-container {
           max-width: 80rem; /* 1280px ~ max-w-7xl */
           margin: 0 auto;
           padding: 24px;
@@ -171,17 +171,17 @@ const PAGE_CALLLIBRARY0 = (() => {
           min-height: 100%;
         }
         @media (min-width: 768px) {
-          .cl0-container { padding: 48px; }
+          .cl1-container { padding: 48px; }
         }
 
         /* Header */
-        .cl0-header-row {
+        .cl1-header-row {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
           margin-bottom: 24px;
         }
-        .cl0-pill-internal {
+        .cl1-pill-internal {
           display: inline-flex;
           align-items: center;
           gap: 6px;
@@ -196,17 +196,17 @@ const PAGE_CALLLIBRARY0 = (() => {
           margin-bottom: 12px;
           font-weight: 700;
         }
-        .cl0-dot {
+        .cl1-dot {
           width: 6px; height: 6px;
           border-radius: 50%;
           background-color: var(--v0-brand);
-          animation: cl0-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          animation: cl1-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        @keyframes cl0-pulse {
+        @keyframes cl1-pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: .5; }
         }
-        .cl0-title {
+        .cl1-title {
           font-size: 36px;
           font-weight: 700;
           letter-spacing: -0.025em;
@@ -214,14 +214,14 @@ const PAGE_CALLLIBRARY0 = (() => {
           line-height: 1.1;
         }
         @media (min-width: 768px) {
-          .cl0-title { font-size: 48px; }
+          .cl1-title { font-size: 48px; }
         }
-        .cl0-subtitle {
+        .cl1-subtitle {
           color: var(--v0-muted-foreground);
           font-size: 18px;
           margin: 0;
         }
-        .cl0-btn-primary {
+        .cl1-btn-primary {
           height: 48px;
           padding: 0 32px;
           background-color: var(--v0-brand);
@@ -234,15 +234,15 @@ const PAGE_CALLLIBRARY0 = (() => {
           cursor: pointer;
           transition: opacity 150ms ease;
         }
-        .cl0-btn-primary:hover { opacity: 0.9; }
+        .cl1-btn-primary:hover { opacity: 0.9; }
 
         /* Filter Bar */
-        .cl0-filters {
+        .cl1-filters {
           background-color: color-mix(in srgb, var(--v0-surface-1) 60%, transparent);
           backdrop-filter: blur(24px);
           -webkit-backdrop-filter: blur(24px);
           border: 1px solid var(--v0-border);
-          border-radius: 16px;
+          border-radius: var(--r-md);
           padding: 16px;
           display: flex;
           flex-wrap: wrap;
@@ -250,19 +250,19 @@ const PAGE_CALLLIBRARY0 = (() => {
           margin-bottom: 48px;
           align-items: flex-end;
         }
-        .cl0-filter-group {
+        .cl1-filter-group {
           display: flex;
           flex-direction: column;
           gap: 6px;
         }
-        .cl0-filter-label {
+        .cl1-filter-label {
           font-size: 11px;
           font-weight: 600;
           color: var(--v0-muted-foreground);
           text-transform: uppercase;
           letter-spacing: 0.05em;
         }
-        .cl0-select {
+        .cl1-select {
           background-color: color-mix(in srgb, #ffffff 5%, transparent);
           border: 1px solid var(--v0-border);
           color: var(--v0-foreground);
@@ -274,10 +274,10 @@ const PAGE_CALLLIBRARY0 = (() => {
           transition: border-color 150ms ease;
           appearance: none;
         }
-        .cl0-select:focus {
+        .cl1-select:focus {
           border-color: color-mix(in srgb, var(--v0-brand) 50%, transparent);
         }
-        .cl0-btn-clear {
+        .cl1-btn-clear {
           height: 36px;
           padding: 0 16px;
           border: 1px solid var(--v0-border);
@@ -288,84 +288,94 @@ const PAGE_CALLLIBRARY0 = (() => {
           cursor: pointer;
           transition: all 150ms ease;
         }
-        .cl0-btn-clear:hover {
+        .cl1-btn-clear:hover {
           color: var(--v0-foreground);
           border-color: color-mix(in srgb, var(--v0-brand) 30%, transparent);
         }
 
         /* Section Header */
-        .cl0-section-header {
+        .cl1-section-header {
           display: flex;
           align-items: center;
           gap: 12px;
           margin-bottom: 24px;
           margin-top: 48px;
         }
-        .cl0-section-title {
+        .cl1-section-title {
           text-transform: uppercase;
           font-size: 20px;
           font-weight: 700;
           letter-spacing: -0.025em;
           margin: 0;
         }
-        .cl0-section-count {
+        .cl1-section-count {
           font-family: var(--font-mono);
           text-transform: uppercase;
           color: var(--v0-muted-foreground);
           font-size: 10px;
         }
-        .cl0-section-rule {
+        @keyframes cl1-glow-pulse {
+          0% { opacity: 1; transform: scaleX(1); }
+          50% { opacity: 0.1; transform: scaleX(0.7); }
+          100% { opacity: 1; transform: scaleX(1); }
+        }
+        .cl1-section-rule {
           height: 1px;
           flex: 1;
+          transform-origin: left;
+          animation: cl1-glow-pulse 3s ease-in-out infinite;
         }
-        .cl0-rule-brand {
+        .cl1-rule-brand {
           background: linear-gradient(to right, color-mix(in srgb, var(--v0-brand) 50%, transparent), transparent);
         }
-        .cl0-rule-secondary {
+        .cl1-rule-secondary {
           background: linear-gradient(to right, color-mix(in srgb, var(--v0-brand-secondary) 50%, transparent), transparent);
         }
-        .cl0-text-secondary {
+        .cl1-text-secondary {
           color: var(--v0-brand-secondary);
         }
 
         /* Grid */
-        .cl0-grid {
+        .cl1-grid {
           display: grid;
           grid-template-columns: 1fr;
           gap: 24px;
         }
         @media (min-width: 768px) {
-          .cl0-grid { grid-template-columns: repeat(2, 1fr); }
+          .cl1-grid { grid-template-columns: repeat(2, 1fr); }
+          .cl1-grid.cl1-grid-objections { grid-template-columns: repeat(4, 1fr); }
         }
         @media (min-width: 1024px) {
-          .cl0-grid { grid-template-columns: repeat(3, 1fr); }
+          .cl1-grid { grid-template-columns: repeat(3, 1fr); }
+          .cl1-grid.cl1-grid-objections { grid-template-columns: repeat(6, 1fr); }
+        }
         }
 
         /* Card Base */
-        .cl0-card {
+        .cl1-card {
           background-color: var(--v0-card);
           border: 1px solid var(--v0-border);
-          border-radius: 16px;
+          border-radius: var(--r-md);
           overflow: hidden;
           transition: all 150ms ease;
           position: relative;
         }
-        .cl0-card:hover {
+        .cl1-card:hover {
           transform: translateY(-2px);
           border-color: color-mix(in srgb, var(--v0-brand) 40%, transparent);
         }
-        .cl0-card.objection:hover {
+        .cl1-card.objection:hover {
           border-color: color-mix(in srgb, var(--v0-brand-secondary) 40%, transparent);
         }
 
         /* Thumbnail */
-        .cl0-thumb {
+        .cl1-thumb {
           aspect-ratio: 16 / 9;
           position: relative;
           background-size: cover;
           background-position: center;
         }
-        .cl0-thumb-overlay {
+        .cl1-thumb-overlay {
           position: absolute;
           inset: 0;
           background: linear-gradient(to top, color-mix(in srgb, var(--v0-background) 60%, transparent), transparent);
@@ -374,17 +384,17 @@ const PAGE_CALLLIBRARY0 = (() => {
           justify-content: space-between;
           padding: 12px;
         }
-        .cl0-thumb-top {
+        .cl1-thumb-top {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
         }
-        .cl0-thumb-label {
+        .cl1-thumb-label {
           color: rgba(255,255,255,0.7);
           font-size: 10px;
           font-weight: 600;
         }
-        .cl0-pill-success {
+        .cl1-pill-success {
           background-color: color-mix(in srgb, var(--v0-success) 15%, transparent);
           border: 1px solid color-mix(in srgb, var(--v0-success) 30%, transparent);
           color: var(--v0-success);
@@ -393,7 +403,7 @@ const PAGE_CALLLIBRARY0 = (() => {
           padding: 2px 8px;
           border-radius: 9999px;
         }
-        .cl0-play-btn {
+        .cl1-play-btn {
           align-self: flex-end;
           width: 44px; height: 44px;
           border-radius: 50%;
@@ -404,23 +414,23 @@ const PAGE_CALLLIBRARY0 = (() => {
           font-size: 14px;
           transition: transform 150ms ease;
         }
-        .cl0-card:hover .cl0-play-btn {
+        .cl1-card:hover .cl1-play-btn {
           transform: scale(1.1);
         }
 
         /* Card Body */
-        .cl0-card-body {
+        .cl1-card-body {
           padding: 24px;
           display: flex;
           flex-direction: column;
           gap: 16px;
         }
-        .cl0-card-meta {
+        .cl1-card-meta {
           display: flex;
           align-items: center;
           gap: 8px;
         }
-        .cl0-avatar {
+        .cl1-avatar {
           width: 32px; height: 32px;
           border-radius: 50%;
           background-color: color-mix(in srgb, var(--v0-brand) 15%, transparent);
@@ -431,11 +441,11 @@ const PAGE_CALLLIBRARY0 = (() => {
           display: grid;
           place-items: center;
         }
-        .cl0-meta-text {
+        .cl1-meta-text {
           font-size: 12px;
           color: var(--v0-muted-foreground);
         }
-        .cl0-card-title {
+        .cl1-card-title {
           font-size: 18px;
           font-weight: 700;
           line-height: 1.2;
@@ -443,18 +453,18 @@ const PAGE_CALLLIBRARY0 = (() => {
           margin: 0;
           transition: color 150ms ease;
         }
-        .cl0-card:hover .cl0-card-title {
+        .cl1-card:hover .cl1-card-title {
           color: var(--v0-brand);
         }
-        .cl0-card.objection:hover .cl0-card-title {
+        .cl1-card.objection:hover .cl1-card-title {
           color: var(--v0-brand-secondary);
         }
-        .cl0-tags {
+        .cl1-tags {
           display: flex;
           gap: 8px;
           flex-wrap: wrap;
         }
-        .cl0-tag {
+        .cl1-tag {
           background-color: var(--v0-muted);
           border: 1px solid var(--v0-border);
           padding: 4px 10px;
@@ -462,12 +472,12 @@ const PAGE_CALLLIBRARY0 = (() => {
           font-size: 12px;
           color: color-mix(in srgb, var(--v0-foreground) 80%, transparent);
         }
-        .cl0-actions {
+        .cl1-actions {
           display: flex;
           gap: 8px;
           margin-top: 8px;
         }
-        .cl0-btn-fathom {
+        .cl1-btn-fathom {
           flex: 1;
           height: 40px;
           border-radius: 8px;
@@ -480,10 +490,10 @@ const PAGE_CALLLIBRARY0 = (() => {
           text-decoration: none;
           transition: background-color 150ms ease;
         }
-        .cl0-btn-fathom:hover {
+        .cl1-btn-fathom:hover {
           background-color: color-mix(in srgb, var(--v0-muted) 70%, transparent);
         }
-        .cl0-btn-related {
+        .cl1-btn-related {
           height: 40px;
           padding: 0 16px;
           border-radius: 8px;
@@ -495,18 +505,18 @@ const PAGE_CALLLIBRARY0 = (() => {
           cursor: pointer;
           transition: background-color 150ms ease;
         }
-        .cl0-btn-related:hover {
+        .cl1-btn-related:hover {
           background-color: color-mix(in srgb, var(--v0-muted) 50%, transparent);
         }
 
         /* Objection specific */
-        .cl0-obj-top {
+        .cl1-obj-top {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 12px;
         }
-        .cl0-pill-obj {
+        .cl1-pill-obj {
           background-color: color-mix(in srgb, var(--v0-brand-secondary) 10%, transparent);
           color: var(--v0-brand-secondary);
           border: 1px solid color-mix(in srgb, var(--v0-brand-secondary) 20%, transparent);
@@ -517,7 +527,7 @@ const PAGE_CALLLIBRARY0 = (() => {
           padding: 4px 8px;
           border-radius: 4px;
         }
-        .cl0-pill-time {
+        .cl1-pill-time {
           font-family: var(--font-mono);
           font-size: 12px;
           color: var(--v0-muted-foreground);
@@ -525,7 +535,7 @@ const PAGE_CALLLIBRARY0 = (() => {
           padding: 4px 8px;
           border-radius: 4px;
         }
-        .cl0-obj-summary {
+        .cl1-obj-summary {
           font-size: 14px;
           color: var(--v0-muted-foreground);
           display: -webkit-box;
@@ -535,7 +545,7 @@ const PAGE_CALLLIBRARY0 = (() => {
           margin: 0;
           line-height: 1.5;
         }
-        .cl0-btn-obj-fathom {
+        .cl1-btn-obj-fathom {
           width: 100%;
           height: 40px;
           border-radius: 8px;
@@ -550,8 +560,8 @@ const PAGE_CALLLIBRARY0 = (() => {
           transition: opacity 150ms ease;
           border: none;
         }
-        .cl0-btn-obj-fathom:hover { opacity: 0.9; }
-        .cl0-btn-obj-related {
+        .cl1-btn-obj-fathom:hover { opacity: 0.9; }
+        .cl1-btn-obj-related {
           width: 100%;
           height: 40px;
           background-color: var(--v0-muted);
@@ -563,100 +573,137 @@ const PAGE_CALLLIBRARY0 = (() => {
           cursor: pointer;
           margin-top: 8px;
         }
-        .cl0-btn-obj-related:hover {
+        .cl1-btn-obj-related:hover {
           background-color: color-mix(in srgb, var(--v0-muted) 70%, transparent);
         }
 
-        .cl0-empty {
+        .cl1-empty {
           border: 1px dashed var(--v0-border);
-          border-radius: 16px;
+          border-radius: var(--r-md);
           padding: 48px;
           text-align: center;
           color: var(--v0-muted-foreground);
           font-size: 14px;
         }
+      /* Modal */
+        .cl1-modal-backdrop {
+          position: fixed; inset: 0; z-index: 1000;
+          background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+          display: flex; align-items: center; justify-content: center;
+          padding: 24px;
+        }
+        .cl1-modal-content {
+          background-color: var(--v0-card);
+          border: 1px solid var(--v0-border);
+          border-radius: var(--r-lg);
+          width: 100%; max-width: 600px;
+          padding: 32px; position: relative;
+          color: var(--v0-foreground);
+        }
+        .cl1-modal-close {
+          position: absolute; top: 16px; right: 16px;
+          width: 32px; height: 32px; border-radius: 50%;
+          background: transparent; border: 1px solid var(--v0-border);
+          color: var(--v0-muted-foreground); cursor: pointer;
+          display: grid; place-items: center; font-size: 14px;
+        }
+        .cl1-modal-close:hover { color: var(--v0-foreground); background: var(--v0-muted); }
+        .cl1-modal-title { font-size: 24px; font-weight: 700; margin: 0 0 8px 0; }
+        .cl1-modal-subtitle { font-size: 14px; color: var(--v0-muted-foreground); margin: 0 0 24px 0; }
+        
+        .cl1-related-list { display: flex; flex-direction: column; gap: 12px; }
+        .cl1-related-item {
+          display: flex; align-items: center; gap: 16px;
+          background-color: color-mix(in srgb, var(--v0-muted) 30%, transparent);
+          border-radius: var(--r-md); padding: 16px;
+        }
+        .cl1-related-details { flex: 1; }
+        .cl1-related-title { font-size: 14px; font-weight: 700; color: var(--v0-foreground); margin-bottom: 4px; }
+        .cl1-btn-watch {
+          background-color: var(--v0-muted); border: none; border-radius: var(--r-md);
+          color: var(--v0-foreground); padding: 8px 16px; font-size: 12px; font-weight: 700;
+          text-decoration: none; transition: background 150ms;
+        }
+        .cl1-btn-watch:hover { background-color: color-mix(in srgb, var(--v0-muted) 70%, transparent); }
       </style>
 
-      <div class="cl0-container">
+      <div class="cl1-container">
         <!-- Header -->
-        <div class="cl0-header-row">
+        <div class="cl1-header-row">
           <div>
-            <div class="cl0-pill-internal">
-              <div class="cl0-dot"></div>
+            <div class="cl1-pill-internal">
+              <div class="cl1-dot"></div>
               INTERNAL ACCESS ONLY
             </div>
-            <h1 class="cl0-title">Call Library</h1>
-            <p class="cl0-subtitle">Internal archive of successful sales calls.</p>
+            <h1 class="cl1-title">Call Library</h1>
+            <p class="cl1-subtitle">Internal archive of successful sales calls.</p>
           </div>
-          <button class="cl0-btn-primary" onclick="PAGE_CALLLIBRARY0.openAddModal()">Add Call Record</button>
+          <button class="cl1-btn-primary" onclick="PAGE_CALLLIBRARY1.openAddModal()">Add Call Record</button>
         </div>
 
         <!-- Filters -->
-        <div class="cl0-filters">
-          <div class="cl0-filter-group">
-            <span class="cl0-filter-label">Deal Size</span>
-            <select class="cl0-select" id="cl0-filter-size" onchange="PAGE_CALLLIBRARY0.updateFilters()">
+        <div class="cl1-filters">
+          <div class="cl1-filter-group">
+            <span class="cl1-filter-label">Deal Size</span>
+            <select class="cl1-select" id="cl1-filter-size" onchange="PAGE_CALLLIBRARY1.updateFilters()">
               <option value="all">All sizes</option>
               <option value="120 hours" ${_selectedDealSize === '120 hours' ? 'selected' : ''}>120 hours</option>
               <option value="240 hours" ${_selectedDealSize === '240 hours' ? 'selected' : ''}>240 hours</option>
               <option value="commission" ${_selectedDealSize === 'commission' ? 'selected' : ''}>Commission</option>
             </select>
           </div>
-          <div class="cl0-filter-group">
-            <span class="cl0-filter-label">Industry</span>
-            <select class="cl0-select" id="cl0-filter-industry" onchange="PAGE_CALLLIBRARY0.updateFilters()">
+          <div class="cl1-filter-group">
+            <span class="cl1-filter-label">Industry</span>
+            <select class="cl1-select" id="cl1-filter-industry" onchange="PAGE_CALLLIBRARY1.updateFilters()">
               <option value="all">All industries</option>
               <option value="Fintech" ${_selectedIndustry === 'Fintech' ? 'selected' : ''}>Fintech</option>
               <option value="Web3" ${_selectedIndustry === 'Web3' ? 'selected' : ''}>Web3</option>
               <option value="SaaS" ${_selectedIndustry === 'SaaS' ? 'selected' : ''}>SaaS</option>
             </select>
           </div>
-          <div class="cl0-filter-group">
-            <span class="cl0-filter-label">Objection Type</span>
-            <select class="cl0-select" id="cl0-filter-objection" onchange="PAGE_CALLLIBRARY0.updateFilters()">
+          <div class="cl1-filter-group">
+            <span class="cl1-filter-label">Objection Type</span>
+            <select class="cl1-select" id="cl1-filter-objection" onchange="PAGE_CALLLIBRARY1.updateFilters()">
               <option value="all">All types</option>
               ${OBJECTION_TYPES.map(t => `<option value="${t}" ${_selectedObjectionType === t ? 'selected' : ''}>${t}</option>`).join('')}
             </select>
           </div>
           ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all' || _selectedObjectionType !== 'all') ? 
-            `<button class="cl0-btn-clear" onclick="PAGE_CALLLIBRARY0.clearFilters()">Clear Filters</button>` : ''}
+            `<button class="cl1-btn-clear" onclick="PAGE_CALLLIBRARY1.clearFilters()">Clear Filters</button>` : ''}
         </div>
 
         <!-- Section A: Closed Won -->
-        <div class="cl0-section-header">
-          <h2 class="cl0-section-title">Closed Won Deals</h2>
-          <span class="cl0-section-count">${filteredClosedWon.length} records</span>
-          <div class="cl0-section-rule cl0-rule-brand"></div>
+        <div class="cl1-section-header">
+          <h2 class="cl1-section-title">Closed Won Deals</h2>
+          <span class="cl1-section-count">${filteredClosedWon.length} records</span>
+          <div class="cl1-section-rule cl1-rule-brand"></div>
         </div>
 
         ${filteredClosedWon.length === 0 ? `
-          <div class="cl0-empty">No closed won deals match the selected filters.</div>
+          <div class="cl1-empty">No closed won deals match the selected filters.</div>
         ` : `
-          <div class="cl0-grid">
+          <div class="cl1-grid cl1-grid-objections">
             ${filteredClosedWon.map(c => `
-              <div class="cl0-card">
-                <div class="cl0-thumb" style="background: ${c.thumbnail || 'linear-gradient(135deg, #333, #111)'}">
-                  <div class="cl0-thumb-overlay">
-                    <div class="cl0-thumb-top">
-                      <span class="cl0-thumb-label">Fathom · Recording</span>
-                      <span class="cl0-pill-success">WON</span>
+              <div class="cl1-card">
+                <div class="cl1-thumb" style="background: ${c.thumbnail || 'linear-gradient(135deg, #333, #111)'}">
+                  <div class="cl1-thumb-overlay">
+                    <div class="cl1-thumb-top" style="justify-content: flex-end;">
+                      <span class="cl1-pill-success">WON</span>
                     </div>
-                    <div class="cl0-play-btn">▶</div>
+                    <div class="cl1-play-btn">▶</div>
                   </div>
                 </div>
-                <div class="cl0-card-body">
-                  <div class="cl0-card-meta">
-                    <div class="cl0-avatar">${c.salesperson[0]}</div>
-                    <span class="cl0-meta-text">${c.salesperson} • ${c.created_at}</span>
+                <div class="cl1-card-body">
+                  <div class="cl1-card-meta">
+                    <span class="cl1-meta-text"><strong>${c.salesperson}</strong><br/>${c.created_at}</span>
                   </div>
-                  <h3 class="cl0-card-title">${c.title || 'Primary Deal Call'}</h3>
-                  <div class="cl0-tags">
-                    ${c.industries ? c.industries.map(i => `<span class="cl0-tag">${i}</span>`).join('') : ''}
-                    ${c.deal_size ? `<span class="cl0-tag">${c.deal_size}</span>` : ''}
+                  <div class="cl1-tags">
+                    ${c.industries ? c.industries.map(i => `<span class="cl1-tag">${i}</span>`).join('') : ''}
+                    ${c.deal_size ? `<span class="cl1-tag">${c.deal_size}</span>` : ''}
                   </div>
-                  <div class="cl0-actions">
-                    <a href="${c.main_link}" target="_blank" rel="noreferrer" class="cl0-btn-fathom">Watch on Fathom</a>
-                    <button class="cl0-btn-related" onclick="PAGE_CALLLIBRARY0.openRelatedModal('${c.id}')">Related</button>
+                  <div class="cl1-actions">
+                    <a href="${c.main_link}" target="_blank" rel="noreferrer" class="cl1-btn-fathom">Watch on Fathom</a>
+                    <button class="cl1-btn-related" onclick="PAGE_CALLLIBRARY1.openRelatedModal('${c.id}')">Related</button>
                   </div>
                 </div>
               </div>
@@ -665,32 +712,29 @@ const PAGE_CALLLIBRARY0 = (() => {
         `}
 
         <!-- Section B: Objection Handling -->
-        <div class="cl0-section-header">
-          <h2 class="cl0-section-title cl0-text-secondary">Objection Handling</h2>
-          <span class="cl0-section-count">${filteredObjections.length} records</span>
-          <div class="cl0-section-rule cl0-rule-secondary"></div>
+        <div class="cl1-section-header">
+          <h2 class="cl1-section-title cl1-text-secondary">Objection Handling</h2>
+          <span class="cl1-section-count">${filteredObjections.length} records</span>
+          <div class="cl1-section-rule cl1-rule-secondary"></div>
         </div>
 
         ${filteredObjections.length === 0 ? `
-          <div class="cl0-empty">No objection handling calls match the selected filters.</div>
+          <div class="cl1-empty">No objection handling calls match the selected filters.</div>
         ` : `
-          <div class="cl0-grid">
+          <div class="cl1-grid">
             ${filteredObjections.map(c => `
-              <div class="cl0-card objection">
-                <div class="cl0-card-body">
-                  <div class="cl0-obj-top">
-                    <span class="cl0-pill-obj">${c.objection_type}</span>
-                    <span class="cl0-pill-time">⏱ ${c.timing || '00:00'}</span>
+              <div class="cl1-card objection">
+                <div class="cl1-card-body">
+                  <div class="cl1-obj-top">
+                    <span class="cl1-pill-obj">${c.objection_type}</span>
+                    <span class="cl1-pill-time">⏱ ${c.timing || '00:00'}</span>
                   </div>
-                  <h3 class="cl0-card-title">${c.title || c.objection_type}</h3>
-                  <p class="cl0-obj-summary">${c.summary || 'Watch this recording to see how the team handled this objection.'}</p>
-                  <div class="cl0-card-meta" style="margin-top:auto; padding-top:8px;">
-                    <div class="cl0-avatar" style="color:var(--v0-brand-secondary); background:color-mix(in srgb, var(--v0-brand-secondary) 15%, transparent); border-color:color-mix(in srgb, var(--v0-brand-secondary) 25%, transparent)">${c.salesperson[0]}</div>
-                    <span class="cl0-meta-text">${c.salesperson} • ${c.created_at}</span>
+                  <h3 class="cl1-card-title" style="font-size: 14px; margin-bottom: 8px;">${c.title || c.summary || c.objection_type}</h3>
+                  <div class="cl1-card-meta" style="margin-top:auto; padding-top:8px;">
+                    <span class="cl1-meta-text"><strong>${c.salesperson}</strong><br/>${c.created_at}</span>
                   </div>
-                  <div style="margin-top:8px;">
-                    <a href="${c.main_link}" target="_blank" rel="noreferrer" class="cl0-btn-obj-fathom">Watch Specific Moment</a>
-                    <button class="cl0-btn-obj-related" onclick="PAGE_CALLLIBRARY0.openRelatedModal('${c.id}')">Related Calls</button>
+                  <div style="margin-top:16px;">
+                    <a href="${c.main_link}" target="_blank" rel="noreferrer" class="cl1-btn-obj-fathom">Watch on Fathom</a>
                   </div>
                 </div>
               </div>
@@ -702,9 +746,9 @@ const PAGE_CALLLIBRARY0 = (() => {
   }
 
   function updateFilters() {
-    _selectedDealSize = document.getElementById('cl0-filter-size').value;
-    _selectedIndustry = document.getElementById('cl0-filter-industry').value;
-    _selectedObjectionType = document.getElementById('cl0-filter-objection').value;
+    _selectedDealSize = document.getElementById('cl1-filter-size').value;
+    _selectedIndustry = document.getElementById('cl1-filter-industry').value;
+    _selectedObjectionType = document.getElementById('cl1-filter-objection').value;
     render(document.getElementById('app-content'));
   }
 
@@ -719,11 +763,58 @@ const PAGE_CALLLIBRARY0 = (() => {
     alert("Add Call Record Modal implementation would go here as per spec. This is a functional stub for V0 UI demo.");
   }
 
+  function closeRelatedModal() {
+    const m = document.getElementById('cl1-related-modal');
+    if (m) m.remove();
+  }
+
   function openRelatedModal(id) {
-    alert("Related Calls Modal implementation would go here as per spec. This is a functional stub for V0 UI demo.");
+    const calls = getCalls();
+    const call = calls.find(c => c.id === id);
+    if (!call) return;
+
+    // Build related items
+    const relatedHtml = `
+      <div class="cl1-related-item">
+        <div class="cl1-pill-internal" style="margin:0; padding:2px 8px;">DISCOVERY</div>
+        <div class="cl1-related-details">
+          <div class="cl1-related-title">Same prospect — discovery call</div>
+          <div class="cl1-meta-text">${call.salesperson} • 2024-06-29</div>
+        </div>
+        <a href="#" class="cl1-btn-watch" onclick="event.preventDefault()">Watch ↗</a>
+      </div>
+      <div class="cl1-related-item">
+        <div class="cl1-pill-internal" style="margin:0; padding:2px 8px; color:var(--v0-brand-secondary); border-color:color-mix(in srgb, var(--v0-brand-secondary) 30%, transparent); background:color-mix(in srgb, var(--v0-brand-secondary) 15%, transparent);">PROPOSAL</div>
+        <div class="cl1-related-details">
+          <div class="cl1-related-title">Same prospect — proposal review</div>
+          <div class="cl1-meta-text">${call.salesperson} • 2024-07-05</div>
+        </div>
+        <a href="#" class="cl1-btn-watch" onclick="event.preventDefault()">Watch ↗</a>
+      </div>
+    `;
+
+    const subtitle = call.category === 'Closed Won Deals' ? 
+      `Assets connected to ${call.salesperson}'s won deal` : 
+      `Assets connected to this call`;
+
+    const html = `
+      <div id="cl1-related-modal" class="cl1-modal-backdrop" onclick="if(event.target === this) PAGE_CALLLIBRARY1.closeRelatedModal()">
+        <div class="cl1-modal-content">
+          <button class="cl1-modal-close" onclick="PAGE_CALLLIBRARY1.closeRelatedModal()">✕</button>
+          <h2 class="cl1-modal-title">Related Calls</h2>
+          <p class="cl1-modal-subtitle">${subtitle}</p>
+          <div class="cl1-related-list">
+            ${relatedHtml}
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', html);
   }
 
   return {
+    closeRelatedModal,
     render,
     updateFilters,
     clearFilters,

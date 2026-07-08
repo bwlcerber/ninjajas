@@ -128,7 +128,7 @@ const ROUTER = (() => {
       admin: () => PAGE_ADMIN.render(container, param),
       'branding': () => PAGE_BRANDING.render(container),
       'call-library': () => PAGE_CALLLIBRARY.render(container),
-      'call-library-0': () => PAGE_CALLLIBRARY0.render(container),
+      'call-library-0': () => PAGE_CALLLIBRARY1.render(container),
       'enablement-tracker': () => PAGE_ENABLEMENT.render(container)
     };
 
