@@ -187,11 +187,46 @@ const PAGE_CALLLIBRARY = (() => {
         </div>
       </div>
 
+      <style>
+        .cl-section-header {
+          display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+        }
+        .cl-section-title {
+          text-transform: uppercase; font-size: 20px; font-weight: 700; margin: 0; font-family: var(--font-ui); color: var(--text-primary);
+        }
+        .cl-section-count {
+          font-family: var(--font-mono); text-transform: uppercase; color: var(--text-secondary); font-size: 10px;
+        }
+        @keyframes cl-glow-pulse {
+          0% { opacity: 1; transform: scaleX(1); }
+          50% { opacity: 0.1; transform: scaleX(0.7); }
+          100% { opacity: 1; transform: scaleX(1); }
+        }
+        .cl-section-rule {
+          height: 1px; flex: 1; transform-origin: left;
+          animation: cl-glow-pulse 3s ease-in-out infinite;
+        }
+        .cl-rule-purple { background: linear-gradient(to right, color-mix(in srgb, #7c3aed 50%, transparent), transparent); }
+        .cl-rule-pink { background: linear-gradient(to right, color-mix(in srgb, #db2777 50%, transparent), transparent); }
+        
+        .btn-purple {
+          background-color: #7c3aed !important; color: #fff !important; border: none !important; transition: opacity 150ms ease;
+        }
+        .btn-purple:hover { opacity: 0.9 !important; }
+        .btn-pink {
+          background-color: #db2777 !important; color: #fff !important; border: none !important; transition: opacity 150ms ease;
+        }
+        .btn-pink:hover { opacity: 0.9 !important; }
+      </style>
       <div class="call-library-container" style="display:flex; flex-direction:column; gap:32px; margin-top:16px;">
         
         <!-- Closed Won Deals Section -->
         <div style="display:flex; flex-direction:column; gap:16px;">
-          <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">CLOSED WON DEALS</div>
+          <div class="cl-section-header">
+            <h2 class="cl-section-title">Closed Won Deals</h2>
+            <span class="cl-section-count">${filteredClosedWon.length} records</span>
+            <div class="cl-section-rule cl-rule-purple"></div>
+          </div>
           <div id="call-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
             ${filteredClosedWon.map(c => renderCallCard(c)).join('')}
           </div>
@@ -205,7 +240,11 @@ const PAGE_CALLLIBRARY = (() => {
 
         <!-- Objection Handling Section -->
         <div style="display:flex; flex-direction:column; gap:16px;">
-          <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">OBJECTION HANDLING</div>
+          <div class="cl-section-header">
+            <h2 class="cl-section-title">Objection Handling</h2>
+            <span class="cl-section-count">${filteredObjections.length} records</span>
+            <div class="cl-section-rule cl-rule-pink"></div>
+          </div>
           <div id="objection-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
             ${filteredObjections.map(c => renderCallCard(c)).join('')}
           </div>
@@ -249,7 +288,7 @@ const PAGE_CALLLIBRARY = (() => {
 
   function renderCallCard(c) {
     return `
-      <div class="card call-record-card" style="border:1px solid var(--border-default); border-radius:var(--r-md); background:var(--bg-2); display:flex; flex-direction:column; height:auto; overflow:hidden;">
+      <div class="card call-record-card" style="font-family: var(--font-ui); border:1px solid var(--border-default); border-radius:var(--r-md); background:var(--bg-2); display:flex; flex-direction:column; height:auto; overflow:hidden;">
         <!-- Header -->
         <div style="padding:16px; border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
           <div>
@@ -285,10 +324,15 @@ const PAGE_CALLLIBRARY = (() => {
         </div>
 
         <!-- Footer -->
-        <div style="padding:12px 16px; background:var(--bg-3); border-top:1px solid var(--border-top); display:flex; justify-content:flex-end;">
-          <button class="btn btn-sm btn-secondary" onclick="PAGE_CALLLIBRARY.openMoreAssets('${c.id}')" style="width:100%; justify-content:center; border: 1px solid var(--accent); color: var(--accent); font-weight: 600;">
-            Related Calls
+        <div style="padding:12px 16px; background:var(--bg-3); border-top:1px solid var(--border-top); display:flex; flex-direction:column; gap:8px;">
+          <button class="btn btn-sm ${c.category === 'Objection Handling' ? 'btn-pink' : 'btn-purple'}" onclick="window.open('${c.main_link}', '_blank')" style="width:100%; justify-content:center; border-radius:var(--r-md); font-weight: 600;">
+            Watch on Fathom
           </button>
+          ${c.category === 'Closed Won Deals' ? `
+            <button class="btn btn-sm btn-secondary" onclick="PAGE_CALLLIBRARY.openMoreAssets('${c.id}')" style="width:100%; justify-content:center; border-radius:var(--r-md); border: 1px solid var(--border-default); color: var(--text-primary); font-weight: 600;">
+              Related Calls
+            </button>
+          ` : ''}
         </div>
       </div>
     `;
