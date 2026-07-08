@@ -1308,7 +1308,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Influencer Marketing",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design",
+        "PPC",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1325,7 +1328,11 @@ window.PORTAL_DATA = {
         "web3"
       ],
       "related_assets": [],
-      "created_at": "2024-06-01"
+      "created_at": "2024-06-01",
+      "verticals": [
+        "Web3",
+        "Fintech"
+      ]
     },
     {
       "id": "case-002",
@@ -1369,7 +1376,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "Content"
+        "Content",
+        "Analytics",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1385,7 +1394,11 @@ window.PORTAL_DATA = {
         "brand"
       ],
       "related_assets": [],
-      "created_at": "2024-03-01"
+      "created_at": "2024-03-01",
+      "verticals": [
+        "eCommerce",
+        "B2C"
+      ]
     },
     {
       "id": "case-004",
@@ -1412,7 +1425,11 @@ window.PORTAL_DATA = {
         "performance"
       ],
       "related_assets": [],
-      "created_at": "2024-04-01"
+      "created_at": "2024-04-01",
+      "verticals": [
+        "eCommerce",
+        "B2C"
+      ]
     },
     {
       "id": "case-005",
@@ -1439,7 +1456,11 @@ window.PORTAL_DATA = {
         "bitcoin"
       ],
       "related_assets": [],
-      "created_at": "2024-02-01"
+      "created_at": "2024-02-01",
+      "verticals": [
+        "Web3",
+        "iGaming"
+      ]
     },
     {
       "id": "case-006",
@@ -1450,7 +1471,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "Email Marketing",
-        "SEO"
+        "SEO",
+        "Content",
+        "Analytics",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1466,7 +1490,11 @@ window.PORTAL_DATA = {
         "email"
       ],
       "related_assets": [],
-      "created_at": "2024-01-01"
+      "created_at": "2024-01-01",
+      "verticals": [
+        "eCommerce",
+        "Healthcare"
+      ]
     },
     {
       "id": "case-007",
@@ -1477,7 +1505,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "SEO",
         "Content",
-        "Social Media"
+        "Social Media",
+        "Analytics",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1493,7 +1523,10 @@ window.PORTAL_DATA = {
         "content"
       ],
       "related_assets": [],
-      "created_at": "2023-12-01"
+      "created_at": "2023-12-01",
+      "verticals": [
+        "Healthcare"
+      ]
     },
     {
       "id": "case-008",
@@ -1504,7 +1537,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "SEO",
         "Content",
-        "PPC"
+        "PPC",
+        "Analytics",
+        "Web & LP Design",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1520,7 +1556,12 @@ window.PORTAL_DATA = {
         "ppc"
       ],
       "related_assets": [],
-      "created_at": "2023-11-01"
+      "created_at": "2023-11-01",
+      "verticals": [
+        "Fintech",
+        "B2C",
+        "SaaS"
+      ]
     },
     {
       "id": "case-009",
@@ -1546,7 +1587,10 @@ window.PORTAL_DATA = {
         "eu"
       ],
       "related_assets": [],
-      "created_at": "2024-07-01"
+      "created_at": "2024-07-01",
+      "verticals": [
+        "iGaming"
+      ]
     },
     {
       "id": "case-010",
@@ -1557,7 +1601,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Content"
+        "Content",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1573,7 +1618,11 @@ window.PORTAL_DATA = {
         "brand"
       ],
       "related_assets": [],
-      "created_at": "2024-08-01"
+      "created_at": "2024-08-01",
+      "verticals": [
+        "iGaming",
+        "B2C"
+      ]
     },
     {
       "id": "case-011",
@@ -1584,7 +1633,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1600,7 +1650,10 @@ window.PORTAL_DATA = {
         "logitech"
       ],
       "related_assets": [],
-      "created_at": "2024-09-01"
+      "created_at": "2024-09-01",
+      "verticals": [
+        "SaaS"
+      ]
     },
     {
       "id": "case-012",
@@ -1610,7 +1663,8 @@ window.PORTAL_DATA = {
       "vertical": "SaaS",
       "services_provided": [
         "Web & LP Design",
-        "Content"
+        "Content",
+        "Social Media"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1626,7 +1680,11 @@ window.PORTAL_DATA = {
         "content"
       ],
       "related_assets": [],
-      "created_at": "2024-10-01"
+      "created_at": "2024-10-01",
+      "verticals": [
+        "SaaS",
+        "B2B"
+      ]
     },
     {
       "id": "case-013",
@@ -1652,7 +1710,11 @@ window.PORTAL_DATA = {
         "performance"
       ],
       "related_assets": [],
-      "created_at": "2024-11-01"
+      "created_at": "2024-11-01",
+      "verticals": [
+        "iGaming",
+        "B2C"
+      ]
     },
     {
       "id": "case-014",
@@ -1662,7 +1724,8 @@ window.PORTAL_DATA = {
       "vertical": "iGaming",
       "services_provided": [
         "Influencer Marketing",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1678,7 +1741,10 @@ window.PORTAL_DATA = {
         "gambling"
       ],
       "related_assets": [],
-      "created_at": "2024-05-01"
+      "created_at": "2024-05-01",
+      "verticals": [
+        "iGaming"
+      ]
     },
     {
       "id": "case-015",
@@ -1688,7 +1754,8 @@ window.PORTAL_DATA = {
       "vertical": "Web3",
       "services_provided": [
         "Social Media",
-        "Content"
+        "Content",
+        "Influencer Marketing"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1704,7 +1771,11 @@ window.PORTAL_DATA = {
         "telegram"
       ],
       "related_assets": [],
-      "created_at": "2023-09-01"
+      "created_at": "2023-09-01",
+      "verticals": [
+        "Web3",
+        "B2C"
+      ]
     },
     {
       "id": "case-016",
@@ -1730,7 +1801,12 @@ window.PORTAL_DATA = {
         "content"
       ],
       "related_assets": [],
-      "created_at": "2024-01-01"
+      "created_at": "2024-01-01",
+      "verticals": [
+        "Trading",
+        "Fintech",
+        "Web3"
+      ]
     },
     {
       "id": "case-017",
@@ -1741,7 +1817,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "PPC",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1757,7 +1835,11 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2023-10-01"
+      "created_at": "2023-10-01",
+      "verticals": [
+        "Web3",
+        "SaaS"
+      ]
     },
     {
       "id": "case-018",
@@ -1783,7 +1865,11 @@ window.PORTAL_DATA = {
         "web3"
       ],
       "related_assets": [],
-      "created_at": "2023-08-01"
+      "created_at": "2023-08-01",
+      "verticals": [
+        "Web3",
+        "B2C"
+      ]
     },
     {
       "id": "case-019",
@@ -1793,7 +1879,9 @@ window.PORTAL_DATA = {
       "vertical": "Fintech",
       "services_provided": [
         "PPC",
-        "Analytics"
+        "Analytics",
+        "Content",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1809,7 +1897,11 @@ window.PORTAL_DATA = {
         "landing-page"
       ],
       "related_assets": [],
-      "created_at": "2023-07-01"
+      "created_at": "2023-07-01",
+      "verticals": [
+        "Fintech",
+        "B2B"
+      ]
     },
     {
       "id": "case-020",
@@ -1820,7 +1912,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "SEO",
         "Content",
-        "PR"
+        "PR",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1836,7 +1929,11 @@ window.PORTAL_DATA = {
         "trading"
       ],
       "related_assets": [],
-      "created_at": "2023-06-01"
+      "created_at": "2023-06-01",
+      "verticals": [
+        "Trading",
+        "Fintech"
+      ]
     },
     {
       "id": "case-021",
@@ -1846,7 +1943,9 @@ window.PORTAL_DATA = {
       "vertical": "eCommerce",
       "services_provided": [
         "PPC",
-        "Social Media"
+        "Social Media",
+        "Analytics",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1862,7 +1961,11 @@ window.PORTAL_DATA = {
         "traffic"
       ],
       "related_assets": [],
-      "created_at": "2023-05-01"
+      "created_at": "2023-05-01",
+      "verticals": [
+        "eCommerce",
+        "B2C"
+      ]
     },
     {
       "id": "case-022",
@@ -1872,7 +1975,9 @@ window.PORTAL_DATA = {
       "vertical": "Web3",
       "services_provided": [
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Analytics",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1888,7 +1993,12 @@ window.PORTAL_DATA = {
         "influencer"
       ],
       "related_assets": [],
-      "created_at": "2023-04-01"
+      "created_at": "2023-04-01",
+      "verticals": [
+        "Web3",
+        "B2C",
+        "Gaming"
+      ]
     },
     {
       "id": "case-023",
@@ -1915,7 +2025,11 @@ window.PORTAL_DATA = {
         "media"
       ],
       "related_assets": [],
-      "created_at": "2023-03-01"
+      "created_at": "2023-03-01",
+      "verticals": [
+        "Web3",
+        "Fintech"
+      ]
     },
     {
       "id": "case-024",
@@ -1926,7 +2040,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "PR",
-        "Social Media"
+        "Social Media",
+        "Analytics"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1942,7 +2057,11 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2023-02-01"
+      "created_at": "2023-02-01",
+      "verticals": [
+        "SaaS",
+        "B2B"
+      ]
     },
     {
       "id": "case-025",
@@ -1953,7 +2072,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1969,7 +2089,11 @@ window.PORTAL_DATA = {
         "engagement"
       ],
       "related_assets": [],
-      "created_at": "2023-01-01"
+      "created_at": "2023-01-01",
+      "verticals": [
+        "Web3",
+        "B2B"
+      ]
     },
     {
       "id": "case-026",
@@ -1980,7 +2104,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "SEO",
-        "Content"
+        "Content",
+        "Web & LP Design",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -1996,7 +2122,11 @@ window.PORTAL_DATA = {
         "enterprise"
       ],
       "related_assets": [],
-      "created_at": "2022-12-01"
+      "created_at": "2022-12-01",
+      "verticals": [
+        "SaaS",
+        "B2B"
+      ]
     },
     {
       "id": "case-027",
@@ -2007,7 +2137,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "PR"
+        "PR",
+        "Analytics",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2023,7 +2155,10 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2022-11-01"
+      "created_at": "2022-11-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-028",
@@ -2033,7 +2168,8 @@ window.PORTAL_DATA = {
       "vertical": "Fintech",
       "services_provided": [
         "PPC",
-        "Analytics"
+        "Analytics",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2049,7 +2185,10 @@ window.PORTAL_DATA = {
         "auto-loans"
       ],
       "related_assets": [],
-      "created_at": "2022-10-01"
+      "created_at": "2022-10-01",
+      "verticals": [
+        "Fintech"
+      ]
     },
     {
       "id": "case-029",
@@ -2059,7 +2198,8 @@ window.PORTAL_DATA = {
       "vertical": "iGaming",
       "services_provided": [
         "PR",
-        "Content"
+        "Content",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2075,7 +2215,11 @@ window.PORTAL_DATA = {
         "crypto"
       ],
       "related_assets": [],
-      "created_at": "2022-09-01"
+      "created_at": "2022-09-01",
+      "verticals": [
+        "iGaming",
+        "Web3"
+      ]
     },
     {
       "id": "case-030",
@@ -2085,7 +2229,8 @@ window.PORTAL_DATA = {
       "vertical": "B2B",
       "services_provided": [
         "PPC",
-        "Social Media"
+        "Social Media",
+        "Analytics"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2101,7 +2246,11 @@ window.PORTAL_DATA = {
         "lead-gen"
       ],
       "related_assets": [],
-      "created_at": "2022-08-01"
+      "created_at": "2022-08-01",
+      "verticals": [
+        "B2B",
+        "SaaS"
+      ]
     },
     {
       "id": "case-031",
@@ -2112,7 +2261,11 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Influencer Marketing",
-        "Social Media"
+        "Social Media",
+        "Content",
+        "Web & LP Design",
+        "PPC",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2128,7 +2281,11 @@ window.PORTAL_DATA = {
         "influencer"
       ],
       "related_assets": [],
-      "created_at": "2022-07-01"
+      "created_at": "2022-07-01",
+      "verticals": [
+        "Web3",
+        "B2C"
+      ]
     },
     {
       "id": "case-032",
@@ -2139,7 +2296,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "SEO",
         "Content",
-        "PPC"
+        "PPC",
+        "Analytics",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2155,7 +2314,11 @@ window.PORTAL_DATA = {
         "content"
       ],
       "related_assets": [],
-      "created_at": "2022-06-01"
+      "created_at": "2022-06-01",
+      "verticals": [
+        "eCommerce",
+        "Gaming"
+      ]
     },
     {
       "id": "case-033",
@@ -2166,7 +2329,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "PR"
+        "PR",
+        "Web & LP Design",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2182,7 +2347,10 @@ window.PORTAL_DATA = {
         "social"
       ],
       "related_assets": [],
-      "created_at": "2022-05-01"
+      "created_at": "2022-05-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-034",
@@ -2193,7 +2361,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "SEO",
         "Content",
-        "PR"
+        "PR",
+        "PPC",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2209,7 +2379,11 @@ window.PORTAL_DATA = {
         "content"
       ],
       "related_assets": [],
-      "created_at": "2022-04-01"
+      "created_at": "2022-04-01",
+      "verticals": [
+        "Healthcare",
+        "B2C"
+      ]
     },
     {
       "id": "case-035",
@@ -2220,7 +2394,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "SEO",
-        "Social Media"
+        "Social Media",
+        "Analytics",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2236,7 +2412,10 @@ window.PORTAL_DATA = {
         "patient-acquisition"
       ],
       "related_assets": [],
-      "created_at": "2022-03-01"
+      "created_at": "2022-03-01",
+      "verticals": [
+        "Healthcare"
+      ]
     },
     {
       "id": "case-036",
@@ -2247,7 +2426,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "PR"
+        "PR",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2263,7 +2443,11 @@ window.PORTAL_DATA = {
         "brand"
       ],
       "related_assets": [],
-      "created_at": "2022-02-01"
+      "created_at": "2022-02-01",
+      "verticals": [
+        "iGaming",
+        "Gaming"
+      ]
     },
     {
       "id": "case-037",
@@ -2274,7 +2458,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2290,7 +2475,10 @@ window.PORTAL_DATA = {
         "influencer"
       ],
       "related_assets": [],
-      "created_at": "2022-01-01"
+      "created_at": "2022-01-01",
+      "verticals": [
+        "Healthcare"
+      ]
     },
     {
       "id": "case-038",
@@ -2301,7 +2489,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "Email Marketing"
+        "Email Marketing",
+        "Analytics",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2317,7 +2507,11 @@ window.PORTAL_DATA = {
         "email"
       ],
       "related_assets": [],
-      "created_at": "2021-12-01"
+      "created_at": "2021-12-01",
+      "verticals": [
+        "eCommerce",
+        "B2C"
+      ]
     },
     {
       "id": "case-039",
@@ -2328,7 +2522,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "PPC"
+        "PPC",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2344,7 +2539,13 @@ window.PORTAL_DATA = {
         "women"
       ],
       "related_assets": [],
-      "created_at": "2021-11-01"
+      "created_at": "2021-11-01",
+      "verticals": [
+        "eCommerce",
+        "B2C",
+        "Healthcare",
+        "SaaS"
+      ]
     },
     {
       "id": "case-wafee-v3",
@@ -2355,7 +2556,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "Social Media",
-        "SEO"
+        "SEO",
+        "Analytics",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2371,7 +2574,12 @@ window.PORTAL_DATA = {
         "seo"
       ],
       "related_assets": [],
-      "created_at": "2021-10-01"
+      "created_at": "2021-10-01",
+      "verticals": [
+        "eCommerce",
+        "Fintech",
+        "Web3"
+      ]
     },
     {
       "id": "case-041",
@@ -2382,7 +2590,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2398,7 +2607,12 @@ window.PORTAL_DATA = {
         "defi"
       ],
       "related_assets": [],
-      "created_at": "2021-09-01"
+      "created_at": "2021-09-01",
+      "verticals": [
+        "Web3",
+        "B2C",
+        "SaaS"
+      ]
     },
     {
       "id": "case-042",
@@ -2409,7 +2623,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "Social Media",
-        "SEO"
+        "SEO",
+        "Content"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2425,7 +2640,10 @@ window.PORTAL_DATA = {
         "roas"
       ],
       "related_assets": [],
-      "created_at": "2021-08-01"
+      "created_at": "2021-08-01",
+      "verticals": [
+        "eCommerce"
+      ]
     },
     {
       "id": "case-043",
@@ -2451,7 +2669,10 @@ window.PORTAL_DATA = {
         "community"
       ],
       "related_assets": [],
-      "created_at": "2021-07-01"
+      "created_at": "2021-07-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-044",
@@ -2462,7 +2683,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Content",
-        "Social Media"
+        "Social Media",
+        "Influencer Marketing",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2478,7 +2701,10 @@ window.PORTAL_DATA = {
         "content"
       ],
       "related_assets": [],
-      "created_at": "2021-06-01"
+      "created_at": "2021-06-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-045",
@@ -2489,7 +2715,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Analytics",
+        "Web & LP Design",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2505,7 +2734,11 @@ window.PORTAL_DATA = {
         "influencer"
       ],
       "related_assets": [],
-      "created_at": "2021-05-01"
+      "created_at": "2021-05-01",
+      "verticals": [
+        "Web3",
+        "Fintech"
+      ]
     },
     {
       "id": "case-046",
@@ -2516,7 +2749,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Content",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design",
+        "Influencer Marketing",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2532,7 +2768,11 @@ window.PORTAL_DATA = {
         "institutional"
       ],
       "related_assets": [],
-      "created_at": "2021-04-01"
+      "created_at": "2021-04-01",
+      "verticals": [
+        "Web3",
+        "AI"
+      ]
     },
     {
       "id": "case-047",
@@ -2543,7 +2783,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2559,7 +2800,10 @@ window.PORTAL_DATA = {
         "trading"
       ],
       "related_assets": [],
-      "created_at": "2021-03-01"
+      "created_at": "2021-03-01",
+      "verticals": [
+        "Trading"
+      ]
     },
     {
       "id": "case-048",
@@ -2569,7 +2813,11 @@ window.PORTAL_DATA = {
       "vertical": "iGaming",
       "services_provided": [
         "PPC",
-        "Social Media"
+        "Social Media",
+        "Content",
+        "Web & LP Design",
+        "Influencer Marketing",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2585,7 +2833,11 @@ window.PORTAL_DATA = {
         "ppc"
       ],
       "related_assets": [],
-      "created_at": "2021-02-01"
+      "created_at": "2021-02-01",
+      "verticals": [
+        "iGaming",
+        "Gaming"
+      ]
     },
     {
       "id": "case-049",
@@ -2596,7 +2848,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "PR"
+        "PR",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2612,7 +2865,12 @@ window.PORTAL_DATA = {
         "growth"
       ],
       "related_assets": [],
-      "created_at": "2021-01-01"
+      "created_at": "2021-01-01",
+      "verticals": [
+        "Trading",
+        "Fintech",
+        "Web3"
+      ]
     },
     {
       "id": "case-050",
@@ -2623,7 +2881,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Influencer Marketing",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2639,7 +2899,11 @@ window.PORTAL_DATA = {
         "influencer"
       ],
       "related_assets": [],
-      "created_at": "2020-12-01"
+      "created_at": "2020-12-01",
+      "verticals": [
+        "Web3",
+        "iGaming"
+      ]
     },
     {
       "id": "case-051",
@@ -2666,7 +2930,11 @@ window.PORTAL_DATA = {
         "app"
       ],
       "related_assets": [],
-      "created_at": "2020-11-01"
+      "created_at": "2020-11-01",
+      "verticals": [
+        "Fintech",
+        "B2C"
+      ]
     },
     {
       "id": "case-052",
@@ -2676,7 +2944,9 @@ window.PORTAL_DATA = {
       "vertical": "Web3",
       "services_provided": [
         "Social Media",
-        "Content"
+        "Content",
+        "Web & LP Design",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2692,7 +2962,10 @@ window.PORTAL_DATA = {
         "sales"
       ],
       "related_assets": [],
-      "created_at": "2020-10-01"
+      "created_at": "2020-10-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-053",
@@ -2719,7 +2992,10 @@ window.PORTAL_DATA = {
         "design"
       ],
       "related_assets": [],
-      "created_at": "2020-09-01"
+      "created_at": "2020-09-01",
+      "verticals": [
+        "Real Estate"
+      ]
     },
     {
       "id": "case-054",
@@ -2729,7 +3005,9 @@ window.PORTAL_DATA = {
       "vertical": "Web3",
       "services_provided": [
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Content",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2745,7 +3023,11 @@ window.PORTAL_DATA = {
         "followers"
       ],
       "related_assets": [],
-      "created_at": "2020-08-01"
+      "created_at": "2020-08-01",
+      "verticals": [
+        "Web3",
+        "B2C"
+      ]
     },
     {
       "id": "case-055",
@@ -2756,7 +3038,11 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC",
         "Social Media",
-        "PR"
+        "PR",
+        "Influencer Marketing",
+        "Branding",
+        "Email Marketing",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2772,7 +3058,12 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2020-07-01"
+      "created_at": "2020-07-01",
+      "verticals": [
+        "Fintech",
+        "B2B",
+        "B2C"
+      ]
     },
     {
       "id": "case-056",
@@ -2782,7 +3073,9 @@ window.PORTAL_DATA = {
       "vertical": "SaaS",
       "services_provided": [
         "PPC",
-        "Analytics"
+        "Analytics",
+        "Branding",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2798,7 +3091,10 @@ window.PORTAL_DATA = {
         "google"
       ],
       "related_assets": [],
-      "created_at": "2020-06-01"
+      "created_at": "2020-06-01",
+      "verticals": [
+        "SaaS"
+      ]
     },
     {
       "id": "case-057",
@@ -2809,7 +3105,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Influencer Marketing",
-        "PR"
+        "PR",
+        "Web & LP Design",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2825,7 +3123,11 @@ window.PORTAL_DATA = {
         "sellout"
       ],
       "related_assets": [],
-      "created_at": "2020-05-01"
+      "created_at": "2020-05-01",
+      "verticals": [
+        "Web3",
+        "B2C"
+      ]
     },
     {
       "id": "case-058",
@@ -2836,7 +3138,13 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Content"
+        "Content",
+        "Analytics",
+        "Web & LP Design",
+        "PPC",
+        "Branding",
+        "Email Marketing",
+        "SEO"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2852,7 +3160,12 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2020-04-01"
+      "created_at": "2020-04-01",
+      "verticals": [
+        "SaaS",
+        "AI",
+        "B2B"
+      ]
     },
     {
       "id": "case-059",
@@ -2863,7 +3176,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media",
         "Content",
-        "SEO"
+        "SEO",
+        "Web & LP Design",
+        "PPC",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2879,7 +3195,10 @@ window.PORTAL_DATA = {
         "seo"
       ],
       "related_assets": [],
-      "created_at": "2020-03-01"
+      "created_at": "2020-03-01",
+      "verticals": [
+        "SaaS"
+      ]
     },
     {
       "id": "case-060",
@@ -2890,7 +3209,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2906,7 +3226,11 @@ window.PORTAL_DATA = {
         "influencer"
       ],
       "related_assets": [],
-      "created_at": "2020-02-01"
+      "created_at": "2020-02-01",
+      "verticals": [
+        "Sports Betting",
+        "B2C"
+      ]
     },
     {
       "id": "case-061",
@@ -2917,7 +3241,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2933,7 +3258,11 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2020-01-01"
+      "created_at": "2020-01-01",
+      "verticals": [
+        "Web3",
+        "Fintech"
+      ]
     },
     {
       "id": "case-062",
@@ -2944,7 +3273,8 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Content",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2960,7 +3290,11 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2019-12-01"
+      "created_at": "2019-12-01",
+      "verticals": [
+        "Web3",
+        "B2C"
+      ]
     },
     {
       "id": "case-063",
@@ -2971,7 +3305,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Influencer Marketing",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design",
+        "PPC"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -2987,7 +3323,10 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2019-11-01"
+      "created_at": "2019-11-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-064",
@@ -2998,7 +3337,10 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Content",
-        "Social Media"
+        "Social Media",
+        "Web & LP Design",
+        "PPC",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -3014,7 +3356,10 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2019-10-01"
+      "created_at": "2019-10-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-065",
@@ -3041,7 +3386,12 @@ window.PORTAL_DATA = {
         "launch"
       ],
       "related_assets": [],
-      "created_at": "2019-09-01"
+      "created_at": "2019-09-01",
+      "verticals": [
+        "Trading",
+        "Fintech",
+        "Web3"
+      ]
     },
     {
       "id": "case-066",
@@ -3052,7 +3402,9 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR",
         "Social Media",
-        "Influencer Marketing"
+        "Influencer Marketing",
+        "Web & LP Design",
+        "Branding"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -3068,7 +3420,10 @@ window.PORTAL_DATA = {
         "pr"
       ],
       "related_assets": [],
-      "created_at": "2019-08-01"
+      "created_at": "2019-08-01",
+      "verticals": [
+        "Web3"
+      ]
     },
     {
       "id": "case-067",
@@ -3077,7 +3432,8 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "iGaming",
       "services_provided": [
-        "Web & LP Design"
+        "Web & LP Design",
+        "Content"
       ],
       "asset_type": "case",
       "visibility_status": "client-safe",
@@ -3093,7 +3449,11 @@ window.PORTAL_DATA = {
         "design"
       ],
       "related_assets": [],
-      "created_at": "2024-06-15"
+      "created_at": "2024-06-15",
+      "verticals": [
+        "iGaming",
+        "B2B"
+      ]
     },
     {
       "id": "mat-014",
