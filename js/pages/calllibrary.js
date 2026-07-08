@@ -4,13 +4,11 @@
 const PAGE_CALLLIBRARY = (() => {
 
   const SALESPEOPLE = ['Alex', 'Damon', 'Julia', 'Max', 'Maxime', 'Melina', 'Paul'];
-  const OBJECTION_TYPES = ['Price / Budget', 'Timing / Urgency', 'Competitor', 'Trust / Authority', 'Need / Value', 'Feature / Capability', 'Other'];
-  const CONVERSATION_STAGES = ['Cold Call', 'Discovery', 'Demo', 'Proposal / Pitch', 'Negotiation', 'Follow-up'];
+  const OBJECTION_TYPES = ['!Think about it', 'Budget / Price', 'Competition', 'Decision Makers', 'Partner', 'Past Experience', 'Timing', 'Trust and Authority'];
 
   let _selectedDealSize = 'all';
   let _selectedIndustry = 'all';
   let _selectedObjectionType = 'all';
-  let _selectedStage = 'all';
 
   // Seed default calls if none exist
   function getCalls() {
@@ -49,8 +47,7 @@ const PAGE_CALLLIBRARY = (() => {
         deal_size: '120 hours',
         industries: ['SaaS'],
         salesperson: 'Alex',
-        objection_type: 'Price / Budget',
-        conversation_stage: 'Demo',
+        objection_type: 'Budget / Price',
         created_at: '2026-06-15'
       },
       {
@@ -60,8 +57,7 @@ const PAGE_CALLLIBRARY = (() => {
         deal_size: 'commission',
         industries: ['Web3'],
         salesperson: 'Damon',
-        objection_type: 'Trust / Authority',
-        conversation_stage: 'Cold Call',
+        objection_type: 'Trust and Authority',
         created_at: '2026-06-20'
       }
     ];
@@ -93,8 +89,7 @@ const PAGE_CALLLIBRARY = (() => {
       const sizeMatch = _selectedDealSize === 'all' || c.deal_size.toLowerCase() === _selectedDealSize.toLowerCase();
       const industryMatch = _selectedIndustry === 'all' || c.industries.includes(_selectedIndustry);
       const objectionMatch = _selectedObjectionType === 'all' || c.objection_type === _selectedObjectionType;
-      const stageMatch = _selectedStage === 'all' || c.conversation_stage === _selectedStage;
-      return sizeMatch && industryMatch && objectionMatch && stageMatch;
+      return sizeMatch && industryMatch && objectionMatch;
     });
 
     container.innerHTML = `
@@ -141,15 +136,7 @@ const PAGE_CALLLIBRARY = (() => {
             </select>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Stage</span>
-            <select class="select" id="filter-stage" onchange="PAGE_CALLLIBRARY.setStageFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
-              <option value="all" ${_selectedStage === 'all' ? 'selected' : ''}>All Stages</option>
-              ${CONVERSATION_STAGES.map(stage => `<option value="${stage}" ${_selectedStage === stage ? 'selected' : ''}>${stage}</option>`).join('')}
-            </select>
-          </div>
-
-          ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all' || _selectedObjectionType !== 'all' || _selectedStage !== 'all') ? `
+          ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all' || _selectedObjectionType !== 'all') ? `
             <button class="btn btn-sm btn-ghost" onclick="PAGE_CALLLIBRARY.resetFilters()" style="align-self:flex-end; color:var(--danger); font-size:11.5px; height:32px;">
               ✕ Clear Filters
             </button>
@@ -209,17 +196,10 @@ const PAGE_CALLLIBRARY = (() => {
     if (container) render(container);
   }
 
-  function setStageFilter(val) {
-    _selectedStage = val;
-    const container = document.getElementById('page-container');
-    if (container) render(container);
-  }
-
   function resetFilters() {
     _selectedDealSize = 'all';
     _selectedIndustry = 'all';
     _selectedObjectionType = 'all';
-    _selectedStage = 'all';
     const container = document.getElementById('page-container');
     if (container) render(container);
   }
@@ -243,7 +223,6 @@ const PAGE_CALLLIBRARY = (() => {
             <div style="font-size:12px; font-weight:700; color:var(--text-primary)">
               ${c.category === 'Objection Handling' ? (c.objection_type || 'Objection Handling') : 'Primary Deal Call'}
             </div>
-            ${c.conversation_stage ? `<div style="font-size:11px; color:var(--text-secondary)">Stage: ${c.conversation_stage}</div>` : ''}
             <a href="${c.main_link}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
               ${c.main_link.replace('https://', '')} ↗
             </a>
@@ -322,13 +301,6 @@ const PAGE_CALLLIBRARY = (() => {
               ${OBJECTION_TYPES.map(obj => `<option value="${obj}">${obj}</option>`).join('')}
             </select>
           </div>
-          
-          <div class="input-group">
-            <span class="input-label">Conversation Stage *</span>
-            <select class="select" id="call-conversation-stage">
-              ${CONVERSATION_STAGES.map(stage => `<option value="${stage}">${stage}</option>`).join('')}
-            </select>
-          </div>
         </div>
 
         <!-- Deal Size Checkboxes -->
@@ -394,14 +366,12 @@ const PAGE_CALLLIBRARY = (() => {
     let followupLink = '';
     let prospectLink = '';
     let objectionType = '';
-    let conversationStage = '';
 
     if (category === 'Closed Won Deals') {
       followupLink = document.getElementById('call-followup-link').value.trim();
       prospectLink = document.getElementById('call-prospect-link').value.trim();
     } else {
       objectionType = document.getElementById('call-objection-type').value;
-      conversationStage = document.getElementById('call-conversation-stage').value;
     }
     
     if (!mainLink) {
@@ -432,7 +402,6 @@ const PAGE_CALLLIBRARY = (() => {
       industries: selectedIndustries,
       salesperson: salesperson,
       objection_type: objectionType,
-      conversation_stage: conversationStage,
       created_at: new Date().toISOString().split('T')[0]
     };
 
@@ -476,9 +445,9 @@ const PAGE_CALLLIBRARY = (() => {
     `;
 
     openModal({
-      title: \`More Assets — Sales: \${c.salesperson} (\${c.deal_size})\`,
+      title: `More Assets — Sales: ${c.salesperson} (${c.deal_size})`,
       body: body,
-      footer: \`<button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>\`,
+      footer: `<button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>`,
       size: 'medium'
     });
   }
@@ -492,7 +461,6 @@ const PAGE_CALLLIBRARY = (() => {
     setDealSizeFilter,
     setIndustryFilter,
     setObjectionFilter,
-    setStageFilter,
     resetFilters
   };
 })();
