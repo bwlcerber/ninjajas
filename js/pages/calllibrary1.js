@@ -162,6 +162,22 @@ const PAGE_CALLLIBRARY1 = (() => {
     container.innerHTML = `
       <style>
         .cl1-container {
+          /* Injecting V1 Tokens directly so they map correctly in Light/Dark mode */
+          --v0-background: var(--bg-0, #060608);
+          --v0-foreground: var(--text-primary, #f0f0f2);
+          --v0-muted: var(--bg-2, #111116);
+          --v0-muted-foreground: var(--text-secondary, #a1a1aa);
+          --v0-card: var(--bg-1, #0d0d10);
+          --v0-border: var(--border-default, rgba(255,255,255,0.08));
+          --v0-brand: #7c3aed;
+          --v0-brand-secondary: #db2777;
+          --v0-success: #10b981;
+          --v0-surface-1: var(--bg-1, #0d0d10);
+          --v0-shadow-glow-brand: 0 0 20px rgba(124,58,237,0.15);
+          --v0-shadow-glow-secondary: 0 0 20px rgba(219,39,119,0.15);
+          --v0-brand-foreground: #ffffff;
+          --v0-brand-secondary-foreground: #ffffff;
+
           max-width: 80rem; /* 1280px ~ max-w-7xl */
           margin: 0 auto;
           padding: 24px;
@@ -169,6 +185,11 @@ const PAGE_CALLLIBRARY1 = (() => {
           color: var(--v0-foreground);
           font-family: var(--font-ui);
           min-height: 100%;
+        }
+        [data-theme="light"] .cl1-container {
+          --v0-brand: #6d28d9;
+          --v0-brand-secondary: #be185d;
+          --v0-success: #059669;
         }
         @media (min-width: 768px) {
           .cl1-container { padding: 48px; }
