@@ -12,6 +12,8 @@ header('Access-Control-Allow-Headers: Content-Type');
 $type = isset($_GET['type']) ? $_GET['type'] : 'content';
 if ($type === 'users') {
     $filename = __DIR__ . '/uploads/users.json';
+} else if ($type === 'calls') {
+    $filename = __DIR__ . '/uploads/calls.json';
 } else {
     $filename = __DIR__ . '/uploads/content_override.json';
 }

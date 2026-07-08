@@ -12,10 +12,41 @@ const PAGE_CALLLIBRARY1 = (() => {
 
   // Seed default calls if none exist
   function getCalls() {
+    let serverCalls = [];
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'data.php?type=calls&t=' + Date.now(), false);
+      xhr.send();
+      if (xhr.status === 200) {
+        const parsed = JSON.parse(xhr.responseText);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          serverCalls = parsed;
+        }
+      }
+    } catch (e) {}
+
+    let localCalls = [];
     try {
       const raw = localStorage.getItem('np_call_library');
-      if (raw) return JSON.parse(raw);
+      if (raw) localCalls = JSON.parse(raw);
     } catch (e) {}
+
+    if (serverCalls.length > 0) {
+      if (serverCalls.length > localCalls.length) {
+          localStorage.setItem('np_call_library', JSON.stringify(serverCalls));
+      }
+      return serverCalls;
+    }
+
+    if (localCalls.length > 0) {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'data.php?type=calls', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(localCalls));
+      } catch (e) {}
+      return localCalls;
+    }
 
     const seed = [
       {
@@ -62,6 +93,12 @@ const PAGE_CALLLIBRARY1 = (() => {
       }
     ];
     localStorage.setItem('np_call_library', JSON.stringify(seed));
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'data.php?type=calls', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(seed));
+    } catch (e) {}
     return seed;
   }
 
@@ -69,6 +106,12 @@ const PAGE_CALLLIBRARY1 = (() => {
     const calls = getCalls();
     calls.push(call);
     localStorage.setItem('np_call_library', JSON.stringify(calls));
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'data.php?type=calls', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(calls));
+    } catch (e) {}
   }
 
   function render(container) {
