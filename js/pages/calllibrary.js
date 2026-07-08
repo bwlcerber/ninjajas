@@ -223,6 +223,7 @@ const PAGE_CALLLIBRARY = (() => {
             <div style="font-size:12px; font-weight:700; color:var(--text-primary)">
               ${c.category === 'Objection Handling' ? (c.objection_type || 'Objection Handling') : 'Primary Deal Call'}
             </div>
+            ${c.objection_timing ? `<div style="font-size:11px; color:var(--accent); font-family:var(--font-mono); font-weight:700;">⏱ ${c.objection_timing}</div>` : ''}
             <a href="${c.main_link}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
               ${c.main_link.replace('https://', '')} ↗
             </a>
@@ -238,7 +239,7 @@ const PAGE_CALLLIBRARY = (() => {
 
         <!-- Footer -->
         <div style="padding:12px 16px; background:var(--bg-3); border-top:1px solid var(--border-top); display:flex; justify-content:flex-end;">
-          <button class="btn btn-sm btn-secondary" onclick="PAGE_CALLLIBRARY.openMoreAssets('${c.id}')" style="width:100%; justify-content:center;">
+          <button class="btn btn-sm btn-secondary" onclick="PAGE_CALLLIBRARY.openMoreAssets('${c.id}')" style="width:100%; justify-content:center; border: 1px solid var(--accent); color: var(--accent); font-weight: 600;">
             More Assets
           </button>
         </div>
@@ -249,12 +250,15 @@ const PAGE_CALLLIBRARY = (() => {
   window.toggleCallCategoryFields = function(category) {
     const objFields = document.getElementById('call-objection-fields');
     const closedWonFields = document.getElementById('call-closedwon-fields');
+    const dealSizeFields = document.getElementById('call-deal-size-fields');
     if (category === 'Objection Handling') {
       objFields.style.display = 'flex';
       closedWonFields.style.display = 'none';
+      dealSizeFields.style.display = 'none';
     } else {
       objFields.style.display = 'none';
       closedWonFields.style.display = 'flex';
+      dealSizeFields.style.display = 'block';
     }
   };
 
@@ -295,16 +299,22 @@ const PAGE_CALLLIBRARY = (() => {
         </div>
 
         <div id="call-objection-fields" style="display:none; flex-direction:column; gap:14px;">
-          <div class="input-group">
-            <span class="input-label">Objection Type *</span>
-            <select class="select" id="call-objection-type">
-              ${OBJECTION_TYPES.map(obj => `<option value="${obj}">${obj}</option>`).join('')}
-            </select>
+          <div style="display:flex; gap:16px;">
+            <div class="input-group" style="flex:1;">
+              <span class="input-label">Objection Type *</span>
+              <select class="select" id="call-objection-type">
+                ${OBJECTION_TYPES.map(obj => `<option value="${obj}">${obj}</option>`).join('')}
+              </select>
+            </div>
+            <div class="input-group" style="width: 130px;">
+              <span class="input-label">Timing (e.g. 16:54)*</span>
+              <input class="input" type="text" id="call-objection-timing" placeholder="00:00" required>
+            </div>
           </div>
         </div>
 
         <!-- Deal Size Checkboxes -->
-        <div class="input-group">
+        <div class="input-group" id="call-deal-size-fields">
           <span class="input-label">Package Deal Size</span>
           <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
             ${packageSizes.map(sz => `
@@ -366,12 +376,18 @@ const PAGE_CALLLIBRARY = (() => {
     let followupLink = '';
     let prospectLink = '';
     let objectionType = '';
+    let objectionTiming = '';
 
     if (category === 'Closed Won Deals') {
       followupLink = document.getElementById('call-followup-link').value.trim();
       prospectLink = document.getElementById('call-prospect-link').value.trim();
     } else {
       objectionType = document.getElementById('call-objection-type').value;
+      objectionTiming = document.getElementById('call-objection-timing').value.trim();
+      if (!objectionTiming) {
+        showToast('Objection timing is required', 'error');
+        return;
+      }
     }
     
     if (!mainLink) {
@@ -402,6 +418,7 @@ const PAGE_CALLLIBRARY = (() => {
       industries: selectedIndustries,
       salesperson: salesperson,
       objection_type: objectionType,
+      objection_timing: objectionTiming,
       created_at: new Date().toISOString().split('T')[0]
     };
 
