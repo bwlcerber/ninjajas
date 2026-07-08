@@ -19,6 +19,9 @@ const ROUTER = (() => {
     admin: 'Admin',
     'branding': 'Design & Branding',
     'call-library': 'Call Library',
+    'call-library-1': 'Call Library V1',
+    'call-library-2': 'Call Library V2',
+    'call-library-3': 'Call Library V3',
     'enablement-tracker': 'Team Tracker'
   };
 
@@ -127,6 +130,9 @@ const ROUTER = (() => {
       admin: () => PAGE_ADMIN.render(container, param),
       'branding': () => PAGE_BRANDING.render(container),
       'call-library': () => PAGE_CALLLIBRARY.render(container),
+      'call-library-1': () => PAGE_CALLLIBRARY1.render(container),
+      'call-library-2': () => PAGE_CALLLIBRARY2.render(container),
+      'call-library-3': () => PAGE_CALLLIBRARY3.render(container),
       'enablement-tracker': () => PAGE_ENABLEMENT.render(container)
     };
 

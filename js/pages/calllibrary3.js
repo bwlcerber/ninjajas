@@ -1,7 +1,7 @@
 /** PAGE: Call Library */
 'use strict';
 
-const PAGE_CALLLIBRARY = (() => {
+const PAGE_CALLLIBRARY3 = (() => {
 
   const SALESPEOPLE = ['Alex', 'Damon', 'Julia', 'Max', 'Maxime', 'Melina', 'Paul'];
   const OBJECTION_TYPES = ['!Think about it', 'Budget / Price', 'Competition', 'Decision Makers / Partner', 'Past Experience', 'Timing', 'Trust and Authority', 'Window Shopping'];
@@ -98,7 +98,7 @@ const PAGE_CALLLIBRARY = (() => {
             <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Internal archive of successful sales calls.</div>
           <div style="display:flex; gap:8px;">
             ${isSuperAdmin ? `
-              <button class="btn btn-primary" onclick="PAGE_CALLLIBRARY.openAddCallModal()">
+              <button class="btn btn-primary" onclick="PAGE_CALLLIBRARY3.openAddCallModal()">
                 ${ICONS.plus} Add Fathom Link
               </button>
             ` : ''}
@@ -109,7 +109,7 @@ const PAGE_CALLLIBRARY = (() => {
         <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;">
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Deal Size</span>
-            <select class="select" id="filter-deal-size" onchange="PAGE_CALLLIBRARY.setDealSizeFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+            <select class="select" id="filter-deal-size" onchange="PAGE_CALLLIBRARY3.setDealSizeFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
               <option value="all" ${_selectedDealSize === 'all' ? 'selected' : ''}>All Deal Sizes</option>
               <option value="120 hours" ${_selectedDealSize === '120 hours' ? 'selected' : ''}>120 hours</option>
               <option value="240 hours" ${_selectedDealSize === '240 hours' ? 'selected' : ''}>240 hours</option>
@@ -122,58 +122,48 @@ const PAGE_CALLLIBRARY = (() => {
 
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Industry</span>
-            <select class="select" id="filter-industry" onchange="PAGE_CALLLIBRARY.setIndustryFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+            <select class="select" id="filter-industry" onchange="PAGE_CALLLIBRARY3.setIndustryFilter(this.value)" style="height:36px; padding:0 24px 0 12px; font-size:13px; width:180px;">
               <option value="all" ${_selectedIndustry === 'all' ? 'selected' : ''}>All Industries</option>
-              ${industries.map(ind => `<option value="${ind}" ${_selectedIndustry === ind ? 'selected' : ''}>${ind}</option>`).join('')}
+              ${(window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['Fintech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other']).map(i => `<option value="${i}" ${_selectedIndustry === i ? 'selected' : ''}>${i}</option>`).join('')}
             </select>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Objection</span>
-            <select class="select" id="filter-objection" onchange="PAGE_CALLLIBRARY.setObjectionFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+            <select class="select" id="filter-objection" onchange="PAGE_CALLLIBRARY3.setObjectionFilter(this.value)" style="height:36px; padding:0 24px 0 12px; font-size:13px; width:180px;">
               <option value="all" ${_selectedObjectionType === 'all' ? 'selected' : ''}>All Objections</option>
               ${OBJECTION_TYPES.map(obj => `<option value="${obj}" ${_selectedObjectionType === obj ? 'selected' : ''}>${obj}</option>`).join('')}
             </select>
           </div>
 
           ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all' || _selectedObjectionType !== 'all') ? `
-            <button class="btn btn-sm btn-ghost" onclick="PAGE_CALLLIBRARY.resetFilters()" style="align-self:flex-end; color:var(--danger); font-size:11.5px; height:32px;">
+            <button class="btn btn-sm btn-ghost" onclick="PAGE_CALLLIBRARY3.resetFilters()" style="align-self:flex-end; color:var(--danger); font-size:12px; height:36px;">
               ✕ Clear Filters
             </button>
           ` : ''}
         </div>
-      </div>
 
-      <div class="call-library-container" style="display:flex; flex-direction:column; gap:32px; margin-top:16px;">
-        
-        <!-- Closed Won Deals Section -->
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">CLOSED WON DEALS</div>
-          <div id="call-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
-            ${filteredClosedWon.map(c => renderCallCard(c)).join('')}
-          </div>
-          ${filteredClosedWon.length === 0 ? `
-            <div class="empty-state" style="padding: 24px;">
-              <div class="empty-icon" style="font-size:24px;">🎥</div>
-              <div class="empty-title">No Closed Won deals match selected filters</div>
+        <div style="display:flex; flex-direction:column; gap:48px;">
+          
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:8px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#2ecc71;"></span> Closed Won Deals
             </div>
-          ` : ''}
-        </div>
-
-        <!-- Objection Handling Section -->
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">OBJECTION HANDLING</div>
-          <div id="objection-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
-            ${filteredObjections.map(c => renderCallCard(c)).join('')}
-          </div>
-          ${filteredObjections.length === 0 ? `
-            <div class="empty-state" style="padding: 24px;">
-              <div class="empty-icon" style="font-size:24px;">🛑</div>
-              <div class="empty-title">No Objection Handling calls match selected filters</div>
+            <div class="v3-gallery">
+              ${filteredClosedWon.map(c => renderGalleryCard(c)).join('')}
             </div>
-          ` : ''}
-        </div>
+          </div>
 
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:8px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:var(--danger);"></span> Objection Handling
+            </div>
+            <div class="v3-gallery">
+              ${filteredObjections.map(c => renderGalleryCard(c)).join('')}
+            </div>
+          </div>
+
+        </div>
       </div>
     `;
   }
@@ -204,50 +194,42 @@ const PAGE_CALLLIBRARY = (() => {
     if (container) render(container);
   }
 
-  function renderCallCard(c) {
+  function renderGalleryCard(c) {
+    const isObjection = c.category === 'Objection Handling';
+    const title = isObjection ? (c.objection_type || 'Objection') : 'Primary Deal Call';
+    const bgGradient = isObjection ? 'linear-gradient(45deg, #1f0b0b, #331515)' : 'linear-gradient(45deg, #091c10, #133a21)';
+
     return `
-      <div class="card call-record-card" style="border:1px solid var(--border-default); border-radius:var(--r-md); background:var(--bg-2); display:flex; flex-direction:column; height:auto; overflow:hidden;">
-        <!-- Header -->
-        <div style="padding:16px; border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            ${c.category === 'Objection Handling' 
-              ? `<span class="tag tag-accent" style="font-size:9px; border-radius:4px;">${c.objection_type || 'Objection'}</span>` 
-              : `
-              <span class="tag tag-accent" style="font-size:9px;">${c.industries[0] || 'General'}</span>
-              <span class="tag tag-default" style="font-size:9px; margin-left:4px;">${c.deal_size}</span>
-              `}
-          </div>
-          <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary)">${c.created_at}</span>
+      <a href="${c.main_link}" target="_blank" class="v3-card" style="background: ${bgGradient}; text-decoration: none;">
+        
+        <div class="v3-top-tags">
+          ${isObjection 
+            ? `<span class="v3-tag" style="background:var(--danger)">Objection</span>` 
+            : `<span class="v3-tag" style="background:#2ecc71; color:#000;">Deal Won</span>`}
+          <span class="v3-tag">${c.salesperson}</span>
         </div>
 
-        <!-- Body / Main Video Link -->
-        <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
-          <div style="background:var(--bg-3); border-radius:4px; padding:16px; border:1px solid var(--border-subtle); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-            <div style="font-size:24px;">${c.category === 'Objection Handling' ? '🛑' : '🎙️'}</div>
-            <div style="font-size:12px; font-weight:700; color:var(--text-primary)">
-              ${c.category === 'Objection Handling' ? (c.objection_type || 'Objection Handling') : 'Primary Deal Call'}
+        <div class="v3-related-btn" onclick="event.preventDefault(); PAGE_CALLLIBRARY3.openMoreAssets('${c.id}')">
+          Related Calls
+        </div>
+
+        <div class="v3-play-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div style="font-size:24px; font-weight:700; line-height:1.2;">
+            ${title}
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div style="font-family:var(--font-mono); font-size:12px; color:rgba(255,255,255,0.7);">
+              ${isObjection && c.objection_timing ? `⏱ ${c.objection_timing} • ` : ''}
+              ${c.created_at}
             </div>
-            ${c.objection_timing ? `<div style="font-size:11px; color:var(--accent); font-family:var(--font-mono); font-weight:700;">⏱ ${c.objection_timing}</div>` : ''}
-            <a href="${c.main_link}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
-              ${c.main_link.replace('https://', '')} ↗
-            </a>
-          </div>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-            <div style="color:var(--text-secondary)">Sales: <strong style="color:var(--text-primary)">${c.salesperson}</strong></div>
-            <div style="display:flex; gap:4px;">
-              ${c.industries.slice(1).map(ind => `<span class="tag tag-default" style="font-size:9px;">${ind}</span>`).join('')}
-            </div>
+            ${!isObjection ? `<div style="font-family:var(--font-mono); font-size:12px; font-weight:700;">${c.industries[0]||'General'} / ${c.deal_size}</div>` : ''}
           </div>
         </div>
-
-        <!-- Footer -->
-        <div style="padding:12px 16px; background:var(--bg-3); border-top:1px solid var(--border-top); display:flex; justify-content:flex-end;">
-          <button class="btn btn-sm btn-secondary" onclick="PAGE_CALLLIBRARY.openMoreAssets('${c.id}')" style="width:100%; justify-content:center; border: 1px solid var(--accent); color: var(--accent); font-weight: 600;">
-            Related Calls
-          </button>
-        </div>
-      </div>
+      </a>
     `;
   }
 
@@ -335,7 +317,7 @@ const PAGE_CALLLIBRARY = (() => {
           <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;" id="call-industries-list">
             ${industries.map(ind => `
               <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                <input type="checkbox" class="ind-checkbox" value="${ind}" style="accent-color:var(--accent);" onchange="PAGE_CALLLIBRARY.limitIndustries(this)"> ${ind}
+                <input type="checkbox" class="ind-checkbox" value="${ind}" style="accent-color:var(--accent);" onchange="PAGE_CALLLIBRARY3.limitIndustries(this)"> ${ind}
               </label>
             `).join('')}
           </div>
@@ -353,7 +335,7 @@ const PAGE_CALLLIBRARY = (() => {
 
     const footer = `
       <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary btn-sm" onclick="PAGE_CALLLIBRARY.saveCallRecord()">Save Call</button>
+      <button class="btn btn-primary btn-sm" onclick="PAGE_CALLLIBRARY3.saveCallRecord()">Save Call</button>
     `;
 
     openModal({
@@ -437,46 +419,39 @@ const PAGE_CALLLIBRARY = (() => {
   function openMoreAssets(callId) {
     const calls = getCalls();
     const c = calls.find(x => x.id === callId);
-    const makeThumb = (title, url, icon) => {
+    if (!c) return;
+
+    const makeThumb = (title, url) => {
       if (!url) return '';
       return `
-        <div style="background:var(--bg-2); border:1px solid var(--border-subtle); border-radius:12px; padding:24px; flex:1; display:flex; flex-direction:column; align-items:center; gap:16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';">
-          <div style="width:56px; height:56px; border-radius:50%; background:var(--bg-3); display:flex; align-items:center; justify-content:center; font-size:24px; border:1px solid var(--border-default);">
-            ${icon}
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text-primary); font-family:var(--font-ui); text-align:center;">${title}</div>
-            <a href="${url}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:var(--accent); font-weight:600; text-decoration:none; padding:4px 12px; border-radius:16px; background:rgba(46, 204, 113, 0.1);">
-              Watch on Fathom ↗
-            </a>
-          </div>
+        <div style="background:var(--bg-4); border:1px solid var(--border-default); border-radius:var(--r-md); padding:16px; flex:1; display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div style="font-size:28px;">📹</div>
+          <div style="font-size:12px; font-weight:700; color:var(--text-primary); font-family:var(--font-ui)">${title}</div>
+          <a href="${url}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
+            fathom.video ↗
+          </a>
         </div>
       `;
     };
 
-    const isObjection = c.category === 'Objection Handling';
-    const mainIcon = isObjection ? '🛑' : '🎙️';
-
     const body = `
-      <div style="display:flex; flex-direction:column; gap:20px; padding: 12px 0;">
-        <div style="display:flex; flex-direction:row; gap:16px; flex-wrap:wrap;">
-          ${makeThumb(isObjection ? 'Objection Call' : 'Primary Sales Call', c.main_link, mainIcon)}
-          ${c.followup_link ? makeThumb('Follow-up Sales Call', c.followup_link, '📞') : ''}
-          ${c.prospect_link ? makeThumb('Presales / Prospect Call', c.prospect_link, '🔎') : ''}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:row; gap:12px; flex-wrap:wrap;">
+          ${makeThumb('Primary Sales Call', c.main_link)}
+          ${c.followup_link ? makeThumb('Follow-up Sales Call', c.followup_link) : ''}
+          ${c.prospect_link ? makeThumb('Presales & Prospect Call', c.prospect_link) : ''}
         </div>
-        ${(!c.followup_link && !c.prospect_link && !isObjection) ? `
-          <div style="font-size:12.5px; color:var(--text-tertiary); text-align:center; padding:16px; background:var(--bg-1); border-radius:8px; font-style:italic;">
-            No secondary or prospect recordings attached to this deal.
-          </div>
+        ${(!c.followup_link && !c.prospect_link) ? `
+          <div style="font-size:12px; color:var(--text-tertiary); text-align:center; padding:12px;">No secondary or prospect recordings attached to this deal.</div>
         ` : ''}
       </div>
     `;
 
     openModal({
-      title: `Related Calls — Sales: ${c.salesperson} ${isObjection ? '' : `(${c.deal_size})`}`,
+      title: `More Assets — Sales: ${c.salesperson} (${c.deal_size})`,
       body: body,
       footer: `<button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>`,
-      size: 'large'
+      size: 'medium'
     });
   }
 
@@ -493,4 +468,4 @@ const PAGE_CALLLIBRARY = (() => {
   };
 })();
 
-window.PAGE_CALLLIBRARY = PAGE_CALLLIBRARY;
+window.PAGE_CALLLIBRARY3 = PAGE_CALLLIBRARY3;

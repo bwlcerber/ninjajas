@@ -1,7 +1,7 @@
 /** PAGE: Call Library */
 'use strict';
 
-const PAGE_CALLLIBRARY = (() => {
+const PAGE_CALLLIBRARY1 = (() => {
 
   const SALESPEOPLE = ['Alex', 'Damon', 'Julia', 'Max', 'Maxime', 'Melina', 'Paul'];
   const OBJECTION_TYPES = ['!Think about it', 'Budget / Price', 'Competition', 'Decision Makers / Partner', 'Past Experience', 'Timing', 'Trust and Authority', 'Window Shopping'];
@@ -98,7 +98,7 @@ const PAGE_CALLLIBRARY = (() => {
             <div class="page-subtitle" style="font-size:22px; font-weight:700; color:var(--text-primary); max-width:none; line-height:1.3; margin-top:0;">Internal archive of successful sales calls.</div>
           <div style="display:flex; gap:8px;">
             ${isSuperAdmin ? `
-              <button class="btn btn-primary" onclick="PAGE_CALLLIBRARY.openAddCallModal()">
+              <button class="btn btn-primary" onclick="PAGE_CALLLIBRARY1.openAddCallModal()">
                 ${ICONS.plus} Add Fathom Link
               </button>
             ` : ''}
@@ -109,7 +109,7 @@ const PAGE_CALLLIBRARY = (() => {
         <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;">
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Deal Size</span>
-            <select class="select" id="filter-deal-size" onchange="PAGE_CALLLIBRARY.setDealSizeFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+            <select class="select" id="filter-deal-size" onchange="PAGE_CALLLIBRARY1.setDealSizeFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
               <option value="all" ${_selectedDealSize === 'all' ? 'selected' : ''}>All Deal Sizes</option>
               <option value="120 hours" ${_selectedDealSize === '120 hours' ? 'selected' : ''}>120 hours</option>
               <option value="240 hours" ${_selectedDealSize === '240 hours' ? 'selected' : ''}>240 hours</option>
@@ -122,7 +122,7 @@ const PAGE_CALLLIBRARY = (() => {
 
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Industry</span>
-            <select class="select" id="filter-industry" onchange="PAGE_CALLLIBRARY.setIndustryFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+            <select class="select" id="filter-industry" onchange="PAGE_CALLLIBRARY1.setIndustryFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
               <option value="all" ${_selectedIndustry === 'all' ? 'selected' : ''}>All Industries</option>
               ${industries.map(ind => `<option value="${ind}" ${_selectedIndustry === ind ? 'selected' : ''}>${ind}</option>`).join('')}
             </select>
@@ -130,14 +130,14 @@ const PAGE_CALLLIBRARY = (() => {
 
           <div style="display:flex; flex-direction:column; gap:4px;">
             <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Objection</span>
-            <select class="select" id="filter-objection" onchange="PAGE_CALLLIBRARY.setObjectionFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+            <select class="select" id="filter-objection" onchange="PAGE_CALLLIBRARY1.setObjectionFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
               <option value="all" ${_selectedObjectionType === 'all' ? 'selected' : ''}>All Objections</option>
               ${OBJECTION_TYPES.map(obj => `<option value="${obj}" ${_selectedObjectionType === obj ? 'selected' : ''}>${obj}</option>`).join('')}
             </select>
           </div>
 
           ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all' || _selectedObjectionType !== 'all') ? `
-            <button class="btn btn-sm btn-ghost" onclick="PAGE_CALLLIBRARY.resetFilters()" style="align-self:flex-end; color:var(--danger); font-size:11.5px; height:32px;">
+            <button class="btn btn-sm btn-ghost" onclick="PAGE_CALLLIBRARY1.resetFilters()" style="align-self:flex-end; color:var(--danger); font-size:11.5px; height:32px;">
               ✕ Clear Filters
             </button>
           ` : ''}
@@ -205,46 +205,45 @@ const PAGE_CALLLIBRARY = (() => {
   }
 
   function renderCallCard(c) {
+    const isObjection = c.category === 'Objection Handling';
+    const title = isObjection ? (c.objection_type || 'Objection Handling') : 'Primary Deal Call';
+    const icon = isObjection ? '🛑' : '🎙️';
+    const indTag = c.industries[0] ? `<span class="v1-tag v1-tag-accent">${c.industries[0]}</span>` : '';
+    const sizeTag = c.deal_size ? `<span class="v1-tag">${c.deal_size}</span>` : '';
+    
     return `
-      <div class="card call-record-card" style="border:1px solid var(--border-default); border-radius:var(--r-md); background:var(--bg-2); display:flex; flex-direction:column; height:auto; overflow:hidden;">
+      <div class="v1-card">
         <!-- Header -->
-        <div style="padding:16px; border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            ${c.category === 'Objection Handling' 
-              ? `<span class="tag tag-accent" style="font-size:9px; border-radius:4px;">${c.objection_type || 'Objection'}</span>` 
-              : `
-              <span class="tag tag-accent" style="font-size:9px;">${c.industries[0] || 'General'}</span>
-              <span class="tag tag-default" style="font-size:9px; margin-left:4px;">${c.deal_size}</span>
-              `}
+        <div class="v1-card-header">
+          <div style="display:flex; gap:8px; align-items:center;">
+            ${indTag}
+            ${sizeTag}
           </div>
           <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary)">${c.created_at}</span>
         </div>
 
-        <!-- Body / Main Video Link -->
-        <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
-          <div style="background:var(--bg-3); border-radius:4px; padding:16px; border:1px solid var(--border-subtle); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-            <div style="font-size:24px;">${c.category === 'Objection Handling' ? '🛑' : '🎙️'}</div>
-            <div style="font-size:12px; font-weight:700; color:var(--text-primary)">
-              ${c.category === 'Objection Handling' ? (c.objection_type || 'Objection Handling') : 'Primary Deal Call'}
+        <!-- Body -->
+        <div class="v1-card-body">
+          <div style="font-size:32px;">${icon}</div>
+          <div style="text-align:center; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-size:15px; font-weight:600; color:var(--text-primary)">
+              ${title}
             </div>
-            ${c.objection_timing ? `<div style="font-size:11px; color:var(--accent); font-family:var(--font-mono); font-weight:700;">⏱ ${c.objection_timing}</div>` : ''}
-            <a href="${c.main_link}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
-              ${c.main_link.replace('https://', '')} ↗
-            </a>
+            ${c.objection_timing ? `<div style="font-size:12px; color:var(--accent); font-family:var(--font-mono); font-weight:600;">⏱ ${c.objection_timing}</div>` : ''}
           </div>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-            <div style="color:var(--text-secondary)">Sales: <strong style="color:var(--text-primary)">${c.salesperson}</strong></div>
-            <div style="display:flex; gap:4px;">
-              ${c.industries.slice(1).map(ind => `<span class="tag tag-default" style="font-size:9px;">${ind}</span>`).join('')}
-            </div>
-          </div>
+          <a href="${c.main_link}" target="_blank" class="v1-play-btn" title="Watch Video">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </a>
         </div>
 
         <!-- Footer -->
-        <div style="padding:12px 16px; background:var(--bg-3); border-top:1px solid var(--border-top); display:flex; justify-content:flex-end;">
-          <button class="btn btn-sm btn-secondary" onclick="PAGE_CALLLIBRARY.openMoreAssets('${c.id}')" style="width:100%; justify-content:center; border: 1px solid var(--accent); color: var(--accent); font-weight: 600;">
-            Related Calls
+        <div class="v1-card-footer">
+          <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+            <div style="font-size:10px; color:var(--text-tertiary); font-family:var(--font-mono); text-transform:uppercase;">Sales Rep</div>
+            <div style="font-size:13px; font-weight:500; color:var(--text-primary)">${c.salesperson}</div>
+          </div>
+          <button class="btn btn-sm" onclick="PAGE_CALLLIBRARY1.openMoreAssets('${c.id}')" style="border: 1px solid var(--border-default); background: var(--bg-1);">
+            More Assets
           </button>
         </div>
       </div>
@@ -335,7 +334,7 @@ const PAGE_CALLLIBRARY = (() => {
           <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;" id="call-industries-list">
             ${industries.map(ind => `
               <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                <input type="checkbox" class="ind-checkbox" value="${ind}" style="accent-color:var(--accent);" onchange="PAGE_CALLLIBRARY.limitIndustries(this)"> ${ind}
+                <input type="checkbox" class="ind-checkbox" value="${ind}" style="accent-color:var(--accent);" onchange="PAGE_CALLLIBRARY1.limitIndustries(this)"> ${ind}
               </label>
             `).join('')}
           </div>
@@ -353,7 +352,7 @@ const PAGE_CALLLIBRARY = (() => {
 
     const footer = `
       <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary btn-sm" onclick="PAGE_CALLLIBRARY.saveCallRecord()">Save Call</button>
+      <button class="btn btn-primary btn-sm" onclick="PAGE_CALLLIBRARY1.saveCallRecord()">Save Call</button>
     `;
 
     openModal({
@@ -437,46 +436,39 @@ const PAGE_CALLLIBRARY = (() => {
   function openMoreAssets(callId) {
     const calls = getCalls();
     const c = calls.find(x => x.id === callId);
-    const makeThumb = (title, url, icon) => {
+    if (!c) return;
+
+    const makeThumb = (title, url) => {
       if (!url) return '';
       return `
-        <div style="background:var(--bg-2); border:1px solid var(--border-subtle); border-radius:12px; padding:24px; flex:1; display:flex; flex-direction:column; align-items:center; gap:16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';">
-          <div style="width:56px; height:56px; border-radius:50%; background:var(--bg-3); display:flex; align-items:center; justify-content:center; font-size:24px; border:1px solid var(--border-default);">
-            ${icon}
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text-primary); font-family:var(--font-ui); text-align:center;">${title}</div>
-            <a href="${url}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:var(--accent); font-weight:600; text-decoration:none; padding:4px 12px; border-radius:16px; background:rgba(46, 204, 113, 0.1);">
-              Watch on Fathom ↗
-            </a>
-          </div>
+        <div style="background:var(--bg-4); border:1px solid var(--border-default); border-radius:var(--r-md); padding:16px; flex:1; display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div style="font-size:28px;">📹</div>
+          <div style="font-size:12px; font-weight:700; color:var(--text-primary); font-family:var(--font-ui)">${title}</div>
+          <a href="${url}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
+            fathom.video ↗
+          </a>
         </div>
       `;
     };
 
-    const isObjection = c.category === 'Objection Handling';
-    const mainIcon = isObjection ? '🛑' : '🎙️';
-
     const body = `
-      <div style="display:flex; flex-direction:column; gap:20px; padding: 12px 0;">
-        <div style="display:flex; flex-direction:row; gap:16px; flex-wrap:wrap;">
-          ${makeThumb(isObjection ? 'Objection Call' : 'Primary Sales Call', c.main_link, mainIcon)}
-          ${c.followup_link ? makeThumb('Follow-up Sales Call', c.followup_link, '📞') : ''}
-          ${c.prospect_link ? makeThumb('Presales / Prospect Call', c.prospect_link, '🔎') : ''}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:row; gap:12px; flex-wrap:wrap;">
+          ${makeThumb('Primary Sales Call', c.main_link)}
+          ${c.followup_link ? makeThumb('Follow-up Sales Call', c.followup_link) : ''}
+          ${c.prospect_link ? makeThumb('Presales & Prospect Call', c.prospect_link) : ''}
         </div>
-        ${(!c.followup_link && !c.prospect_link && !isObjection) ? `
-          <div style="font-size:12.5px; color:var(--text-tertiary); text-align:center; padding:16px; background:var(--bg-1); border-radius:8px; font-style:italic;">
-            No secondary or prospect recordings attached to this deal.
-          </div>
+        ${(!c.followup_link && !c.prospect_link) ? `
+          <div style="font-size:12px; color:var(--text-tertiary); text-align:center; padding:12px;">No secondary or prospect recordings attached to this deal.</div>
         ` : ''}
       </div>
     `;
 
     openModal({
-      title: `Related Calls — Sales: ${c.salesperson} ${isObjection ? '' : `(${c.deal_size})`}`,
+      title: `More Assets — Sales: ${c.salesperson} (${c.deal_size})`,
       body: body,
       footer: `<button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>`,
-      size: 'large'
+      size: 'medium'
     });
   }
 
@@ -493,4 +485,4 @@ const PAGE_CALLLIBRARY = (() => {
   };
 })();
 
-window.PAGE_CALLLIBRARY = PAGE_CALLLIBRARY;
+window.PAGE_CALLLIBRARY1 = PAGE_CALLLIBRARY1;
