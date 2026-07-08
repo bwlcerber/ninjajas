@@ -4,9 +4,13 @@
 const PAGE_CALLLIBRARY = (() => {
 
   const SALESPEOPLE = ['Alex', 'Damon', 'Julia', 'Max', 'Maxime', 'Melina', 'Paul'];
+  const OBJECTION_TYPES = ['Price / Budget', 'Timing / Urgency', 'Competitor', 'Trust / Authority', 'Need / Value', 'Feature / Capability', 'Other'];
+  const CONVERSATION_STAGES = ['Cold Call', 'Discovery', 'Demo', 'Proposal / Pitch', 'Negotiation', 'Follow-up'];
 
   let _selectedDealSize = 'all';
   let _selectedIndustry = 'all';
+  let _selectedObjectionType = 'all';
+  let _selectedStage = 'all';
 
   // Seed default calls if none exist
   function getCalls() {
@@ -37,6 +41,28 @@ const PAGE_CALLLIBRARY = (() => {
         industries: ['iGaming', 'Sports Betting'],
         salesperson: 'Max',
         created_at: '2026-06-01'
+      },
+      {
+        id: 'call-003',
+        category: 'Objection Handling',
+        main_link: 'https://fathom.video/share/obj-price-demo',
+        deal_size: '120 hours',
+        industries: ['SaaS'],
+        salesperson: 'Alex',
+        objection_type: 'Price / Budget',
+        conversation_stage: 'Demo',
+        created_at: '2026-06-15'
+      },
+      {
+        id: 'call-004',
+        category: 'Objection Handling',
+        main_link: 'https://fathom.video/share/obj-trust-cold',
+        deal_size: 'commission',
+        industries: ['Web3'],
+        salesperson: 'Damon',
+        objection_type: 'Trust / Authority',
+        conversation_stage: 'Cold Call',
+        created_at: '2026-06-20'
       }
     ];
     localStorage.setItem('np_call_library', JSON.stringify(seed));
@@ -55,10 +81,20 @@ const PAGE_CALLLIBRARY = (() => {
     const industries = window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['Fintech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other'];
 
     // Apply filtering
-    const filteredCalls = allCalls.filter(c => {
+    const filteredClosedWon = allCalls.filter(c => {
+      if (c.category !== 'Closed Won Deals') return false;
       const sizeMatch = _selectedDealSize === 'all' || c.deal_size.toLowerCase() === _selectedDealSize.toLowerCase();
       const industryMatch = _selectedIndustry === 'all' || c.industries.includes(_selectedIndustry);
       return sizeMatch && industryMatch;
+    });
+
+    const filteredObjections = allCalls.filter(c => {
+      if (c.category !== 'Objection Handling') return false;
+      const sizeMatch = _selectedDealSize === 'all' || c.deal_size.toLowerCase() === _selectedDealSize.toLowerCase();
+      const industryMatch = _selectedIndustry === 'all' || c.industries.includes(_selectedIndustry);
+      const objectionMatch = _selectedObjectionType === 'all' || c.objection_type === _selectedObjectionType;
+      const stageMatch = _selectedStage === 'all' || c.conversation_stage === _selectedStage;
+      return sizeMatch && industryMatch && objectionMatch && stageMatch;
     });
 
     container.innerHTML = `
@@ -97,7 +133,23 @@ const PAGE_CALLLIBRARY = (() => {
             </select>
           </div>
 
-          ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all') ? `
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Objection</span>
+            <select class="select" id="filter-objection" onchange="PAGE_CALLLIBRARY.setObjectionFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+              <option value="all" ${_selectedObjectionType === 'all' ? 'selected' : ''}>All Objections</option>
+              ${OBJECTION_TYPES.map(obj => `<option value="${obj}" ${_selectedObjectionType === obj ? 'selected' : ''}>${obj}</option>`).join('')}
+            </select>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); text-transform:uppercase;">Browse by Stage</span>
+            <select class="select" id="filter-stage" onchange="PAGE_CALLLIBRARY.setStageFilter(this.value)" style="height:32px; padding:0 24px 0 10px; font-size:12px; width:160px;">
+              <option value="all" ${_selectedStage === 'all' ? 'selected' : ''}>All Stages</option>
+              ${CONVERSATION_STAGES.map(stage => `<option value="${stage}" ${_selectedStage === stage ? 'selected' : ''}>${stage}</option>`).join('')}
+            </select>
+          </div>
+
+          ${(_selectedDealSize !== 'all' || _selectedIndustry !== 'all' || _selectedObjectionType !== 'all' || _selectedStage !== 'all') ? `
             <button class="btn btn-sm btn-ghost" onclick="PAGE_CALLLIBRARY.resetFilters()" style="align-self:flex-end; color:var(--danger); font-size:11.5px; height:32px;">
               ✕ Clear Filters
             </button>
@@ -105,19 +157,36 @@ const PAGE_CALLLIBRARY = (() => {
         </div>
       </div>
 
-      <div class="call-library-container" style="display:flex; flex-direction:column; gap:16px; margin-top:16px;">
-        <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">CLOSED WON DEALS</div>
-
-        <div id="call-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
-          ${filteredCalls.map(c => renderCallCard(c)).join('')}
+      <div class="call-library-container" style="display:flex; flex-direction:column; gap:32px; margin-top:16px;">
+        
+        <!-- Closed Won Deals Section -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">CLOSED WON DEALS</div>
+          <div id="call-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+            ${filteredClosedWon.map(c => renderCallCard(c)).join('')}
+          </div>
+          ${filteredClosedWon.length === 0 ? `
+            <div class="empty-state" style="padding: 24px;">
+              <div class="empty-icon" style="font-size:24px;">🎥</div>
+              <div class="empty-title">No Closed Won deals match selected filters</div>
+            </div>
+          ` : ''}
         </div>
 
-        ${filteredCalls.length === 0 ? `
-          <div class="empty-state">
-            <div class="empty-icon">🎥</div>
-            <div class="empty-title">No recordings match selected filters</div>
+        <!-- Objection Handling Section -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">OBJECTION HANDLING</div>
+          <div id="objection-list-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+            ${filteredObjections.map(c => renderCallCard(c)).join('')}
           </div>
-        ` : ''}
+          ${filteredObjections.length === 0 ? `
+            <div class="empty-state" style="padding: 24px;">
+              <div class="empty-icon" style="font-size:24px;">🛑</div>
+              <div class="empty-title">No Objection Handling calls match selected filters</div>
+            </div>
+          ` : ''}
+        </div>
+
       </div>
     `;
   }
@@ -134,9 +203,23 @@ const PAGE_CALLLIBRARY = (() => {
     if (container) render(container);
   }
 
+  function setObjectionFilter(val) {
+    _selectedObjectionType = val;
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
+  function setStageFilter(val) {
+    _selectedStage = val;
+    const container = document.getElementById('page-container');
+    if (container) render(container);
+  }
+
   function resetFilters() {
     _selectedDealSize = 'all';
     _selectedIndustry = 'all';
+    _selectedObjectionType = 'all';
+    _selectedStage = 'all';
     const container = document.getElementById('page-container');
     if (container) render(container);
   }
@@ -156,8 +239,11 @@ const PAGE_CALLLIBRARY = (() => {
         <!-- Body / Main Video Link -->
         <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
           <div style="background:var(--bg-3); border-radius:4px; padding:16px; border:1px solid var(--border-subtle); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-            <div style="font-size:24px;">🎙️</div>
-            <div style="font-size:12px; font-weight:700; color:var(--text-primary)">Primary Deal Call</div>
+            <div style="font-size:24px;">${c.category === 'Objection Handling' ? '🛑' : '🎙️'}</div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-primary)">
+              ${c.category === 'Objection Handling' ? (c.objection_type || 'Objection Handling') : 'Primary Deal Call'}
+            </div>
+            ${c.conversation_stage ? `<div style="font-size:11px; color:var(--text-secondary)">Stage: ${c.conversation_stage}</div>` : ''}
             <a href="${c.main_link}" target="_blank" style="text-transform:none; font-family:var(--font-mono); font-size:11px; color:#3990e0; font-weight:normal; text-decoration:underline;">
               ${c.main_link.replace('https://', '')} ↗
             </a>
@@ -181,25 +267,68 @@ const PAGE_CALLLIBRARY = (() => {
     `;
   }
 
+  window.toggleCallCategoryFields = function(category) {
+    const objFields = document.getElementById('call-objection-fields');
+    const closedWonFields = document.getElementById('call-closedwon-fields');
+    if (category === 'Objection Handling') {
+      objFields.style.display = 'flex';
+      closedWonFields.style.display = 'none';
+    } else {
+      objFields.style.display = 'none';
+      closedWonFields.style.display = 'flex';
+    }
+  };
+
   function openAddCallModal() {
     const industries = window.PORTAL_DATA ? window.PORTAL_DATA.VERTICALS : ['Fintech', 'Web3', 'Trading', 'eCommerce', 'Healthcare', 'iGaming', 'Sports Betting', 'SaaS', 'B2B', 'B2C', 'AI', 'Real Estate', 'Other'];
     const packageSizes = ['120 hours', '240 hours', '480 hours', '960 hours', '1920 hours', 'commission'];
 
     const body = `
       <div style="display:flex; flex-direction:column; gap:14px;" id="add-call-form">
+        
+        <div class="input-group">
+          <span class="input-label">Call Category *</span>
+          <div style="display:flex; gap:16px;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:12px; cursor:pointer;">
+              <input type="radio" name="call-category" value="Closed Won Deals" checked onchange="toggleCallCategoryFields(this.value)"> Closed Won Deal
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:12px; cursor:pointer;">
+              <input type="radio" name="call-category" value="Objection Handling" onchange="toggleCallCategoryFields(this.value)"> Objection Handling
+            </label>
+          </div>
+        </div>
+
         <div class="input-group">
           <span class="input-label">Main Sales Call Link (Fathom URL)*</span>
           <input class="input" type="url" id="call-main-link" placeholder="https://fathom.video/share/..." required>
         </div>
 
-        <div class="input-group">
-          <span class="input-label">Second Follow-up Call Link (Optional)</span>
-          <input class="input" type="url" id="call-followup-link" placeholder="https://fathom.video/share/...">
+        <div id="call-closedwon-fields" style="display:flex; flex-direction:column; gap:14px;">
+          <div class="input-group">
+            <span class="input-label">Second Follow-up Call Link (Optional)</span>
+            <input class="input" type="url" id="call-followup-link" placeholder="https://fathom.video/share/...">
+          </div>
+
+          <div class="input-group">
+            <span class="input-label">Presales / Prospect Call Link (Optional)</span>
+            <input class="input" type="url" id="call-prospect-link" placeholder="https://fathom.video/share/...">
+          </div>
         </div>
 
-        <div class="input-group">
-          <span class="input-label">Presales / Prospect Call Link (Optional)</span>
-          <input class="input" type="url" id="call-prospect-link" placeholder="https://fathom.video/share/...">
+        <div id="call-objection-fields" style="display:none; flex-direction:column; gap:14px;">
+          <div class="input-group">
+            <span class="input-label">Objection Type *</span>
+            <select class="select" id="call-objection-type">
+              ${OBJECTION_TYPES.map(obj => `<option value="${obj}">${obj}</option>`).join('')}
+            </select>
+          </div>
+          
+          <div class="input-group">
+            <span class="input-label">Conversation Stage *</span>
+            <select class="select" id="call-conversation-stage">
+              ${CONVERSATION_STAGES.map(stage => `<option value="${stage}">${stage}</option>`).join('')}
+            </select>
+          </div>
         </div>
 
         <!-- Deal Size Checkboxes -->
@@ -258,9 +387,22 @@ const PAGE_CALLLIBRARY = (() => {
   }
 
   function saveCallRecord() {
+    const categoryChecked = document.querySelector('input[name="call-category"]:checked');
+    const category = categoryChecked ? categoryChecked.value : 'Closed Won Deals';
+
     const mainLink = document.getElementById('call-main-link').value.trim();
-    const followupLink = document.getElementById('call-followup-link').value.trim();
-    const prospectLink = document.getElementById('call-prospect-link').value.trim();
+    let followupLink = '';
+    let prospectLink = '';
+    let objectionType = '';
+    let conversationStage = '';
+
+    if (category === 'Closed Won Deals') {
+      followupLink = document.getElementById('call-followup-link').value.trim();
+      prospectLink = document.getElementById('call-prospect-link').value.trim();
+    } else {
+      objectionType = document.getElementById('call-objection-type').value;
+      conversationStage = document.getElementById('call-conversation-stage').value;
+    }
     
     if (!mainLink) {
       showToast('Main sales call link is required', 'error');
@@ -282,13 +424,15 @@ const PAGE_CALLLIBRARY = (() => {
 
     const callObj = {
       id: 'call-' + Date.now(),
-      category: 'Closed Won Deals',
+      category: category,
       main_link: mainLink,
       followup_link: followupLink,
       prospect_link: prospectLink,
       deal_size: dealSize,
       industries: selectedIndustries,
       salesperson: salesperson,
+      objection_type: objectionType,
+      conversation_stage: conversationStage,
       created_at: new Date().toISOString().split('T')[0]
     };
 
@@ -332,9 +476,9 @@ const PAGE_CALLLIBRARY = (() => {
     `;
 
     openModal({
-      title: `More Assets — Sales: ${c.salesperson} (${c.deal_size})`,
+      title: \`More Assets — Sales: \${c.salesperson} (\${c.deal_size})\`,
       body: body,
-      footer: `<button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>`,
+      footer: \`<button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>\`,
       size: 'medium'
     });
   }
@@ -347,6 +491,8 @@ const PAGE_CALLLIBRARY = (() => {
     openMoreAssets,
     setDealSizeFilter,
     setIndustryFilter,
+    setObjectionFilter,
+    setStageFilter,
     resetFilters
   };
 })();
