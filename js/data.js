@@ -267,7 +267,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b015",
       "title": "THE GOOD TRIP Corporate identity",
-      "client_name": "THE",
+      "client_name": "THE GOOD TRIP",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -293,7 +293,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b016",
       "title": "Words Market Brand Identity",
-      "client_name": "Words",
+      "client_name": "Words Market",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -501,7 +501,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b024",
       "title": "Southern Surgery Visual Identity Concept",
-      "client_name": "Southern",
+      "client_name": "Southern Surgery",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -605,7 +605,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b028",
       "title": "Ball Time Branding",
-      "client_name": "Ball",
+      "client_name": "Ball Time",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -709,7 +709,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b032",
       "title": "Branding ARCHICAD MASTER",
-      "client_name": "Branding",
+      "client_name": "ARCHICAD MASTER",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -761,7 +761,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b034",
       "title": "Lush Stonez UXUI Design",
-      "client_name": "Lush",
+      "client_name": "Lush Stonez",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -813,7 +813,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b036",
       "title": "Express Assignments UXUI Design",
-      "client_name": "Express",
+      "client_name": "Express Assignments",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -917,7 +917,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b040",
       "title": "Dark Fusion Website Design",
-      "client_name": "Dark",
+      "client_name": "Dark Fusion",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -943,7 +943,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b041",
       "title": "Multi Ai Platform",
-      "client_name": "Multi",
+      "client_name": "Multi Ai",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
@@ -995,7 +995,7 @@ window.PORTAL_DATA = {
     {
       "id": "mat-b043",
       "title": "Amazon Business Website",
-      "client_name": "Amazon",
+      "client_name": "Amazon Business",
       "geo": "Global",
       "vertical": "Technology",
       "verticals": [
