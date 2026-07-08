@@ -299,16 +299,16 @@ const PAGE_CALLLIBRARY = (() => {
         </div>
 
         <div id="call-objection-fields" style="display:none; flex-direction:column; gap:14px;">
-          <div style="display:flex; gap:16px;">
-            <div class="input-group" style="flex:1;">
+          <div style="display:flex; gap:16px; align-items: flex-end;">
+            <div class="input-group" style="flex:1; margin:0;">
               <span class="input-label">Objection Type *</span>
-              <select class="select" id="call-objection-type">
+              <select class="select" id="call-objection-type" style="width:100%;">
                 ${OBJECTION_TYPES.map(obj => `<option value="${obj}">${obj}</option>`).join('')}
               </select>
             </div>
-            <div class="input-group" style="width: 130px;">
-              <span class="input-label">Timing (e.g. 16:54)*</span>
-              <input class="input" type="text" id="call-objection-timing" placeholder="00:00" required>
+            <div class="input-group" style="width: 130px; margin:0;">
+              <span class="input-label">Timing *</span>
+              <input class="input" type="text" id="call-objection-timing" placeholder="e.g. 16:54" required>
             </div>
           </div>
         </div>
