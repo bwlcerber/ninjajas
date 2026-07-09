@@ -338,61 +338,43 @@ const STORE = (() => {
             }
           }
 
-                    // 3. Un-migrate broken asset types (v4)
-          if (item.asset_type && typeof item.asset_type === 'string') {
-            const originalItem = window.PORTAL_DATA.materials.find(d => d.id === item.id);
-            if (originalItem && originalItem.asset_type) {
-              if (item.asset_type !== originalItem.asset_type) {
-                item.asset_type = originalItem.asset_type;
-                modified = true;
-              }
-            } else {
-              // User-added files recovery
-              const oldTypes = ['contract','offer-prep','deck','process-doc','template','training','doc-link','pdf','branding','creative','video','image','report','case','analytics','media-plan','smm','smm-profiles'];
-              let recoveredType = null;
-              if (item.tags && Array.isArray(item.tags)) {
-                recoveredType = oldTypes.find(t => item.tags.includes(t));
-              }
+          // 3. Migrate legacy asset types to new Client Files taxonomy
+          if (!['case', 'branding', 'creative', 'video', 'image'].includes(item.asset_type)) {
+            const oldType = item.asset_type;
+            const services = item.services_provided || [];
+            const tags = item.tags || [];
+            let newType = oldType;
 
-              if (item.asset_type === 'others' || item.asset_type === 'other') {
-                if (recoveredType) {
-                  item.asset_type = recoveredType;
-                } else if (item.file_type === 'pdf') {
-                  item.asset_type = 'pdf';
-                } else if (item.file_type === 'image') {
-                  item.asset_type = 'image';
-                } else if (item.file_type === 'video') {
-                  item.asset_type = 'video';
-                } else {
-                  item.asset_type = 'other';
-                }
-                modified = true;
-              } else if (item.asset_type === 'creatives') {
-                if (recoveredType) {
-                  item.asset_type = recoveredType;
-                } else if (item.file_type === 'video') {
-                  item.asset_type = 'video';
-                } else if (item.file_type === 'image') {
-                  item.asset_type = 'image';
-                } else {
-                  item.asset_type = 'creative';
-                }
-                modified = true;
-              } else if (item.asset_type === 'performance-marketing') {
-                item.asset_type = recoveredType || 'report';
-                modified = true;
-              } else if (item.asset_type === 'case-study') {
-                item.asset_type = recoveredType || 'case';
-                modified = true;
-              } else if (item.asset_type === 'ppc-media-plans') {
-                item.asset_type = recoveredType || 'media-plan';
-                modified = true;
-              } else if (item.asset_type === 'smm-profiles') {
-                item.asset_type = recoveredType || 'social-media-profile';
-                modified = true;
+            if (services.includes('Influencer Marketing') || tags.includes('influencer')) {
+              if (oldType === 'smm-profiles' || oldType === 'social-media-link' || oldType === 'social-media-profile') {
+                newType = 'smm-profiles';
+              } else if (oldType === 'contract') {
+                newType = 'other-files';
+              } else {
+                newType = 'influencer-marketing';
               }
+            } else if (services.includes('SEO')) {
+              newType = 'seo-geo';
+            } else if (oldType === 'smm-profiles' || oldType === 'social-media-link' || oldType === 'social-media-profile') {
+              newType = 'smm-profiles';
+            } else if (oldType === 'gtm' || tags.includes('gtm')) {
+              newType = 'gtms';
+            } else if (services.includes('PR') || tags.includes('pr')) {
+              newType = 'pr-demos';
+            } else if (oldType === 'report') {
+              newType = 'performance-marketing';
+            } else if (oldType === 'media-plan') {
+              newType = 'ppc-media-plans';
+            } else if (['deck', 'contract', 'template', 'process-doc', 'pdf', 'doc-link', 'spreadsheet-link', 'offer-prep', 'other', 'others'].includes(oldType)) {
+              newType = 'other-files';
+            }
+
+            if (oldType !== newType) {
+              item.asset_type = newType;
+              modified = true;
             }
           }
+
 
         });
       }
