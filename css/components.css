@@ -280,13 +280,13 @@
 }
 
 .material-row.pinned {
-  background: rgba(10, 200, 100, 0.08);
-  border-color: rgba(10, 200, 100, 0.3);
+  background: var(--bg-3);
+  border-color: var(--border-subtle);
 }
 
 .material-row.pinned:hover {
-  background: rgba(10, 200, 100, 0.15);
-  border-color: rgba(10, 200, 100, 0.4);
+  background: var(--bg-4);
+  border-color: var(--border-default);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
