@@ -252,7 +252,7 @@ const PAGE_REPORTS = (() => {
           </div>
         </div>
         <div class="material-row-tags" style="display:flex;gap:6px;align-items:center;flex-shrink:0; flex-wrap:wrap;">
-          ${visibilityTag(mat.visibility_status)}
+          ${verticalTags}
           ${serviceTags}
         </div>
         <div style="display:flex;gap:4px">
