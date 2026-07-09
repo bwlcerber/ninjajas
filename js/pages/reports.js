@@ -16,6 +16,7 @@ const PAGE_REPORTS = (() => {
   ];
 
   let _activeCategory = 'all';
+  let _sortBy = 'recent';
   let _query = '';
   const _selectedVerticals = new Set();
   const _selectedServices = new Set();
@@ -71,11 +72,20 @@ const PAGE_REPORTS = (() => {
           </div>
         </div>
 
-        <!-- Category tabs -->
-        <div class="tabs" style="margin-top:16px;margin-bottom:0">
-          ${CATEGORIES.map(c => `
-            <div class="tab ${_activeCategory === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</div>
-          `).join('')}
+        <!-- Category tabs and Sort Dropdown -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:0">
+          <div class="tabs" style="margin:0;">
+            ${CATEGORIES.map(c => `
+              <div class="tab ${_activeCategory === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</div>
+            `).join('')}
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase;">Sort By:</span>
+            <select class="select" id="reports-sort-by" style="font-size:12px; height:32px; padding:0 8px; width:140px;" onchange="PAGE_REPORTS._changeSort(this.value)">
+              <option value="recent" ${_sortBy === 'recent' ? 'selected' : ''}>Recently Added</option>
+              <option value="alphabetical" ${_sortBy === 'alphabetical' ? 'selected' : ''}>Alphabetical</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -113,6 +123,12 @@ const PAGE_REPORTS = (() => {
 
     renderList(container);
     renderActiveFilters(container);
+  }
+
+  function _changeSort(val) {
+    _sortBy = val;
+    const container = document.getElementById('page-container');
+    if (container) renderList(container);
   }
 
   function _toggleFilter(type, val) {
@@ -172,12 +188,19 @@ const PAGE_REPORTS = (() => {
       ].join(' ').toLowerCase().includes(q));
     }
 
-    // Sort by pinned first, then alphabetical by title
+    // Sort by pinned first, then by selected sort option
     items.sort((a, b) => {
       const aPinned = a.pinned ? 1 : 0;
       const bPinned = b.pinned ? 1 : 0;
       if (aPinned !== bPinned) return bPinned - aPinned; // pinned first (1 > 0)
-      return (a.title || '').localeCompare(b.title || '');
+      
+      if (_sortBy === 'recent') {
+        const dateA = new Date(a.created_at || '1970-01-01');
+        const dateB = new Date(b.created_at || '1970-01-01');
+        return dateB - dateA;
+      } else {
+        return (a.title || '').localeCompare(b.title || '');
+      }
     });
 
     const list = container.querySelector('#reports-list');
@@ -882,6 +905,7 @@ const PAGE_REPORTS = (() => {
 
   return { 
     render, 
+    _changeSort,
     _toggleFilter, 
     clearAllTags,
     openUploadModal,
