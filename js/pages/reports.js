@@ -256,8 +256,8 @@ const PAGE_REPORTS = (() => {
           ${serviceTags}
         </div>
         <div style="display:flex;gap:4px">
-          <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();PAGE_REPORTS.togglePin('${mat.id}')" title="${mat.pinned ? 'Unpin' : 'Pin'}" style="color:${mat.pinned ? 'var(--accent)' : 'var(--text-tertiary)'}; padding:4px;">
-            ${mat.pinned ? ICONS.pinSolid || '📌' : ICONS.pinOutline || '📌'}
+          <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();PAGE_REPORTS.togglePin('${mat.id}')" title="${mat.pinned ? 'Unpin' : 'Pin'}" style="color:${mat.pinned ? 'var(--accent)' : '#ef4444'}; padding:4px;">
+            ${mat.pinned ? ICONS.pinSolid || '📌' : ICONS.pinSolid || '📌'}
           </button>
           <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openMaterial(STORE.getMaterialById('${mat.id}'))" title="Open preview inside dashboard">
             ${ICONS.eye} Preview
