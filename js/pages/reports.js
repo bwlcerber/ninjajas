@@ -241,7 +241,7 @@ const PAGE_REPORTS = (() => {
             <div class="item-select-box" title="Add to Call Prep Favorites">${ICONS.star}</div>
           </label>
         </div>
-        <div class="material-row-icon">${getFileIcon(mat.file_type)}</div>
+        <div class="material-row-icon">${mat.asset_type === 'influencer-marketing' ? getFileIcon('doc-link') : getFileIcon(mat.file_type)}</div>
         <div class="material-row-info">
           <div class="material-row-title">${mat.title}</div>
           <div class="material-row-sub">
