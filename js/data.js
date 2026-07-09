@@ -1105,7 +1105,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PPC"
       ],
-      "asset_type": "report",
+      "asset_type": "performance-marketing",
       "visibility_status": "internal-only",
       "description": "Full PPC performance breakdown for Q1 2025. Includes CTR trends, ROAS breakdown, campaign-level analysis, and optimisation recommendations.",
       "file_type": "pdf",
@@ -1132,7 +1132,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "SEO"
       ],
-      "asset_type": "report",
+      "asset_type": "seo-geo",
       "visibility_status": "internal-only",
       "description": "Technical SEO audit covering core web vitals, backlink profile health, cannibalization issues, and growth roadmap for the next 6 months.",
       "file_type": "pdf",
@@ -1156,7 +1156,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR"
       ],
-      "asset_type": "report",
+      "asset_type": "pr-demos",
       "visibility_status": "internal-only",
       "description": "Post-launch PR report covering earned media, Tier-1 publications hit, token listing announcements, and sentiment analysis for the Q4 campaign.",
       "file_type": "pdf",
@@ -1183,7 +1183,7 @@ window.PORTAL_DATA = {
         "PPC",
         "Social Media"
       ],
-      "asset_type": "media-plan",
+      "asset_type": "ppc-media-plans",
       "visibility_status": "internal-only",
       "description": "Full-funnel media plan for a summer product drop campaign. Covers Meta, TikTok, Google Shopping, and YouTube placements with budget allocation by channel.",
       "file_type": "spreadsheet-link",
@@ -1209,7 +1209,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Influencer Marketing"
       ],
-      "asset_type": "report",
+      "asset_type": "influencer-marketing",
       "visibility_status": "internal-only",
       "description": "Post-campaign analysis covering 45 micro-influencers across Instagram and YouTube. Reach, engagement rate, CPE breakdown, and earned media value.",
       "file_type": "pdf",
@@ -1233,7 +1233,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Email Marketing"
       ],
-      "asset_type": "report",
+      "asset_type": "performance-marketing",
       "visibility_status": "internal-only",
       "description": "Audit of existing email flows with benchmark comparisons. Deliverability issues identified, subject line test results, and a 90-day improvement roadmap.",
       "file_type": "pdf",
@@ -1258,7 +1258,7 @@ window.PORTAL_DATA = {
         "SEO",
         "Content"
       ],
-      "asset_type": "report",
+      "asset_type": "seo-geo",
       "visibility_status": "internal-only",
       "description": "6-month SEO action plan with prioritized tasks across technical, on-page, and link building. Includes traffic projections and content calendar scaffold.",
       "file_type": "pdf",
@@ -1284,7 +1284,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Social Media"
       ],
-      "asset_type": "deck",
+      "asset_type": "other-files",
       "visibility_status": "client-safe",
       "description": "Presentation-ready social media strategy deck covering brand positioning, content pillars, platform mix, and KPI framework for a 12-month engagement.",
       "file_type": "pdf",
@@ -3668,7 +3668,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "contract",
+      "asset_type": "other-files",
       "visibility_status": "internal-only",
       "description": "Master service agreement template for new client onboarding. Reviewed by legal. Replace highlighted fields before sending.",
       "file_type": "doc-link",
@@ -3690,7 +3690,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "template",
+      "asset_type": "other-files",
       "visibility_status": "client-safe",
       "description": "Mutual NDA template for prospect conversations. Also available in one-way version upon request from legal.",
       "file_type": "doc-link",
@@ -3712,7 +3712,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "contract",
+      "asset_type": "other-files",
       "visibility_status": "client-safe",
       "description": "Template for referral partner relationships. Covers commission structure, payment terms, and exclusivity clauses.",
       "file_type": "doc-link",
@@ -3734,7 +3734,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "contract",
+      "asset_type": "other-files",
       "visibility_status": "client-safe",
       "description": "Standard Master Services Agreement (MSA) outlining standard engagement clauses, payment structures, and IP rights.",
       "file_type": "doc-link",
@@ -3758,7 +3758,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "Influencer Marketing"
       ],
-      "asset_type": "contract",
+      "asset_type": "other-files",
       "visibility_status": "client-safe",
       "description": "Agreement for influencer campaigns, covering deliverable schedules, content rights, exclusions, and payout milestones.",
       "file_type": "doc-link",
@@ -3780,7 +3780,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "template",
+      "asset_type": "other-files",
       "visibility_status": "internal-only",
       "description": "Branded proposal template covering full-service digital marketing packages. Includes service scope, pricing tables, and timeline.",
       "file_type": "doc-link",
@@ -3802,7 +3802,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "training",
+      "asset_type": "other-files",
       "visibility_status": "internal-only",
       "description": "40+ common sales objections with vetted response frameworks. Covers pricing, competitors, ROI justification, and decision delays.",
       "file_type": "doc-link",
@@ -3826,7 +3826,7 @@ window.PORTAL_DATA = {
       "services_provided": [
         "PR"
       ],
-      "asset_type": "process-doc",
+      "asset_type": "pr-demos",
       "visibility_status": "internal-only",
       "description": "Step-by-step PR onboarding process. Covers briefing calls, media list creation, embargo planning, and client approval workflows.",
       "file_type": "doc-link",
@@ -3848,7 +3848,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "process-doc",
+      "asset_type": "other-files",
       "visibility_status": "internal-only",
       "description": "Standard operating procedure for creating and qualifying new deals in the CRM. Covers pipeline stages, mandatory fields, and handover checklist.",
       "file_type": "doc-link",
@@ -3871,7 +3871,7 @@ window.PORTAL_DATA = {
       "geo": "Global",
       "vertical": "Other",
       "services_provided": [],
-      "asset_type": "training",
+      "asset_type": "other-files",
       "visibility_status": "internal-only",
       "description": "Video training module: how to run a discovery call for marketing services. MEDDIC-adapted questioning, needs identification, and follow-up protocol.",
       "file_type": "doc-link",
@@ -3899,7 +3899,7 @@ window.PORTAL_DATA = {
         "PR",
         "Social Media"
       ],
-      "asset_type": "deck",
+      "asset_type": "seo-geo",
       "visibility_status": "client-safe",
       "description": "Presentation-ready pitch deck tailored for Fintech prospects. Includes vertical-specific case studies, service packages, and team intro slides.",
       "file_type": "pdf",

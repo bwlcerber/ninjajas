@@ -5,14 +5,14 @@ const PAGE_REPORTS = (() => {
 
   const CATEGORIES = [
     { id: 'all', label: 'All Files' },
-    { id: 'report', label: 'Performance Marketing' },
-    { id: 'influencer', label: 'Influencer Marketing' },
-    { id: 'seo', label: 'SEO/GEO' },
-    { id: 'media-plan', label: 'PPC Media Plans' },
-    { id: 'smm', label: 'SMM Profiles' },
-    { id: 'gtm', label: 'GTMs' },
-    { id: 'pr', label: 'PR Demos' },
-    { id: 'other', label: 'Other files' },
+    { id: 'performance-marketing', label: 'Performance Marketing' },
+    { id: 'influencer-marketing', label: 'Influencer Marketing' },
+    { id: 'seo-geo', label: 'SEO/GEO' },
+    { id: 'ppc-media-plans', label: 'PPC Media Plans' },
+    { id: 'smm-profiles', label: 'SMM Profiles' },
+    { id: 'gtms', label: 'GTMs' },
+    { id: 'pr-demos', label: 'PR Demos' },
+    { id: 'other-files', label: 'Other files' },
   ];
 
   let _activeCategory = 'all';
@@ -143,31 +143,7 @@ const PAGE_REPORTS = (() => {
 
     // Filter by category
     if (_activeCategory !== 'all') {
-      if (_activeCategory === 'influencer') {
-        items = items.filter(m => (m.services_provided || []).includes('Influencer Marketing') || (m.tags || []).includes('influencer'));
-      } else if (_activeCategory === 'seo') {
-        items = items.filter(m => (m.services_provided || []).includes('SEO'));
-      } else if (_activeCategory === 'smm') {
-        items = items.filter(m => m.asset_type === 'social-media-link' || m.asset_type === 'social-media-profile' || m.asset_type === 'smm-profiles');
-      } else if (_activeCategory === 'gtm') {
-        items = items.filter(m => (m.asset_type === 'gtm') || (m.tags || []).includes('gtm'));
-      } else if (_activeCategory === 'pr') {
-        items = items.filter(m => m.asset_type !== 'other' && ((m.services_provided || []).includes('PR') || (m.tags || []).includes('pr')));
-      } else if (_activeCategory === 'other') {
-        items = items.filter(m => 
-          m.asset_type === 'other' || 
-          (
-            !['report', 'media-plan'].includes(m.asset_type) && 
-            !(m.services_provided || []).includes('Influencer Marketing') &&
-            !(m.services_provided || []).includes('SEO') &&
-            !(m.services_provided || []).includes('Social Media') &&
-            !(m.services_provided || []).includes('PR') &&
-            m.asset_type !== 'gtm'
-          )
-        );
-      } else {
-        items = items.filter(m => m.asset_type === _activeCategory);
-      }
+      items = items.filter(m => m.asset_type === _activeCategory);
     }
 
     // Helper for OR logic within a category
@@ -769,19 +745,15 @@ const PAGE_REPORTS = (() => {
           <label class="input-label" style="font-size:11px; font-weight:700;">ASSET TYPE *</label>
           <select class="select" id="report-edit-type" style="font-size:13px; padding:10px;">
             ${[
-              { value: 'contract', label: 'Contract' },
-              { value: 'deck', label: 'Strategy Deck' },
-              { value: 'media-plan', label: 'Media Plan' },
-              { value: 'process-doc', label: 'Process Doc' },
-              { value: 'report', label: 'Performance Report' },
-              { value: 'template', label: 'Template' },
-              { value: 'gtm', label: 'GTM' },
-              { value: 'smm-profiles', label: 'SMM Profiles' },
-              { value: 'doc-link', label: 'Document' },
-              { value: 'spreadsheet-link', label: 'Spreadsheet' },
-              { value: 'pdf', label: 'PDF' },
-              { value: 'offer-prep', label: 'Offer Preparation' }
-            ].sort((a,b)=>a.label.localeCompare(b.label)).map(t => `<option value="${t.value}" ${data.asset_type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
+              { value: 'performance-marketing', label: 'Performance Marketing' },
+              { value: 'influencer-marketing', label: 'Influencer Marketing' },
+              { value: 'seo-geo', label: 'SEO/GEO' },
+              { value: 'ppc-media-plans', label: 'PPC media plans' },
+              { value: 'smm-profiles', label: 'SMM profiles' },
+              { value: 'gtms', label: 'GTMs' },
+              { value: 'pr-demos', label: 'PR demos' },
+              { value: 'other-files', label: 'Other files' }
+            ].map(t => `<option value="${t.value}" ${data.asset_type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
           </select>
         </div>
 
