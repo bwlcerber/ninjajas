@@ -331,21 +331,6 @@ const PAGE_REPORTS = (() => {
         <div style="background: var(--bg-3); padding: 14px; border-radius: var(--r-md); border: 1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
           <div style="font-size:12px; font-weight:500; color:var(--accent); font-family:var(--font-ui)">🏷️ METADATA PROPERTIES</div>
           
-          <div style="display:flex; flex-direction:column; gap:6px;">
-            <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Industry / Category * (Select multiple)</span>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="upload-report-verticals">
-              ${(() => {
-                const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-                if (verticals.includes('Other')) sorted.push('Other');
-                return sorted.map(v => `
-                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
-                    <input type="checkbox" value="${v}" style="accent-color:var(--accent);"> ${v}
-                  </label>
-                `).join('');
-              })()}
-            </div>
-          </div>
-          
           <div class="input-group">
             <span class="input-label" style="font-size:11px;">Asset Type *</span>
             <select class="select" id="upload-report-assettype" style="height:34px; font-size:12px;">
@@ -362,6 +347,23 @@ const PAGE_REPORTS = (() => {
             </select>
           </div>
 
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <span class="input-label" style="font-size:11px; margin-bottom: 2px;">Industry * (Select multiple)</span>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="upload-report-verticals">
+              ${(() => {
+                const sorted = [...verticals].filter(v => v !== 'Other').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+                if (verticals.includes('Other')) sorted.push('Other');
+                return sorted.map(v => `
+                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                    <input type="checkbox" value="${v}" style="accent-color:var(--accent);"> ${v}
+                  </label>
+                `).join('');
+              })()}
+            </div>
+          </div>
+          
+
+
           <div class="input-group">
             <span class="input-label" style="font-size:11px;">Services Provided *</span>
             <div style="display:flex; flex-wrap:wrap; gap:8px;" id="upload-report-services">
@@ -374,7 +376,7 @@ const PAGE_REPORTS = (() => {
           </div>
 
           <div style="display:flex; flex-direction:column; gap:6px;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
               <div class="input-group" id="client-name-group">
                 <span class="input-label" style="font-size:11px;">Client Name *</span>
                 <input class="input" type="text" id="upload-report-client" placeholder="e.g. BankFlow" value="Internal" style="height:34px; font-size:12px;">
@@ -383,11 +385,16 @@ const PAGE_REPORTS = (() => {
                 <span class="input-label" style="font-size:11px;">Client Website URL</span>
                 <input class="input" type="text" id="upload-report-website" placeholder="https://example.com" style="height:34px; font-size:12px;">
               </div>
-              <div class="input-group">
-                <span class="input-label" style="font-size:11px;">Geo *</span>
-                <select class="select" id="upload-report-geo" style="height:34px; font-size:12px;">
-                  ${window.PORTAL_DATA.GEOS.map(g => `<option value="${g}">${g}</option>`).join('')}
-                </select>
+            </div>
+            
+            <div class="input-group" style="margin-top: 4px;">
+              <span class="input-label" style="font-size:11px;">Geo * (Select multiple)</span>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;" id="upload-report-geo">
+                ${window.PORTAL_DATA.GEOS.map(g => `
+                  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary); cursor:pointer;">
+                    <input type="checkbox" value="${g}" style="accent-color:var(--accent);"> ${g}
+                  </label>
+                `).join('')}
               </div>
             </div>
             <label style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); cursor:pointer;">
@@ -568,10 +575,16 @@ const PAGE_REPORTS = (() => {
     const services = Array.from(checkedBoxes).map(cb => cb.value);
     let clientName = document.getElementById('upload-report-client').value.trim() || 'Internal';
     const clientWebsite = document.getElementById('upload-report-website').value.trim() || '';
-    const geo = document.getElementById('upload-report-geo').value || 'Global';
+    const checkedGeos = document.querySelectorAll('#upload-report-geo input[type="checkbox"]:checked');
+    const parsedGeos = Array.from(checkedGeos).map(cb => cb.value);
+    const geoStr = parsedGeos.length ? parsedGeos.join(', ') : 'Global';
 
     if (selectedVerticals.length === 0) {
-      showToast('Please select at least one vertical', 'error');
+      showToast('Please select at least one industry', 'error');
+      return;
+    }
+    if (parsedGeos.length === 0) {
+      showToast('Please select at least one GEO', 'error');
       return;
     }
 
@@ -664,7 +677,8 @@ const PAGE_REPORTS = (() => {
         id: 'mat-' + Date.now() + Math.random().toString(36).slice(2, 6),
         title: cleanTitle,
         client_name: clientName,
-        geo: geo,
+        geo: geoStr,
+        geos: parsedGeos,
         vertical: vertical,
         verticals: selectedVerticals,
         services_provided: services.length ? services : ['SEO'],
@@ -683,7 +697,7 @@ const PAGE_REPORTS = (() => {
       successCount++;
     }
 
-    STORE.syncClientGeo(clientName, geo);
+    STORE.syncClientGeo(clientName, geoStr);
 
     closeModal();
     showToast(`Successfully uploaded ${successCount} client docs`, 'success');
