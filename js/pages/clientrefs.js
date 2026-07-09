@@ -6,11 +6,22 @@ const PAGE_CLIENTREFS = (() => {
   let _vertical = 'all';
   let _query = '';
   const _selectedTags = new Set();
+  const _selectedVerticals = new Set();
+  const _selectedServices = new Set();
+  const _selectedGeos = new Set();
 
   // Ingestion temporary state
   let _fetchedData = null;
   let _isFetching = false;
   let _sortOrder = 'recent';
+
+  function _toggleFilter(type, val) {
+    const set = type === 'verticals' ? _selectedVerticals : type === 'services' ? _selectedServices : _selectedGeos;
+    if (set.has(val)) set.delete(val);
+    else set.add(val);
+    const container = document.getElementById('page-container');
+    if (container) renderGrid(container);
+  }
 
   function getHiddenVerticals() {
     try {
@@ -418,12 +429,32 @@ const PAGE_CLIENTREFS = (() => {
         <!-- Selected multi-select tags container -->
         <div id="refs-active-filters" class="active-filters" style="display:none"></div>
 
-        <!-- Vertical filter chips -->
-        <div class="filter-row" style="margin-top:12px">
-          <button class="filter-chip ${_vertical === 'all' ? 'active' : ''}" data-v="all">All</button>
-          ${visibleVerticals.map(v => `
-            <button class="filter-chip ${_vertical === v ? 'active' : ''}" data-v="${v}">${getVerticalEmoji(v)} ${v}</button>
-          `).join('')}
+        <!-- Multi-select Filter Rows -->
+        <div style="margin-top:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:12px;">
+          <!-- Industries -->
+          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Industries</span>
+            ${visibleVerticals.map(v => {
+              const active = _selectedVerticals.has(v);
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
+            }).join('')}
+          </div>
+          <!-- Services -->
+          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Services</span>
+            ${window.PORTAL_DATA.SERVICES.map(s => {
+              const active = _selectedServices.has(s);
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter('services', '${s}')">${s}</button>`;
+            }).join('')}
+          </div>
+          <!-- Geos -->
+          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+            <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Geos</span>
+            ${window.PORTAL_DATA.GEOS.map(g => {
+              const active = _selectedGeos.has(g);
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter('geos', '${g}')">${g}</button>`;
+            }).join('')}
+          </div>
         </div>
       </div>
 
@@ -435,14 +466,7 @@ const PAGE_CLIENTREFS = (() => {
     container.querySelector('#refs-sort').addEventListener('change', e => { _sortOrder = e.target.value; renderGrid(container); });
     
 
-    container.querySelectorAll('.filter-chip[data-v]').forEach(chip => {
-      chip.addEventListener('click', () => {
-        _vertical = chip.dataset.v;
-        
-        updateChips(container);
-        renderGrid(container);
-      });
-    });
+
 
     // Ingest URL form submission
     const ingestForm = container.querySelector('#url-ingest-form');
@@ -548,13 +572,6 @@ const PAGE_CLIENTREFS = (() => {
     showToast('Client reference saved!', 'success');
     render(container);
   }
-
-  function updateChips(container) {
-    container.querySelectorAll('.filter-chip[data-v]').forEach(c =>
-      c.classList.toggle('active', c.dataset.v === _vertical)
-    );
-  }
-
   function toggleTag(tag) {
     if (_selectedTags.has(tag)) {
       _selectedTags.delete(tag);
@@ -630,24 +647,40 @@ const PAGE_CLIENTREFS = (() => {
       });
     }
 
-    // Apply public tab filtering
-    if (_vertical !== 'all') {
-      const vLower = _vertical.toLowerCase();
-      items = items.filter(r => {
-        const allTags = new Set();
-        if (r.vertical) allTags.add(r.vertical.toLowerCase());
-        if (Array.isArray(r.verticals)) r.verticals.forEach(t => allTags.add(t.toLowerCase()));
-        if (Array.isArray(r.tags)) r.tags.forEach(t => allTags.add(t.toLowerCase()));
-        return allTags.has(vLower);
-      });
-    }
-
     // Apply multi-select tags filtering (AND behavior)
     if (_selectedTags.size > 0) {
       items = items.filter(r => {
         return Array.from(_selectedTags).every(t => {
           return r.vertical === t || (r.services_provided && r.services_provided.includes(t)) || (r.tags && r.tags.includes(t));
         });
+      });
+    }
+
+    // Apply Vertical Filter
+    if (_selectedVerticals.size > 0) {
+      items = items.filter(r => {
+        const checkVerticals = new Set();
+        if (r.vertical) checkVerticals.add(r.vertical);
+        if (Array.isArray(r.verticals)) r.verticals.forEach(v => checkVerticals.add(v));
+        return Array.from(_selectedVerticals).some(v => checkVerticals.has(v));
+      });
+    }
+
+    // Apply Service Filter
+    if (_selectedServices.size > 0) {
+      items = items.filter(r => {
+        const services = Array.isArray(r.services_provided) ? r.services_provided : [];
+        return Array.from(_selectedServices).some(s => services.includes(s));
+      });
+    }
+
+    // Apply Geo Filter
+    if (_selectedGeos.size > 0) {
+      items = items.filter(r => {
+        const checkGeos = new Set();
+        if (r.geo) checkGeos.add(r.geo);
+        if (Array.isArray(r.geos)) r.geos.forEach(g => checkGeos.add(g));
+        return Array.from(_selectedGeos).some(g => checkGeos.has(g) || (!r.geo && g === 'Global'));
       });
     }
 
