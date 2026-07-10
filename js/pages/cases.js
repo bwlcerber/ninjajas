@@ -5,7 +5,7 @@ const PAGE_CASES = (() => {
 
   let _vertical = 'all';
   let _service  = 'all';
-  let _sort     = 'custom';
+  let _sort     = 'recent';
   let _query    = '';
   const _selectedTags = new Set();
 

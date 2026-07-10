@@ -211,12 +211,14 @@ const PAGE_DOCS = (() => {
       );
     }
 
-    // Sort by pinned first, then alphabetical by title
+    // Sort by pinned first, then by recently added
     items.sort((a, b) => {
       const aPinned = a.pinned ? 1 : 0;
       const bPinned = b.pinned ? 1 : 0;
       if (aPinned !== bPinned) return bPinned - aPinned; // pinned first (1 > 0)
-      return (a.title || '').localeCompare(b.title || '');
+      
+      const getT = x => x.updated_at ? new Date(x.updated_at).getTime() : (x.created_at ? new Date(x.created_at).getTime() : 0);
+      return getT(b) - getT(a);
     });
 
     const list = container.querySelector('#docs-list');

@@ -10,17 +10,32 @@ const PAGE_DASHBOARD = (() => {
 
   function render(container) {
     const stats = STORE.getStats();
+
+    const extractTime = (item) => {
+      if (item.updated_at) return new Date(item.updated_at).getTime();
+      if (item.created_at) return new Date(item.created_at).getTime();
+      if (item.id) {
+        const match = String(item.id).match(/\d{10,13}/);
+        if (match) return parseInt(match[0], 10);
+      }
+      return 0;
+    };
+
     // Exclude internal-only from the dashboard overview for a cleaner sales view
-    const allClientSafe = STORE.getMaterials().filter(m => m.visibility_status === 'client-safe');
+    let allClientSafe = STORE.getMaterials().filter(m => m.visibility_status === 'client-safe');
+    allClientSafe.sort((a, b) => extractTime(b) - extractTime(a));
     
+    let allRefs = STORE.getClientRefs().slice();
+    allRefs.sort((a, b) => extractTime(b) - extractTime(a));
+
     // 5 Materials (excluding creatives)
-    const recentMaterials = allClientSafe.filter(m => !['creative', 'video', 'image'].includes(m.asset_type)).slice().reverse().slice(0, 5);
+    const recentMaterials = allClientSafe.filter(m => !['creative', 'video', 'image'].includes(m.asset_type)).slice(0, 5);
     
     // 5 Client References
-    const recentRefs = STORE.getClientRefs().slice().reverse().slice(0, 5);
+    const recentRefs = allRefs.slice(0, 5);
     
     // 5 Creatives
-    const recentCreatives = allClientSafe.filter(m => ['creative', 'video', 'image'].includes(m.asset_type)).slice().reverse().slice(0, 5);
+    const recentCreatives = allClientSafe.filter(m => ['creative', 'video', 'image'].includes(m.asset_type)).slice(0, 5);
 
     container.innerHTML = `
       <div class="page-header" style="margin-bottom: 24px;">
@@ -255,11 +270,10 @@ const PAGE_DASHBOARD = (() => {
         <!-- Layout Selector Tabs -->
         <div class="tabs" style="margin-bottom:20px; border-bottom:1px solid var(--border-subtle)">
           <div class="tab ${_activeView === 'all' ? 'active' : ''}" data-view="all">All Layout</div>
-          <div class="tab ${_activeView === 'reports' ? 'active' : ''}" data-view="reports"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>Reports</div>
-          <div class="tab ${_activeView === 'creatives' ? 'active' : ''}" data-view="creatives"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3de892" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"></circle><circle cx="11.5" cy="7.5" r="1.2" fill="currentColor"></circle></svg>Creatives</div>
-          <div class="tab ${_activeView === 'cases' ? 'active' : ''}" data-view="cases"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff7f50" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 0-4 4v5c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4Z"></path></svg>Case Studies</div>
+          <div class="tab ${_activeView === 'reports' ? 'active' : ''}" data-view="reports"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>Client Files</div>
           <div class="tab ${_activeView === 'refs' ? 'active' : ''}" data-view="refs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f0c97a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Client References</div>
-          <div class="tab ${_activeView === 'docs' ? 'active' : ''}" data-view="docs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a87af0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>Client Docs</div>
+          <div class="tab ${_activeView === 'creatives' ? 'active' : ''}" data-view="creatives"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3de892" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"></circle><circle cx="11.5" cy="7.5" r="1.2" fill="currentColor"></circle></svg>Visuals and Creatives</div>
+          <div class="tab ${_activeView === 'cases' ? 'active' : ''}" data-view="cases"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff7f50" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 0-4 4v5c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4Z"></path></svg>Case Studies</div>
         </div>
 
         <div id="db-console-workspace"></div>
@@ -341,24 +355,31 @@ const PAGE_DASHBOARD = (() => {
       );
     }
 
+    const extractTime = (item) => {
+      if (item.updated_at) return new Date(item.updated_at).getTime();
+      if (item.created_at) return new Date(item.created_at).getTime();
+      if (item.id) {
+        const match = String(item.id).match(/\d{10,13}/);
+        if (match) return parseInt(match[0], 10);
+      }
+      return 0;
+    };
+    materials.sort((a, b) => extractTime(b) - extractTime(a));
+    refs.sort((a, b) => extractTime(b) - extractTime(a));
+
     // Separate groups
-    // 1. Reports: performance reports, media plans, decks
-    const reports = materials.filter(m => ['report', 'media-plan', 'deck'].includes(m.asset_type));
+    // 1. Client Files: anything not case/creative/video/image
+    const reports = materials.filter(m => !['case', 'creative', 'video', 'image'].includes(m.asset_type));
     // 2. Creatives: video, image, creative asset
     const creatives = materials.filter(m => ['creative', 'video', 'image'].includes(m.asset_type));
-    // 3. Success Cases Only: cases studies
+    // 3. Success Cases Only: case studies
     const cases = materials.filter(m => m.asset_type === 'case');
-    // 4. Client Docs: contracts, templates, processes (excluding internal-only explicitly)
-    const clientDocs = materials.filter(m => 
-      m.visibility_status === 'client-safe' && ['contract', 'template', 'process-doc', 'training'].includes(m.asset_type)
-    );
 
     // Keep track of collapsed states
     window._collapsedConsoleSections = window._collapsedConsoleSections || {
       reports: true,
       cases: true,
       refs: true,
-      docs: true,
       creatives: true
     };
 
@@ -372,40 +393,23 @@ const PAGE_DASHBOARD = (() => {
       const isReportsCollapsed = window._collapsedConsoleSections.reports;
       const isCasesCollapsed = window._collapsedConsoleSections.cases;
       const isRefsCollapsed = window._collapsedConsoleSections.refs;
-      const isDocsCollapsed = window._collapsedConsoleSections.docs;
       const isCreativesCollapsed = window._collapsedConsoleSections.creatives;
 
       workspace.innerHTML = `
         <div class="console-grid">
-          <!-- Reports -->
+          <!-- Client Files -->
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <div onclick="window.toggleConsoleSection('reports')" style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;">
               <span style="display: flex; align-items: center; gap: 6px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                Reports & Plans (${reports.length})
+                Client Files (${reports.length})
               </span>
               <span style="font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center;">
                 ${isReportsCollapsed ? 'Expand ▾' : 'Collapse ▴'}
               </span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              ${isReportsCollapsed ? '' : (reports.length ? reports.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state" style="padding:16px"><div class="empty-title">No reports found</div></div>')}
-            </div>
-          </div>
-
-          <!-- Success Cases -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div onclick="window.toggleConsoleSection('cases')" style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;">
-              <span style="display: flex; align-items: center; gap: 6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff7f50" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 0-4 4v5c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4Z"></path></svg>
-                Case Studies (${cases.length})
-              </span>
-              <span style="font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center;">
-                ${isCasesCollapsed ? 'Expand ▾' : 'Collapse ▴'}
-              </span>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              ${isCasesCollapsed ? '' : (cases.length ? cases.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state" style="padding:16px"><div class="empty-title">No cases found</div></div>')}
+              ${isReportsCollapsed ? '' : (reports.length ? reports.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state" style="padding:16px"><div class="empty-title">No client files found</div></div>')}
             </div>
           </div>
 
@@ -425,19 +429,19 @@ const PAGE_DASHBOARD = (() => {
             </div>
           </div>
 
-          <!-- Client Docs -->
+          <!-- Case Studies -->
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div onclick="window.toggleConsoleSection('docs')" style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;">
+            <div onclick="window.toggleConsoleSection('cases')" style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;">
               <span style="display: flex; align-items: center; gap: 6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a87af0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                Client Docs (${clientDocs.length})
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff7f50" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 0-4 4v5c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4Z"></path></svg>
+                Case Studies (${cases.length})
               </span>
               <span style="font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center;">
-                ${isDocsCollapsed ? 'Expand ▾' : 'Collapse ▴'}
+                ${isCasesCollapsed ? 'Expand ▾' : 'Collapse ▴'}
               </span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              ${isDocsCollapsed ? '' : (clientDocs.length ? clientDocs.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state" style="padding:16px"><div class="empty-title">No client-safe docs</div></div>')}
+              ${isCasesCollapsed ? '' : (cases.length ? cases.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state" style="padding:16px"><div class="empty-title">No cases found</div></div>')}
             </div>
           </div>
         </div>
@@ -447,7 +451,7 @@ const PAGE_DASHBOARD = (() => {
           <div onclick="window.toggleConsoleSection('creatives')" class="creative-row-title" style="cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; width: 100%;">
             <span style="display: flex; align-items: center; gap: 6px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3de892" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"></circle><circle cx="11.5" cy="7.5" r="1.2" fill="currentColor"></circle></svg>
-              Visual Creatives (${creatives.length})
+              Visuals and Creatives (${creatives.length})
             </span>
             <span style="font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center;">
               ${isCreativesCollapsed ? 'Expand ▾' : 'Collapse ▴'}
@@ -461,8 +465,8 @@ const PAGE_DASHBOARD = (() => {
       if (_activeView === 'reports') {
         content = `
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>Reports & Plans (${reports.length})</div>
-            <div style="display: flex; flex-direction: column; gap: 8px;">${reports.length ? reports.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state"><div class="empty-title">No reports matching filters</div></div>'}</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>Client Files (${reports.length})</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">${reports.length ? reports.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state"><div class="empty-title">No client files matching filters</div></div>'}</div>
           </div>`;
       } else if (_activeView === 'cases') {
         content = `
@@ -476,16 +480,10 @@ const PAGE_DASHBOARD = (() => {
             <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f0c97a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Client References (${refs.length})</div>
             <div style="display: flex; flex-direction: column; gap: 8px;">${refs.length ? refs.map(r => renderRefConsoleRow(r)).join('') : '<div class="empty-state"><div class="empty-title">No references matching filters</div></div>'}</div>
           </div>`;
-      } else if (_activeView === 'docs') {
-        content = `
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a87af0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>Client Docs (${clientDocs.length})</div>
-            <div style="display: flex; flex-direction: column; gap: 8px;">${clientDocs.length ? clientDocs.map(m => renderMaterialRow(m)).join('') : '<div class="empty-state"><div class="empty-title">No client-safe docs matching filters</div></div>'}</div>
-          </div>`;
       } else if (_activeView === 'creatives') {
         content = `
           <div>
-            <div class="creative-row-title"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3de892" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"></circle><circle cx="11.5" cy="7.5" r="1.2" fill="currentColor"></circle></svg>Visual Creatives (${creatives.length})</span></div>
+            <div class="creative-row-title"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3de892" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; vertical-align:middle; display:inline-block;"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"></circle><circle cx="11.5" cy="7.5" r="1.2" fill="currentColor"></circle></svg>Visuals and Creatives (${creatives.length})</span></div>
             ${renderCreativesGallery(creatives)}
           </div>`;
       }

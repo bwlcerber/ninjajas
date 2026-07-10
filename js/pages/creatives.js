@@ -84,6 +84,18 @@ const PAGE_CREATIVES = (() => {
       const isOthersMatch = type === 'others' && m.asset_type === 'creative';
       return isCreativeRel || isContentCal || isOthersMatch;
     });
+
+    const extractTime = (item) => {
+      if (item.updated_at) return new Date(item.updated_at).getTime();
+      if (item.created_at) return new Date(item.created_at).getTime();
+      if (item.id) {
+        const match = String(item.id).match(/\d{10,13}/);
+        if (match) return parseInt(match[0], 10);
+      }
+      return 0;
+    };
+    allCreatives.sort((a, b) => extractTime(b) - extractTime(a));
+
     const verticals = window.PORTAL_DATA.VERTICALS;
 
     // Group by vertical (supporting display-level duplication for assets in multiple verticals)

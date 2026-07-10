@@ -15,10 +15,15 @@ const PAGE_CLIENTREFS = (() => {
   let _isFetching = false;
   let _sortOrder = 'recent';
 
-  function _toggleFilter(type, val) {
+  function _toggleFilter(e, type, val) {
     const set = type === 'verticals' ? _selectedVerticals : type === 'services' ? _selectedServices : _selectedGeos;
-    if (set.has(val)) set.delete(val);
-    else set.add(val);
+    if (set.has(val)) {
+      set.delete(val);
+      if (e && e.currentTarget) e.currentTarget.classList.remove('active');
+    } else {
+      set.add(val);
+      if (e && e.currentTarget) e.currentTarget.classList.add('active');
+    }
     const container = document.getElementById('page-container');
     if (container) renderGrid(container);
   }
@@ -436,7 +441,7 @@ const PAGE_CLIENTREFS = (() => {
             <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Industries</span>
             ${visibleVerticals.map(v => {
               const active = _selectedVerticals.has(v);
-              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter('verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter(event, 'verticals', '${v}')">${getVerticalEmoji(v)} ${v}</button>`;
             }).join('')}
           </div>
           <!-- Services -->
@@ -444,7 +449,7 @@ const PAGE_CLIENTREFS = (() => {
             <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Services</span>
             ${window.PORTAL_DATA.SERVICES.map(s => {
               const active = _selectedServices.has(s);
-              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter('services', '${s}')">${s}</button>`;
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter(event, 'services', '${s}')">${s}</button>`;
             }).join('')}
           </div>
           <!-- Geos -->
@@ -452,7 +457,7 @@ const PAGE_CLIENTREFS = (() => {
             <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Geos</span>
             ${window.PORTAL_DATA.GEOS.map(g => {
               const active = _selectedGeos.has(g);
-              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter('geos', '${g}')">${g}</button>`;
+              return `<button class="filter-chip ${active ? 'active' : ''}" style="flex-shrink:0" onclick="PAGE_CLIENTREFS._toggleFilter(event, 'geos', '${g}')">${g}</button>`;
             }).join('')}
           </div>
         </div>
@@ -1625,6 +1630,7 @@ const PAGE_CLIENTREFS = (() => {
 
   return { 
     render, 
+    _toggleFilter,
     toggleTag, 
     removeTag, 
     clearAllTags,
