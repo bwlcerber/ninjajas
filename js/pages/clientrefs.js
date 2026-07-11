@@ -877,11 +877,25 @@ const PAGE_CLIENTREFS = (() => {
     const initials = displayClientName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
     // Query materials dynamically by client name, excluding cases/branding from related assets
-    const materials = STORE.getMaterials().filter(m => 
+    let materials = STORE.getMaterials().filter(m => 
       m.client_name?.trim().toLowerCase() === (decodedName || 'N/A').trim().toLowerCase() && 
       m.asset_type !== 'case' && 
       m.asset_type !== 'branding'
     );
+
+    // Deduplicate by file_url, prioritizing 'creatives' over duplicates
+    const seenUrls = new Set();
+    materials = materials.sort((a, b) => {
+      if (a.asset_type === 'creatives' && b.asset_type !== 'creatives') return -1;
+      if (b.asset_type === 'creatives' && a.asset_type !== 'creatives') return 1;
+      return 0;
+    }).filter(m => {
+      if (!m.file_url) return true;
+      if (seenUrls.has(m.file_url)) return false;
+      seenUrls.add(m.file_url);
+      return true;
+    });
+
     const materialIds = materials.map(m => m.id);
 
     container.innerHTML = `
