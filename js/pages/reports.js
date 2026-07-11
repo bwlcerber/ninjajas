@@ -89,23 +89,10 @@ const PAGE_REPORTS = (() => {
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr ${_editReportId ? '400px' : '0px'}; gap:${_editReportId ? '24px' : '0px'}; align-items:start; transition: all 0.3s ease;">
-        <div id="reports-list" class="reports-list" style="min-width:0;"></div>
-        
-        ${_editReportId ? `
-          <div id="reports-edit-wrap" style="position: sticky; top: 20px; align-self: start; background:var(--bg-2); border:1px solid var(--border-subtle); border-radius:var(--r-md); padding:16px; overflow:hidden;">
-            ${renderInlineEditForm(STORE.getMaterialById(_editReportId))}
-          </div>
-        ` : ''}
+      <div style="margin-top:24px;">
+        <div id="reports-list" class="reports-list"></div>
       </div>
     `;
-
-    if (_editReportId) {
-      setTimeout(() => {
-        const wrap = container.querySelector('#reports-edit-wrap');
-        if (wrap) bindInlineEditForm(wrap, STORE.getMaterialById(_editReportId));
-      }, 0);
-    }
 
     // Events
     container.querySelector('#reports-search').addEventListener('input', (e) => {
@@ -271,7 +258,7 @@ const PAGE_REPORTS = (() => {
             </button>
           ` : ''}
           ${window.CAN_MANAGE ? `
-            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); PAGE_REPORTS.setEditReport('${mat.id}')" title="Edit Metadata" style="color:var(--accent); display:inline-flex; align-items:center; justify-content:center; padding:4px;">
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); PAGE_REPORTS.openEditModal('${mat.id}')" title="Edit Metadata" style="color:var(--accent); display:inline-flex; align-items:center; justify-content:center; padding:4px;">
               ${ICONS.edit}
             </button>
             <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); checkSuperAdminAction(() => { if (confirm('Are you sure you want to delete this material? This action cannot be undone.')) { STORE.deleteMaterial('${mat.id}'); showToast('Material moved to Recycle Bin', 'success'); ROUTER.render(); } })" title="Delete Material" style="color:var(--danger); display:inline-flex; align-items:center; justify-content:center; padding:4px;">

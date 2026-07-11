@@ -32,7 +32,6 @@ window.PORTAL_DATA = {
     "Web & LP Design"
   ],
   "ASSET_TYPES": [
-    "case-study",
     "creatives",
     "performance-marketing",
     "influencer-marketing",
