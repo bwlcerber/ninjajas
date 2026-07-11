@@ -544,40 +544,48 @@ const PAGE_DASHBOARD = (() => {
             const isVideo = mat.file_type === 'video';
             const isChecked = window.CALL_PREP_BASKET && window.CALL_PREP_BASKET.has(mat.id);
             const badgeType = isVideo ? 'MP4' : 'PNG';
-
             return `
-              <div class="creative-card-item animate-fade" onclick="openMaterial(STORE.getMaterialById('${mat.id}'))">
-                <!-- Checkbox overlay -->
-                <div class="creative-card-checkbox ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation()">
-                  <label class="item-select-wrap">
-                    <input type="checkbox" data-select-id="${mat.id}" ${isChecked ? 'checked' : ''} onchange="toggleCallPrepItem('${mat.id}')">
-                    <div class="item-select-box" title="Add to Call Prep Favorites">${ICONS.star}</div>
-                  </label>
+              <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
+                <div class="creative-card-item animate-fade" onclick="openMaterial(STORE.getMaterialById('${mat.id}'))">
+                  <!-- Checkbox overlay -->
+                  <div class="creative-card-checkbox ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation()">
+                    <label class="item-select-wrap">
+                      <input type="checkbox" data-select-id="${mat.id}" ${isChecked ? 'checked' : ''} onchange="toggleCallPrepItem('${mat.id}')">
+                      <div class="item-select-box" title="Add to Call Prep Favorites">${ICONS.star}</div>
+                    </label>
+                  </div>
+                  
+                  <!-- Media -->
+                  ${isVideo 
+                    ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
+                         <video class="creative-card-media" src="${mat.file_url}" muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+                         <div class="video-play-button">
+                           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                         </div>
+                       </div>`
+                    : `<img class="creative-card-media" src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" loading="lazy">`
+                  }
+                  
+                  <!-- Vignette & Overlays -->
+                  <div class="creative-card-vignette"></div>
+                  <div class="creative-card-overlay"></div>
+                  
+                  <!-- Badge -->
+                  <div class="creative-card-badge">${badgeType}</div>
+                  
+                  <!-- Info -->
+                  <div class="creative-card-info">
+                    <div class="creative-card-title">${mat.title}</div>
+                    <div class="creative-card-client">${mat.client_name} · ${mat.vertical}</div>
+                  </div>
                 </div>
-                
-                <!-- Media -->
-                ${isVideo 
-                  ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
-                       <video class="creative-card-media" src="${mat.file_url}" muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
-                       <div class="video-play-button">
-                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                       </div>
-                     </div>`
-                  : `<img class="creative-card-media" src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" loading="lazy">`
-                }
-                
-                <!-- Vignette & Overlays -->
-                <div class="creative-card-vignette"></div>
-                <div class="creative-card-overlay"></div>
-                
-                <!-- Badge -->
-                <div class="creative-card-badge">${badgeType}</div>
-                
-                <!-- Info -->
-                <div class="creative-card-info">
-                  <div class="creative-card-title">${mat.title}</div>
-                  <div class="creative-card-client">${mat.client_name} · ${mat.vertical}</div>
-                </div>
+                ${mat.client_name && mat.client_name.toLowerCase() !== 'internal' && mat.client_name.toLowerCase() !== 'n/a' ? `
+                  <a href="#clientrefs/${encodeURIComponent(mat.client_name)}" class="creative-card-sublink" style="font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); text-transform:uppercase; font-weight:500; text-decoration:none; padding-left:2px; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-tertiary)'" onclick="event.stopPropagation()">
+                    ${mat.client_name}
+                  </a>
+                ` : `
+                  <span style="font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); text-transform:uppercase; font-weight:500; padding-left:2px;">N/A</span>
+                `}
               </div>
             `;
           }).join('')}
