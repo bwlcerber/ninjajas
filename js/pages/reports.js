@@ -228,7 +228,12 @@ const PAGE_REPORTS = (() => {
             <div class="item-select-box" title="Add to Call Prep Favorites">${ICONS.star}</div>
           </label>
         </div>
-        <div class="material-row-icon">${mat.asset_type === 'influencer-marketing' ? getFileIcon('doc-link') : getFileIcon(mat.file_type)}</div>
+        <div class="material-row-icon" style="overflow:hidden; display:flex; align-items:center; justify-content:center;">
+          ${(mat.file_type === 'image' || mat.file_type === 'video') 
+            ? `<img src="${mat.thumbnail_url || mat.file_url}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">` 
+            : (mat.asset_type === 'influencer-marketing' ? getFileIcon('doc-link') : getFileIcon(mat.file_type))
+          }
+        </div>
         <div class="material-row-info">
           <div class="material-row-title">${mat.title}</div>
           <div class="material-row-sub">
