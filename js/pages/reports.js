@@ -321,16 +321,7 @@ const PAGE_REPORTS = (() => {
           <div class="input-group">
             <span class="input-label" style="font-size:11px;">Asset Type *</span>
             <select class="select" id="upload-report-assettype" style="height:34px; font-size:12px;">
-              ${[
-                { value: 'performance-marketing', label: 'Performance Marketing' },
-                { value: 'influencer-marketing', label: 'Influencer Marketing' },
-                { value: 'seo-geo', label: 'SEO/GEO' },
-                { value: 'ppc-media-plans', label: 'PPC media plans' },
-                { value: 'smm-profiles', label: 'SMM profiles' },
-                { value: 'gtms', label: 'GTMs' },
-                { value: 'pr-demos', label: 'PR demos' },
-                { value: 'other-files', label: 'Other files' }
-              ].map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
+              ${window.PORTAL_DATA.ASSET_TYPES.map(type => `<option value="${type}">${assetTypeLabel(type)}</option>`).join('')}
             </select>
           </div>
 
@@ -768,16 +759,7 @@ const PAGE_REPORTS = (() => {
         <div class="input-group">
           <label class="input-label" style="font-size:11px; font-weight:700;">ASSET TYPE *</label>
           <select class="select" id="report-edit-type" style="font-size:13px; padding:10px;">
-            ${[
-              { value: 'performance-marketing', label: 'Performance Marketing' },
-              { value: 'influencer-marketing', label: 'Influencer Marketing' },
-              { value: 'seo-geo', label: 'SEO/GEO' },
-              { value: 'ppc-media-plans', label: 'PPC media plans' },
-              { value: 'smm-profiles', label: 'SMM profiles' },
-              { value: 'gtms', label: 'GTMs' },
-              { value: 'pr-demos', label: 'PR demos' },
-              { value: 'other-files', label: 'Other files' }
-            ].map(t => `<option value="${t.value}" ${data.asset_type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
+            ${window.PORTAL_DATA.ASSET_TYPES.map(type => `<option value="${type}" ${data.asset_type === type ? 'selected' : ''}>${assetTypeLabel(type)}</option>`).join('')}
           </select>
         </div>
 
