@@ -224,6 +224,34 @@ const STORE = (() => {
       }
     });
 
+    // Cleanup duplicate influencer-marketing creatives caused by legacy addKol logic
+    const toKeepMats = [];
+    data.materials.forEach(m => {
+      if (m.asset_type === 'influencer-marketing' && m.file_url) {
+        // Find matching original creative
+        const original = data.materials.find(other => 
+          other.asset_type === 'creatives' && 
+          other.file_url === m.file_url && 
+          other.client_name === m.client_name && 
+          other.id !== m.id
+        );
+        if (original) {
+          // Ensure original has the tag, then discard this duplicate
+          if (!original.tags) original.tags = [];
+          if (!original.tags.includes('influencer-marketing')) {
+            original.tags.push('influencer-marketing');
+          }
+          modified = true;
+          return; // skip pushing to toKeepMats
+        }
+      }
+      toKeepMats.push(m);
+    });
+    if (data.materials.length !== toKeepMats.length) {
+      data.materials = toKeepMats;
+      modified = true;
+    }
+
     const seenRefIds = new Set();
     data.clientRefs.forEach((r, idx) => {
       if (!r.id || seenRefIds.has(r.id)) {

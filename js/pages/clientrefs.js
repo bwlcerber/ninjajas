@@ -1608,15 +1608,14 @@ const PAGE_CLIENTREFS = (() => {
         services_provided: services,
         related_assets: []
       };
-      STORE.addMaterial(record);
 
       if (addKol && type === 'creatives') {
-        const kolRecord = { ...record };
-        kolRecord.asset_type = 'influencer-marketing';
-        kolRecord.creative_type = null;
-        kolRecord.tags = [...finalVerticals, 'influencer-marketing', ...services];
-        STORE.addMaterial(kolRecord);
+        if (!record.tags.includes('influencer-marketing')) {
+          record.tags.push('influencer-marketing');
+        }
       }
+      
+      STORE.addMaterial(record);
     });
 
     STORE.syncClientGeo(client, geo);

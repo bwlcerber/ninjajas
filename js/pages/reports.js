@@ -142,11 +142,14 @@ const PAGE_REPORTS = (() => {
   }
 
   function renderList(container) {
-    let items = STORE.getMaterials().filter(m => m.visibility_status !== 'internal-only' && m.client_name !== 'Internal' && !['case', 'branding', 'creative', 'video', 'image'].includes(m.asset_type));
+    let items = STORE.getMaterials().filter(m => m.visibility_status !== 'internal-only' && m.client_name !== 'Internal');
 
     // Filter by category
     if (_activeCategory !== 'all') {
-      items = items.filter(m => m.asset_type === _activeCategory);
+      items = items.filter(m => m.asset_type === _activeCategory || (m.tags && m.tags.includes(_activeCategory)));
+    } else {
+      // Hide creatives and visual assets in 'all' view to prevent clutter
+      items = items.filter(m => !['case', 'branding', 'creatives', 'creative', 'video', 'image'].includes(m.asset_type));
     }
 
     // Helper for OR logic within a category
