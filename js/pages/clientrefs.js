@@ -1448,6 +1448,9 @@ const PAGE_CLIENTREFS = (() => {
               <option value="content-calendar">📅 Content Calendar</option>
               <option value="others">📦 Others (Pitch Decks, Brand Books, PDFs)</option>
             </select>
+            <label style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary); cursor:pointer; margin-top:6px;">
+              <input type="checkbox" id="add-kol-duplicate" style="accent-color:var(--accent);"> Also add to Influencer Marketing (KOL)
+            </label>
           </div>
           <div class="input-group">
             <span class="input-label">Visibility *</span>
@@ -1560,6 +1563,8 @@ const PAGE_CLIENTREFS = (() => {
     let finalVerticals = selectedVerticals.length > 0 ? selectedVerticals : (ref ? (ref.verticals || [ref.vertical]) : ['Other']);
     let finalVertical = finalVerticals[0] || 'Other';
 
+    const addKol = document.getElementById('add-kol-duplicate') && document.getElementById('add-kol-duplicate').checked;
+
     STAGED_ASSETS.forEach(asset => {
       const record = {
         title: asset.name,
@@ -1579,6 +1584,14 @@ const PAGE_CLIENTREFS = (() => {
         related_assets: []
       };
       STORE.addMaterial(record);
+
+      if (addKol && type === 'creatives') {
+        const kolRecord = { ...record };
+        kolRecord.asset_type = 'influencer-marketing';
+        kolRecord.creative_type = null;
+        kolRecord.tags = [...finalVerticals, 'influencer-marketing', ...services];
+        STORE.addMaterial(kolRecord);
+      }
     });
 
     STORE.syncClientGeo(client, geo);
