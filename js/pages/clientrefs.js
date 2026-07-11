@@ -1412,14 +1412,13 @@ const PAGE_CLIENTREFS = (() => {
             <span class="input-label">Asset Title * (Manual entry for single links)</span>
             <input class="input" type="text" id="add-asset-title" list="asset-title-options" placeholder="e.g. Dplay Casino Banner Ad" style="height:34px; font-size:12px;">
             <datalist id="asset-title-options">
-              <option value="KOL Campaign X Profile"></option>
-              <option value="TG Profile"></option>
-              <option value="TG"></option>
-              <option value="IG"></option>
               <option value="Discord profile"></option>
-              <option value="TikTok profile"></option>
+              <option value="IG profile"></option>
+              <option value="KOL campaign"></option>
               <option value="LinkedIn profile"></option>
-              <option value="LinkedIn"></option>
+              <option value="TG profile"></option>
+              <option value="TikTok profile"></option>
+              <option value="X profile"></option>
             </datalist>
           </div>
           <div class="input-group">
@@ -1449,7 +1448,7 @@ const PAGE_CLIENTREFS = (() => {
               <option value="others">📦 Others (Pitch Decks, Brand Books, PDFs)</option>
             </select>
             <label style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary); cursor:pointer; margin-top:6px;">
-              <input type="checkbox" id="add-kol-duplicate" style="accent-color:var(--accent);"> Also add to Influencer Marketing (KOL)
+              <input type="checkbox" id="add-kol-duplicate" style="accent-color:var(--accent);"> Also add to Influencer Marketing files
             </label>
           </div>
           <div class="input-group">

@@ -268,7 +268,7 @@ function assetTypeLabel(type) {
     'creatives': 'Creatives',
     'performance-marketing': 'Performance Marketing',
     'design-branding': 'Design & Branding',
-    'influencer-marketing': 'Influencer Marketing files',
+    'influencer-marketing': 'Influencer Marketing',
     'seo-geo': 'SEO/GEO',
     'ppc-media-plans': 'PPC Media Plans',
     'smm-profiles': 'SMM Profiles',
