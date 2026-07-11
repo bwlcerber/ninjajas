@@ -219,6 +219,43 @@
     .static-video-wrapper video {
       transition: filter 0.3s ease;
     }
+
+    /* ── Scroll to Top Button ── */
+    #scroll-to-top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 136, 0, 0.15);
+      color: rgba(255, 136, 0, 0.9);
+      border: 1px solid rgba(255, 136, 0, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.2s ease, background 0.2s ease;
+      animation: scroll-pulse-orange 2.5s infinite;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    #scroll-to-top-btn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #scroll-to-top-btn:hover {
+      background: rgba(255, 136, 0, 0.25);
+      transform: scale(1.05);
+    }
+    @keyframes scroll-pulse-orange {
+      0% { box-shadow: 0 0 0 0 rgba(255, 136, 0, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(255, 136, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 136, 0, 0); }
+    }
   </style>
 </head>
 <body>
@@ -388,6 +425,14 @@
 
 <!-- Toast container -->
 <div id="toast-container" class="toast-container"></div>
+
+<!-- Scroll to Top Button -->
+<button id="scroll-to-top-btn" aria-label="Scroll to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+  </svg>
+</button>
 
 <!-- ── Scripts ── -->
 <script src="js/data.js?v=38"></script>
@@ -950,6 +995,26 @@ ROUTER.init = function() {
 
 // Also expose role flag globally for page modules (must be set BEFORE ROUTER.init() so page modules see it on page load)
 window.CAN_MANAGE = AUTH.canManageContent();
+
+// ════════════════════════════════════════════════════
+// SCROLL TO TOP LOGIC
+// ════════════════════════════════════════════════════
+const _scrollToTopBtn = document.getElementById('scroll-to-top-btn');
+const _pageContainer = document.getElementById('page-container');
+
+if (_scrollToTopBtn && _pageContainer) {
+  _pageContainer.addEventListener('scroll', () => {
+    if (_pageContainer.scrollTop > 300) {
+      _scrollToTopBtn.classList.add('visible');
+    } else {
+      _scrollToTopBtn.classList.remove('visible');
+    }
+  });
+
+  _scrollToTopBtn.addEventListener('click', () => {
+    _pageContainer.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 
 ROUTER.init();
 </script>
