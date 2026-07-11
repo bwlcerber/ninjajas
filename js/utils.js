@@ -365,11 +365,27 @@ function openMaterial(material) {
   };
 
   if (material.file_type === 'video') {
+    let videoHtml = '';
+    const url = material.file_url || '';
+    
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      let videoId = '';
+      const match = url.match(/(?:v=|youtu\.be\/|embed\/)([^&?]+)/);
+      if (match && match[1]) videoId = match[1];
+      videoHtml = `<iframe width="100%" style="aspect-ratio: 16/9; border-radius:8px;" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else if (url.includes('tiktok.com') || url.includes('instagram.com')) {
+      videoHtml = `<div style="width:100%; height:300px; display:flex; align-items:center; justify-content:center; background:#111; border-radius:8px; flex-direction:column; gap:12px;">
+                     <span style="color:#aaa; font-size:14px;">This platform requires native viewing.</span>
+                     <a href="${url}" target="_blank" class="btn btn-primary" style="text-decoration:none;">Open Video in New Tab</a>
+                   </div>`;
+    } else {
+      videoHtml = `<video src="${url}" controls autoplay style="width:100%;border-radius:8px;background:#000;max-height:60vh"></video>`;
+    }
+
     const body = `
       <div style="position:relative; margin-bottom:12px; display:flex; justify-content:center; align-items:center;">
         ${prevBtnHtml}
-        <video src="${material.file_url}" controls autoplay
-          style="width:100%;border-radius:8px;background:#000;max-height:60vh"></video>
+        ${videoHtml}
         ${nextBtnHtml}
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
