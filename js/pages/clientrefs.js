@@ -1566,6 +1566,18 @@ const PAGE_CLIENTREFS = (() => {
     const addKol = document.getElementById('add-kol-duplicate') && document.getElementById('add-kol-duplicate').checked;
 
     STAGED_ASSETS.forEach(asset => {
+      let finalThumb = thumb;
+      if (!finalThumb && asset.fileType === 'video') {
+        const urlMatch = asset.url.match(/(?:v=|youtu\.be\/|embed\/)([^&?]+)/);
+        if (urlMatch && urlMatch[1] && (asset.url.includes('youtube.com') || asset.url.includes('youtu.be'))) {
+          finalThumb = `https://img.youtube.com/vi/${urlMatch[1]}/maxresdefault.jpg`;
+        } else if (asset.url.includes('tiktok.com')) {
+          finalThumb = 'https://ninjapromo.io/wp-content/uploads/2022/11/tiktok-logo.png';
+        } else if (asset.url.includes('instagram.com')) {
+          finalThumb = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png';
+        }
+      }
+
       const record = {
         title: asset.name,
         client_name: client,
@@ -1577,7 +1589,7 @@ const PAGE_CLIENTREFS = (() => {
         visibility_status: vis,
         file_type: asset.fileType,
         file_url: asset.url,
-        thumbnail_url: thumb,
+        thumbnail_url: finalThumb,
         description: desc || `Added for ${client}.`,
         tags: [...finalVerticals, type, ...services],
         services_provided: services,

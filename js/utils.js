@@ -264,10 +264,11 @@ function truncate(str, len = 80) {
 
 function assetTypeLabel(type) {
   const map = {
-    'case-study': 'Case Study',
+    'case-studies': 'Case Studies',
     'creatives': 'Creatives',
     'performance-marketing': 'Performance Marketing',
-    'influencer-marketing': 'Influencer Marketing',
+    'design-branding': 'Design & Branding',
+    'influencer-marketing': 'Influencer Marketing files',
     'seo-geo': 'SEO/GEO',
     'ppc-media-plans': 'PPC Media Plans',
     'smm-profiles': 'SMM Profiles',

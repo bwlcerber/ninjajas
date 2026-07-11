@@ -77,11 +77,11 @@ const PAGE_CREATIVES = (() => {
       if (!window.CAN_MANAGE && hiddenList.includes(m.id)) return false;
       const type = getCreativeType(m);
       
-      const creativeTypes = ['creative', 'video', 'image'];
+      const creativeTypes = ['creative', 'creatives', 'video', 'image'];
       const isCreativeRel = creativeTypes.includes(m.asset_type);
       
       const isContentCal = type === 'content-calendar';
-      const isOthersMatch = type === 'others' && m.asset_type === 'creative';
+      const isOthersMatch = type === 'others' && (m.asset_type === 'creative' || m.asset_type === 'creatives');
       return isCreativeRel || isContentCal || isOthersMatch;
     });
 
