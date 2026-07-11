@@ -995,6 +995,8 @@ const PAGE_CREATIVES = (() => {
     setViewMode,
     getCreativeType,
     openUploadModal,
+    handleAddLink,
+    updateBatchUI,
     handleFilesDrop,
     handleFilesSelect,
     removeFileFromBatch,

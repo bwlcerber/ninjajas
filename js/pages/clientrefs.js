@@ -1410,7 +1410,17 @@ const PAGE_CLIENTREFS = (() => {
         <div class="form-grid">
           <div class="input-group span-2">
             <span class="input-label">Asset Title * (Manual entry for single links)</span>
-            <input class="input" type="text" id="add-asset-title" placeholder="e.g. Dplay Casino Banner Ad" style="height:34px; font-size:12px;">
+            <input class="input" type="text" id="add-asset-title" list="asset-title-options" placeholder="e.g. Dplay Casino Banner Ad" style="height:34px; font-size:12px;">
+            <datalist id="asset-title-options">
+              <option value="KOL Campaign X Profile"></option>
+              <option value="TG Profile"></option>
+              <option value="TG"></option>
+              <option value="IG"></option>
+              <option value="Discord profile"></option>
+              <option value="TikTok profile"></option>
+              <option value="LinkedIn profile"></option>
+              <option value="LinkedIn"></option>
+            </datalist>
           </div>
           <div class="input-group">
             <span class="input-label">Client Name</span>
@@ -1424,9 +1434,19 @@ const PAGE_CLIENTREFS = (() => {
           </div>
           <div class="input-group">
             <span class="input-label">Asset Type *</span>
-            <select class="select" id="add-asset-type" style="height:34px; font-size:12px;">
+            <select class="select" id="add-asset-type" style="height:34px; font-size:12px;" onchange="document.getElementById('add-creative-type-wrapper').style.display = this.value === 'creatives' ? 'block' : 'none'">
               <option value="" disabled selected>Select Asset Type...</option>
               ${assetTypes.map(t => `<option value="${t}">${assetTypeLabel(t)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="input-group" id="add-creative-type-wrapper" style="display:none;">
+            <span class="input-label">Creative Type *</span>
+            <select class="select" id="add-creative-type" style="height:34px; font-size:12px;">
+              <option value="static">🖼️ Static</option>
+              <option value="video">🎥 Video</option>
+              <option value="ugc">📱 UGC</option>
+              <option value="content-calendar">📅 Content Calendar</option>
+              <option value="others">📦 Others (Pitch Decks, Brand Books, PDFs)</option>
             </select>
           </div>
           <div class="input-group">
@@ -1494,6 +1514,7 @@ const PAGE_CLIENTREFS = (() => {
     const client = document.getElementById('add-asset-client').value.trim();
     const geo = document.getElementById('add-asset-geo').value;
     const type = document.getElementById('add-asset-type').value;
+    const creativeType = document.getElementById('add-creative-type') ? document.getElementById('add-creative-type').value : 'static';
     
     if (!type) {
       showToast('Please select an Asset Type', 'error');
@@ -1522,7 +1543,7 @@ const PAGE_CLIENTREFS = (() => {
       const urlLower = manualUrl.toLowerCase();
       if (urlLower.includes('docs.google.com/document') || urlLower.includes('drive.google.com/file')) fileType = 'doc-link';
       else if (urlLower.includes('docs.google.com/spreadsheets') || urlLower.includes('docs.google.com/sheet')) fileType = 'spreadsheet-link';
-      else if (urlLower.match(/\.(mp4|mov|avi|webm)$/)) fileType = 'video';
+      else if (urlLower.match(/\.(mp4|mov|avi|webm)$/) || urlLower.includes('youtube.com') || urlLower.includes('youtu.be') || urlLower.includes('tiktok.com') || urlLower.includes('instagram.com')) fileType = 'video';
       else if (urlLower.match(/\.(png|jpg|jpeg|gif|webp)$/)) fileType = 'image';
       else if (urlLower.match(/\.(pdf)$/)) fileType = 'pdf';
 
@@ -1547,6 +1568,7 @@ const PAGE_CLIENTREFS = (() => {
         vertical: finalVertical,
         verticals: finalVerticals,
         asset_type: type,
+        creative_type: type === 'creatives' ? creativeType : null,
         visibility_status: vis,
         file_type: asset.fileType,
         file_url: asset.url,
