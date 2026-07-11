@@ -377,6 +377,55 @@ const PAGE_CREATIVES = (() => {
 
   let _uploadedFilesBatch = [];
 
+  async function handleAddLink() {
+    const input = document.getElementById('creative-link-input');
+    const url = input.value.trim();
+    if (!url) return;
+
+    let thumbnail = '';
+    let name = url;
+    let type = 'link';
+
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    if (ytMatch) {
+      thumbnail = `https://img.youtube.com/vi/${ytMatch[1]}/0.jpg`;
+      name = 'YouTube Video';
+      type = 'video/youtube';
+    } else if (url.includes('tiktok.com')) {
+      name = 'TikTok Video';
+      type = 'video/tiktok';
+      try {
+        const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+        if (data && data.thumbnail_url) thumbnail = data.thumbnail_url;
+      } catch (e) {
+        console.warn('Could not fetch tiktok thumbnail', e);
+        thumbnail = 'https://sf-tb-sg.ibytedtos.com/obj/eden-sg/uhtyvueh7nulogpouzhm/tiktok-icon2.png';
+      }
+    } else if (url.includes('instagram.com')) {
+      name = 'Instagram Post';
+      type = 'video/instagram';
+      thumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png';
+    } else {
+      name = 'External Link';
+      type = 'link/external';
+      thumbnail = 'https://via.placeholder.com/150?text=Link';
+    }
+
+    if (!_uploadedFilesBatch.some(existing => existing.url === url)) {
+      _uploadedFilesBatch.push({
+        name: name,
+        url: url,
+        isLink: true,
+        type: type,
+        thumbnail: thumbnail,
+        size: 0
+      });
+      input.value = '';
+      PAGE_CREATIVES.updateBatchUI();
+    }
+  }
+
   function openUploadModal() {
     const verticals = window.PORTAL_DATA.VERTICALS;
 
@@ -387,6 +436,11 @@ const PAGE_CREATIVES = (() => {
           <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Drag & drop files here or click to browse</div>
           <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">Supports MP4, MOV, AVI, GIF, JPG, PNG</div>
           <input type="file" id="creative-files-input" multiple accept="image/*,video/*" style="display:none;" onchange="PAGE_CREATIVES.handleFilesSelect(event);">
+        </div>
+
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="creative-link-input" class="input" placeholder="Or paste link (YouTube, TikTok, Instagram)" style="flex:1;">
+          <button class="btn btn-secondary" onclick="PAGE_CREATIVES.handleAddLink()">Add Link</button>
         </div>
 
         <div id="creative-upload-previews" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto;"></div>
@@ -508,12 +562,18 @@ const PAGE_CREATIVES = (() => {
     saveBtn.textContent = `Batch Save (${_uploadedFilesBatch.length})`;
 
     previewContainer.innerHTML = _uploadedFilesBatch.map((file, idx) => {
-      const isVideo = file.type.startsWith('video') || file.name.endsWith('.mp4') || file.name.endsWith('.mov') || file.name.endsWith('.avi');
-      const icon = isVideo ? '🎥' : '🖼️';
+      let previewContent = '';
+      if (file.isLink) {
+        previewContent = `<div style="width:100%; height:40px; background:url('${file.thumbnail}') center/cover; border-radius:4px; margin-bottom:4px;"></div>`;
+      } else {
+        const isVideo = file.type.startsWith('video') || file.name.endsWith('.mp4') || file.name.endsWith('.mov') || file.name.endsWith('.avi');
+        const icon = isVideo ? '🎥' : '🖼️';
+        previewContent = `<div style="font-size:20px; margin-top:4px;">${icon}</div>`;
+      }
       return `
         <div style="position:relative; width:80px; height:80px; background:var(--bg-4); border:1px solid var(--border-default); border-radius:var(--r-md); overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px;">
-          <div style="font-size:20px;">${icon}</div>
-          <div style="font-size:8px; color:var(--text-secondary); text-align:center; word-break:break-all; max-height:24px; overflow:hidden; margin-top:4px;">${file.name}</div>
+          ${previewContent}
+          <div style="font-size:8px; color:var(--text-secondary); text-align:center; word-break:break-all; max-height:24px; overflow:hidden;">${file.name}</div>
           <button onclick="PAGE_CREATIVES.removeFileFromBatch(${idx}); event.stopPropagation();" style="position:absolute; top:2px; right:2px; background:var(--danger-dim); border:none; color:var(--danger); width:16px; height:16px; border-radius:50%; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
         </div>
       `;
@@ -576,31 +636,45 @@ const PAGE_CREATIVES = (() => {
 
     for (let i = 0; i < _uploadedFilesBatch.length; i++) {
       const file = _uploadedFilesBatch[i];
-      const isVideo = file.type.startsWith('video') || file.name.endsWith('.mp4') || file.name.endsWith('.mov') || file.name.endsWith('.avi');
-      const fileType = isVideo ? 'video' : 'image';
+      let filePath = '';
+      let isVideo = false;
+      let fileType = 'image';
+      let thumbnail_url = '';
+      let title = file.name;
 
-      let filePath = file.base64Data || `uploads/creatives/${file.name}`;
+      if (file.isLink) {
+        isVideo = file.type.startsWith('video');
+        fileType = isVideo ? 'video' : 'link';
+        filePath = file.url;
+        thumbnail_url = file.thumbnail;
+      } else {
+        isVideo = file.type.startsWith('video') || file.name.endsWith('.mp4') || file.name.endsWith('.mov') || file.name.endsWith('.avi');
+        fileType = isVideo ? 'video' : 'image';
+        filePath = file.base64Data || `uploads/creatives/${file.name}`;
+        title = file.name.split('.')[0].replace(/[-_]/g, ' ');
 
-      // Try uploading to server
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('type', 'creatives');
+        // Try uploading to server
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('type', 'creatives');
 
-        const response = await fetch('upload.php', {
-          method: 'POST',
-          body: formData
-        });
-        const resData = await response.json();
-        if (resData.success) {
-          filePath = resData.url;
+          const response = await fetch('upload.php', {
+            method: 'POST',
+            body: formData
+          });
+          const resData = await response.json();
+          if (resData.success) {
+            filePath = resData.url;
+          }
+        } catch (err) {
+          console.warn('Server upload failed for creative asset:', err);
         }
-      } catch (err) {
-        console.warn('Server upload failed for creative asset:', err);
+        thumbnail_url = isVideo ? '' : filePath;
       }
 
       const item = {
-        title: file.name.split('.')[0].replace(/[-_]/g, ' '),
+        title: title,
         client_name: clientName,
         geo: batchCreativeGeo,
         vertical: selectedVerticals[0],
@@ -610,7 +684,7 @@ const PAGE_CREATIVES = (() => {
         visibility_status: 'client-safe',
         file_type: fileType,
         file_url: filePath,
-        thumbnail_url: isVideo ? '' : filePath,
+        thumbnail_url: thumbnail_url,
         description: '',
         tags: [...selectedVerticals, fileType, batchCreativeType],
         services_provided: ['Design'],
