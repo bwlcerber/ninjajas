@@ -37,9 +37,9 @@ const PAGE_REPORTS = (() => {
         </div>
 
         <!-- Multi-select Filter Rows -->
-        <div style="margin-top:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:12px;">
+        <div style="margin-top:12px; margin-bottom:12px; display:flex; flex-direction:column; gap:10px;">
           <!-- Industries -->
-          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
             <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Industries</span>
             ${window.PORTAL_DATA.VERTICALS.map(v => {
               const active = _selectedVerticals.has(v);
@@ -47,7 +47,7 @@ const PAGE_REPORTS = (() => {
             }).join('')}
           </div>
           <!-- Services -->
-          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
             <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Services</span>
             ${window.PORTAL_DATA.SERVICES.map(s => {
               const active = _selectedServices.has(s);
@@ -55,7 +55,7 @@ const PAGE_REPORTS = (() => {
             }).join('')}
           </div>
           <!-- Geos -->
-          <div class="filter-row" style="display:flex; flex-wrap:nowrap; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
             <span style="font-size:11px; font-weight:bold; color:var(--text-tertiary); width:80px; flex-shrink:0; text-transform:uppercase">Geos</span>
             ${window.PORTAL_DATA.GEOS.map(g => {
               const active = _selectedGeos.has(g);
@@ -72,20 +72,24 @@ const PAGE_REPORTS = (() => {
           </div>
         </div>
 
-        <!-- Category tabs and Sort Dropdown -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:0">
-          <div class="tabs" style="margin:0;">
-            ${CATEGORIES.map(c => `
-              <div class="tab ${_activeCategory === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</div>
-            `).join('')}
+        <!-- Category tabs, Sort Dropdown, and Active Filter Chips -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px; margin-bottom:0">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="tabs" style="margin:0;">
+              ${CATEGORIES.map(c => `
+                <div class="tab ${_activeCategory === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</div>
+              `).join('')}
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase;">Sort By:</span>
+              <select class="select" id="reports-sort-by" style="font-size:12px; height:32px; padding:0 8px; width:140px;" onchange="PAGE_REPORTS._changeSort(this.value)">
+                <option value="recent" ${_sortBy === 'recent' ? 'selected' : ''}>Recently Added</option>
+                <option value="alphabetical" ${_sortBy === 'alphabetical' ? 'selected' : ''}>Alphabetical</option>
+              </select>
+            </div>
           </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase;">Sort By:</span>
-            <select class="select" id="reports-sort-by" style="font-size:12px; height:32px; padding:0 8px; width:140px;" onchange="PAGE_REPORTS._changeSort(this.value)">
-              <option value="recent" ${_sortBy === 'recent' ? 'selected' : ''}>Recently Added</option>
-              <option value="alphabetical" ${_sortBy === 'alphabetical' ? 'selected' : ''}>Alphabetical</option>
-            </select>
-          </div>
+          <!-- Active filter chips -->
+          <div id="reports-active-filters" class="active-filters" style="display:none;"></div>
         </div>
       </div>
 
@@ -139,6 +143,31 @@ const PAGE_REPORTS = (() => {
     _selectedGeos.clear();
     const container = document.getElementById('page-container');
     if (container) render(container);
+  }
+
+  function renderActiveFilters(container) {
+    const wrap = container.querySelector('#reports-active-filters');
+    if (!wrap) return;
+    const allActive = [
+      ...[..._selectedVerticals].map(v => ({ label: v, type: 'verticals', val: v })),
+      ...[..._selectedServices].map(s => ({ label: s, type: 'services', val: s })),
+      ...[..._selectedGeos].map(g => ({ label: g, type: 'geos', val: g }))
+    ];
+    if (allActive.length === 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'flex';
+    wrap.innerHTML = `
+      <span style="font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); margin-right:4px; flex-shrink:0;">Active filters:</span>
+      ${allActive.map(f => `
+        <span class="filter-badge">
+          ${f.label}
+          <span class="filter-badge-remove" onclick="PAGE_REPORTS._toggleFilter('${f.type}','${f.val}')">✕</span>
+        </span>
+      `).join('')}
+      <a style="font-size:11px; color:var(--danger); cursor:pointer; margin-left:8px; font-family:var(--font-mono); flex-shrink:0;" onclick="PAGE_REPORTS.clearAllTags()">Clear All</a>
+    `;
   }
 
   function renderList(container) {

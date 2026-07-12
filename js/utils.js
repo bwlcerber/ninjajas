@@ -274,7 +274,17 @@ function assetTypeLabel(type) {
     'smm-profiles': 'SMM Profiles',
     'gtms': 'GTMs',
     'pr-demos': 'PR Demos',
-    'others': 'Others'
+    'others': 'Others',
+    'contract': 'Contracts & NDAs',
+    'offer-prep': 'Offer Preparation',
+    'deck': 'Pitch Decks',
+    'process-doc': 'Process Docs',
+    'template': 'Templates',
+    'training': 'Training',
+    'doc-link': 'Doc Link',
+    'pdf': 'PDF',
+    'other': 'Other',
+    'other-files': 'Other Files'
   };
   return map[type] || type;
 }
