@@ -751,7 +751,11 @@ Always end meetings with a defined next step: book the follow-up meeting, share 
           <div class="input-group">
             <label class="input-label" style="font-size:11px; font-weight:700; margin-bottom:8px;">ASSET TYPE</label>
             <select class="select" id="doc-edit-type" style="font-size:13px; height:38px;">
-              ${assetTypes.map(t => `<option value="${t}" ${data.asset_type === t ? 'selected':''}>${assetTypeLabel(t)}</option>`).join('')}
+              ${getCategories().filter(c => c.id !== 'all').map(c => {
+                // Select if the document's asset_type matches the category ID or is one of its alias types
+                const isSelected = data.asset_type === c.id || c.types.includes(data.asset_type);
+                return `<option value="${c.id}" ${isSelected ? 'selected':''}>${c.label}</option>`;
+              }).join('')}
             </select>
           </div>
           <div class="input-group">
