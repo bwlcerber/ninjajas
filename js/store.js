@@ -52,7 +52,10 @@ const STORE = (() => {
       
       const serverMaterialIdx = new Map((data.materials || []).map((m, i) => [m.id, i]));
       (localData.materials || []).forEach(m => {
-        if (!serverMaterialIdx.has(m.id)) {
+        if (serverMaterialIdx.has(m.id)) {
+          data.materials[serverMaterialIdx.get(m.id)] = m;
+          merged = true;
+        } else {
           data.materials.push(m);
           merged = true;
         }
@@ -60,7 +63,10 @@ const STORE = (() => {
 
       const serverRefIdx = new Map((data.clientRefs || []).map((r, i) => [r.id, i]));
       (localData.clientRefs || []).forEach(r => {
-        if (!serverRefIdx.has(r.id)) {
+        if (serverRefIdx.has(r.id)) {
+          data.clientRefs[serverRefIdx.get(r.id)] = r;
+          merged = true;
+        } else {
           data.clientRefs.push(r);
           merged = true;
         }
@@ -68,7 +74,10 @@ const STORE = (() => {
 
       const serverProfileIdx = new Map((data.clientProfiles || []).map((p, i) => [p.id, i]));
       (localData.clientProfiles || []).forEach(p => {
-        if (!serverProfileIdx.has(p.id)) {
+        if (serverProfileIdx.has(p.id)) {
+          data.clientProfiles[serverProfileIdx.get(p.id)] = p;
+          merged = true;
+        } else {
           data.clientProfiles.push(p);
           merged = true;
         }
