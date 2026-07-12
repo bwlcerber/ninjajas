@@ -11,7 +11,7 @@ const PAGE_DOCS = (() => {
 
   function getCategories() {
     const defaults = [
-      { id: 'all', label: 'All Docs', types: ['contract','offer-prep','deck','process-doc','template','training','smm-profiles','doc-link','pdf','other'] },
+      { id: 'all', label: 'All Docs', types: ['contract','offer-prep','deck','process-doc','template','training','smm-profiles','doc-link','pdf','other','other-files'] },
       { id: 'contract', label: 'Contracts & NDAs', types: ['contract'] },
       { id: 'offer-prep', label: 'Offer Preparation', types: ['offer-prep'] },
       { id: 'deck', label: 'Pitch Decks', types: ['deck'] },
@@ -19,7 +19,7 @@ const PAGE_DOCS = (() => {
       { id: 'template', label: 'Templates', types: ['template'] },
       { id: 'training', label: 'Training', types: ['training'] },
       { id: 'smm-profiles', label: 'SMM Profiles', types: ['smm-profiles'] },
-      { id: 'other', label: 'Other', types: ['other'] },
+      { id: 'other', label: 'Other', types: ['other','other-files'] },
     ];
     const customWithTypes = _customCategories.map(c => ({
       id: c.id,
@@ -58,7 +58,7 @@ const PAGE_DOCS = (() => {
   const _selectedTags = new Set();
 
   function render(container) {
-    const allDocs = STORE.getMaterials().filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
+    const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
     const cats = getCategories();
 
     container.innerHTML = `
@@ -91,12 +91,9 @@ const PAGE_DOCS = (() => {
           <!-- Category nav -->
           <div class="docs-category-nav">
             ${cats.map(c => {
-              const knownTypes = cats.filter(x => x.id !== 'all' && x.id !== 'other').flatMap(x => x.types);
               const count = c.id === 'all'
                 ? allDocs.length
-                : c.id === 'other'
-                  ? allDocs.filter(m => !knownTypes.includes(m.asset_type)).length
-                  : allDocs.filter(m => c.types.includes(m.asset_type)).length;
+                : allDocs.filter(m => c.types.includes(m.asset_type)).length;
               return `
                 <div class="docs-cat-item ${_activeCat === c.id ? 'active' : ''}" data-cat="${c.id}" style="font-size:14px; padding:10px 12px;">
                   ${c.label}
@@ -147,7 +144,7 @@ const PAGE_DOCS = (() => {
     const container = document.getElementById('page-container');
     if (container) {
       renderActiveFilters(container);
-      const allDocs = STORE.getMaterials().filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
+      const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
       renderList(container, allDocs);
     }
   }
@@ -157,7 +154,7 @@ const PAGE_DOCS = (() => {
     const container = document.getElementById('page-container');
     if (container) {
       renderActiveFilters(container);
-      const allDocs = STORE.getMaterials().filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
+      const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
       renderList(container, allDocs);
     }
   }
@@ -167,7 +164,7 @@ const PAGE_DOCS = (() => {
     const container = document.getElementById('page-container');
     if (container) {
       renderActiveFilters(container);
-      const allDocs = STORE.getMaterials().filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
+      const allDocs = STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal');
       renderList(container, allDocs);
     }
   }
@@ -196,12 +193,7 @@ const PAGE_DOCS = (() => {
 
   function renderList(container, allDocs) {
     const cat = getCategories().find(c => c.id === _activeCat);
-    const knownTypes = getCategories().filter(c => c.id !== 'all' && c.id !== 'other').flatMap(c => c.types);
-    let items = _activeCat === 'all'
-      ? allDocs
-      : _activeCat === 'other'
-        ? allDocs.filter(m => !knownTypes.includes(m.asset_type))
-        : allDocs.filter(m => cat && cat.types.includes(m.asset_type));
+    let items = _activeCat === 'all' ? allDocs : allDocs.filter(m => cat && cat.types.includes(m.asset_type));
 
     // Apply multi-select tags filtering
     if (_selectedTags.size > 0) {
@@ -293,7 +285,7 @@ const PAGE_DOCS = (() => {
     STORE.updateMaterial(matId, { pinned: !mat.pinned });
     const container = document.getElementById('page-container');
     if (container) {
-      renderList(container, STORE.getMaterials().filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal'));
+      renderList(container, STORE.getByTypes(getDocTypes()).filter(m => !m.client_name || m.client_name.toLowerCase() === 'internal'));
     }
   }
 
