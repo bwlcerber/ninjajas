@@ -13,6 +13,7 @@ const PAGE_REPORTS = (() => {
     { id: 'gtms', label: 'GTMs' },
     { id: 'pr-demos', label: 'PR Demos' },
     { id: 'other-files', label: 'Other files' },
+    { id: 'client-docs', label: 'Client Docs' }
   ];
 
   let _activeCategory = 'all';
@@ -76,9 +77,13 @@ const PAGE_REPORTS = (() => {
         <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px; margin-bottom:0">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div class="tabs" style="margin:0;">
-              ${CATEGORIES.map(c => `
-                <div class="tab ${_activeCategory === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</div>
-              `).join('')}
+              ${CATEGORIES.map(c => {
+                const isClientDocs = c.id === 'client-docs';
+                return `
+                  ${isClientDocs ? `<div style="width:2px; height:18px; background:var(--border-subtle); margin:0 4px; border-radius:1px;"></div>` : ''}
+                  <div class="tab ${_activeCategory === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</div>
+                `;
+              }).join('')}
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase;">Sort By:</span>
@@ -171,14 +176,21 @@ const PAGE_REPORTS = (() => {
   }
 
   function renderList(container) {
-    let items = STORE.getMaterials().filter(m => m.visibility_status !== 'internal-only' && m.client_name !== 'Internal');
+    let items = STORE.getMaterials().filter(m => m.visibility_status !== 'internal-only');
 
-    // Filter by category
-    if (_activeCategory !== 'all') {
-      items = items.filter(m => m.asset_type === _activeCategory || (m.tags && m.tags.includes(_activeCategory)));
+    if (_activeCategory === 'client-docs') {
+      // Only show internal client-safe docs
+      items = items.filter(m => m.client_name === 'Internal');
     } else {
-      // Hide creatives and visual assets in 'all' view to prevent clutter
-      items = items.filter(m => !['case', 'branding', 'creatives', 'creative', 'video', 'image'].includes(m.asset_type));
+      // Hide internal docs from all other standard categories
+      items = items.filter(m => m.client_name !== 'Internal');
+      
+      if (_activeCategory !== 'all') {
+        items = items.filter(m => m.asset_type === _activeCategory || (m.tags && m.tags.includes(_activeCategory)));
+      } else {
+        // Hide creatives and visual assets in 'all' view to prevent clutter
+        items = items.filter(m => !['case', 'branding', 'creatives', 'creative', 'video', 'image'].includes(m.asset_type));
+      }
     }
 
     // Helper for OR logic within a category
