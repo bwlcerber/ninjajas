@@ -376,7 +376,7 @@ const STORE = (() => {
           }
 
           // 3. Migrate legacy asset types to new Client Files taxonomy
-          if (item.client_name !== 'Internal' && !['case', 'branding', 'creative', 'video', 'image'].includes(item.asset_type)) {
+          if (item.client_name !== 'Internal' && !['case', 'branding', 'creative', 'creatives', 'video', 'image'].includes(item.asset_type)) {
             const oldType = item.asset_type;
             const services = item.services_provided || [];
             const tags = item.tags || [];
