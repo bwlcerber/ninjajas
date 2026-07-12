@@ -3682,7 +3682,96 @@ window.PORTAL_DATA = {
       "related_assets": [],
       "created_at": "2024-09-01"
     },
-
+    {
+      "id": "mat-023",
+      "title": "NDA — Mutual Confidentiality Agreement",
+      "client_name": "Internal",
+      "geo": "Global",
+      "vertical": "Other",
+      "services_provided": [],
+      "asset_type": "other-files",
+      "visibility_status": "client-safe",
+      "description": "Mutual NDA template for prospect conversations. Also available in one-way version upon request from legal.",
+      "file_type": "doc-link",
+      "file_url": "https://docs.google.com/document",
+      "thumbnail_url": "",
+      "tags": [
+        "nda",
+        "template",
+        "legal",
+        "confidentiality"
+      ],
+      "related_assets": [],
+      "created_at": "2024-09-15"
+    },
+    {
+      "id": "mat-024",
+      "title": "Referral Partner Agreement",
+      "client_name": "Internal",
+      "geo": "Global",
+      "vertical": "Other",
+      "services_provided": [],
+      "asset_type": "other-files",
+      "visibility_status": "client-safe",
+      "description": "Template for referral partner relationships. Covers commission structure, payment terms, and exclusivity clauses.",
+      "file_type": "doc-link",
+      "file_url": "https://docs.google.com/document",
+      "thumbnail_url": "",
+      "tags": [
+        "referral",
+        "contract",
+        "partner",
+        "commission"
+      ],
+      "related_assets": [],
+      "created_at": "2024-10-01"
+    },
+    {
+      "id": "mat-024b",
+      "title": "Service Agreement Template",
+      "client_name": "Internal",
+      "geo": "Global",
+      "vertical": "Other",
+      "services_provided": [],
+      "asset_type": "other-files",
+      "visibility_status": "client-safe",
+      "description": "Standard Master Services Agreement (MSA) outlining standard engagement clauses, payment structures, and IP rights.",
+      "file_type": "doc-link",
+      "file_url": "https://docs.google.com/document",
+      "thumbnail_url": "",
+      "tags": [
+        "contract",
+        "msa",
+        "legal",
+        "services"
+      ],
+      "related_assets": [],
+      "created_at": "2024-10-15"
+    },
+    {
+      "id": "mat-024c",
+      "title": "Influencer Marketing Agreement",
+      "client_name": "Internal",
+      "geo": "Global",
+      "vertical": "Other",
+      "services_provided": [
+        "Influencer Marketing"
+      ],
+      "asset_type": "other-files",
+      "visibility_status": "client-safe",
+      "description": "Agreement for influencer campaigns, covering deliverable schedules, content rights, exclusions, and payout milestones.",
+      "file_type": "doc-link",
+      "file_url": "https://docs.google.com/document",
+      "thumbnail_url": "",
+      "tags": [
+        "contract",
+        "influencer",
+        "legal",
+        "marketing"
+      ],
+      "related_assets": [],
+      "created_at": "2024-11-01"
+    },
     {
       "id": "mat-025",
       "title": "Sales Offer Template — Full Service",

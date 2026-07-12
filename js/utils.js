@@ -283,7 +283,7 @@ function visibilityTag(status) {
   if (status === 'internal-only') {
     return `<span class="tag tag-danger">${ICONS.lock} Internal Only</span>`;
   }
-  return `<span class="tag tag-safe">${ICONS.shield} Client Safe</span>`;
+  return `<span class="tag tag-safe">${ICONS.shield} Share on Call</span>`;
 }
 
 // ─────────────────────────────────────────────
