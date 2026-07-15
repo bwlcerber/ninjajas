@@ -652,9 +652,9 @@ function renderMaterialRow(mat) {
   }
 
   if (hasThumb) {
-    previewHtml = `<img src="${mat.thumbnail_url}" onerror="this.onerror=null; this.outerHTML='${getFileIcon(mat.file_type).replace(/'/g, \"\\\\'\")}'" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
+    previewHtml = `<img src="${mat.thumbnail_url}" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
   } else if (isImage && mat.file_url) {
-    previewHtml = `<img src="${mat.file_url}" onerror="this.onerror=null; this.outerHTML='${getFileIcon(mat.file_type).replace(/'/g, \"\\\\'\")}'" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
+    previewHtml = `<img src="${mat.file_url}" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
   } else if (isVideo && mat.file_url) {
     previewHtml = `<video src="${mat.file_url}" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" muted preload="metadata"></video>`;
   } else {
