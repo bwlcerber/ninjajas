@@ -514,10 +514,10 @@ const STORE = (() => {
 
       const materialsArr = [...resolvedMaterials, ...userOnlyMats];
       
-      // Aggressive deduplication by client_name + title + asset_type to fix cache duplicates
+      // Aggressive deduplication by client_name + title + asset_type + file_url to fix cache duplicates
       const uniqueMatsMap = new Map();
       materialsArr.forEach(m => {
-        const key = `${(m.client_name || '').toLowerCase().trim()}-${(m.title || '').toLowerCase().trim()}-${m.asset_type}`;
+        const key = `${(m.client_name || '').toLowerCase().trim()}-${(m.title || '').toLowerCase().trim()}-${m.asset_type}-${(m.file_url || '').toLowerCase().trim()}`;
         if (!uniqueMatsMap.has(key)) {
           uniqueMatsMap.set(key, m);
         }
