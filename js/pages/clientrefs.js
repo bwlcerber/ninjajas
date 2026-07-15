@@ -1047,7 +1047,9 @@ const PAGE_CLIENTREFS = (() => {
   }
 
   async function uploadThumbnailFile(file, refId, immediateSave = false, prefix = 'ref-detail') {
-    showToast('Uploading thumbnail to server...', 'info');
+    showToast('Compressing and uploading thumbnail...', 'info');
+    
+    file = await compressImage(file);
     
     let imageUrl = '';
     try {

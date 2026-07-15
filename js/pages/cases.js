@@ -596,9 +596,10 @@ const PAGE_CASES = (() => {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (const item of items) {
       if (item.type.indexOf('image') === 0) {
-        const file = item.getAsFile();
-        showToast('Uploading pasted image...', 'info');
+        let file = item.getAsFile();
+        showToast('Compressing and uploading pasted image...', 'info');
         try {
+          file = await compressImage(file);
           const formData = new FormData();
           formData.append('file', file);
           formData.append('type', 'thumbnails');

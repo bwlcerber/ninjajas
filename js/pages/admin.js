@@ -1015,7 +1015,9 @@ const PAGE_ADMIN = (() => {
 
   async function handleThumbFile(file) {
     if (!file) return;
-    showToast('Uploading image to server...', 'info');
+    showToast('Compressing and uploading image...', 'info');
+    
+    file = await compressImage(file);
 
     let imageUrl = '';
     try {
