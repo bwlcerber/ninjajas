@@ -118,7 +118,7 @@ const PAGE_CONSOLE = (() => {
 
     // Split materials into lists
     const reports = materials.filter(m => ['report', 'media-plan', 'deck'].includes(m.asset_type));
-    const creatives = materials.filter(m => ['creative', 'video', 'image'].includes(m.asset_type));
+    const creatives = materials.filter(m => ['creative', 'creatives', 'video', 'image'].includes(m.asset_type));
     const cases = materials.filter(m => m.asset_type === 'case');
     const docs = materials.filter(m => ['contract', 'template', 'process-doc', 'training'].includes(m.asset_type));
 

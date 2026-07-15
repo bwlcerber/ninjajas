@@ -53,6 +53,33 @@ window.PORTAL_DATA = {
   ],
   "materials": [
     {
+      "id": "mat-taptapsend",
+      "title": "How We Drove Exponential Growth for Tap-tap-send",
+      "client_name": "Taptap Send",
+      "geo": "Global",
+      "vertical": "Fintech",
+      "verticals": [
+        "Fintech"
+      ],
+      "services_provided": [
+        "Analytics",
+        "Influencer Marketing"
+      ],
+      "asset_type": "case",
+      "visibility_status": "public",
+      "description": "Successfully scaled user acquisition and brand credibility for Tap-tap-send through strategic digital outreach campaigns.",
+      "file_type": "doc-link",
+      "file_url": "https://ninjapromo.io/our-cases/tap-tap-send",
+      "thumbnail_url": "https://ninjapromo.io/wp-content/uploads/2025/10/tts-img.png",
+      "tags": [
+        "fintech",
+        "analytics",
+        "influencer marketing"
+      ],
+      "related_assets": [],
+      "created_at": "2025-10-15"
+    },
+    {
       "id": "mat-wafee-v3",
       "title": "Wafee Banking App",
       "client_name": "Wafee",

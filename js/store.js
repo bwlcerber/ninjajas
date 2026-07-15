@@ -514,8 +514,28 @@ const STORE = (() => {
 
       const materialsArr = [...resolvedMaterials, ...userOnlyMats];
       
+      // Aggressive deduplication by client_name + title + asset_type to fix cache duplicates
+      const uniqueMatsMap = new Map();
+      materialsArr.forEach(m => {
+        const key = `${(m.client_name || '').toLowerCase().trim()}-${(m.title || '').toLowerCase().trim()}-${m.asset_type}`;
+        if (!uniqueMatsMap.has(key)) {
+          uniqueMatsMap.set(key, m);
+        }
+      });
+      const dedupedMaterials = Array.from(uniqueMatsMap.values());
+
+      // Aggressive deduplication by client_name to fix cache duplicates for refs
+      const uniqueRefsMap = new Map();
+      [...resolvedRefs, ...userOnlyRefs].forEach(r => {
+        const key = (r.client_name || '').toLowerCase().trim();
+        if (!uniqueRefsMap.has(key)) {
+          uniqueRefsMap.set(key, r);
+        }
+      });
+      const dedupedRefs = Array.from(uniqueRefsMap.values());
+      
       // Apply customOrder if exists
-      materialsArr.sort((a, b) => {
+      dedupedMaterials.sort((a, b) => {
         // Group by asset type first to preserve stable ordering across types
         const aType = a.asset_type || '';
         const bType = b.asset_type || '';
@@ -544,8 +564,8 @@ const STORE = (() => {
       });
 
       _state = {
-        materials:      materialsArr,
-        clientRefs:     [...resolvedRefs,      ...userOnlyRefs],
+        materials:      dedupedMaterials,
+        clientRefs:     dedupedRefs,
         clientProfiles: [...resolvedProfiles,  ...userOnlyProfs]
       };
     }

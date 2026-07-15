@@ -369,9 +369,9 @@ const PAGE_DASHBOARD = (() => {
 
     // Separate groups
     // 1. Client Files: anything not case/creative/video/image
-    const reports = materials.filter(m => !['case', 'creative', 'video', 'image'].includes(m.asset_type));
+    const reports = materials.filter(m => !['case', 'creative', 'creatives', 'video', 'image'].includes(m.asset_type));
     // 2. Creatives: video, image, creative asset
-    const creatives = materials.filter(m => ['creative', 'video', 'image'].includes(m.asset_type));
+    const creatives = materials.filter(m => ['creative', 'creatives', 'video', 'image'].includes(m.asset_type));
     // 3. Success Cases Only: case studies
     const cases = materials.filter(m => m.asset_type === 'case');
 

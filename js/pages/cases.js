@@ -408,7 +408,10 @@ const PAGE_CASES = (() => {
     const desc = document.getElementById('case-new-desc').value.trim();
     const websiteEl = document.getElementById('case-new-website');
     const website = websiteEl ? websiteEl.value.trim() : '';
-    const url = document.getElementById('case-fetch-url').value.trim();
+    let url = document.getElementById('case-fetch-url').value.trim();
+    if (url && !/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
 
     if (!title || !client || !desc) {
       showToast('Please fill out all required fields', 'error');

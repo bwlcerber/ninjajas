@@ -635,14 +635,26 @@ function renderMaterialRow(mat) {
   const isChecked = window.CALL_PREP_BASKET.has(mat.id);
   
   let previewHtml = '';
-  const hasThumb = mat.thumbnail_url && mat.thumbnail_url.trim().length > 0;
-  const isImage = mat.file_type === 'image' || (mat.file_url && mat.file_url.match(/\.(png|jpg|jpeg|gif|webp)$/i));
+  let hasThumb = mat.thumbnail_url && mat.thumbnail_url.trim().length > 0;
+  let isImage = mat.file_type === 'image' || (mat.file_url && mat.file_url.match(/\.(png|jpg|jpeg|gif|webp)$/i));
   const isVideo = mat.file_type === 'video' || (mat.file_url && mat.file_url.match(/\.(mp4|mov|avi|webm)$/i));
 
+  // Smart coercion: if it's an obvious social media link but doesn't have an image extension, force it to be a link.
+  if (isImage && mat.file_url && mat.file_url.match(/instagram\.com|linkedin\.com|twitter\.com|x\.com|facebook\.com|tiktok\.com/i) && !mat.file_url.match(/\.(png|jpg|jpeg|gif|webp)$/i)) {
+    isImage = false;
+    mat.file_type = 'link';
+    hasThumb = false;
+  }
+  if (mat.asset_type === 'smm-profiles') {
+    mat.file_type = 'link';
+    isImage = false;
+    hasThumb = false;
+  }
+
   if (hasThumb) {
-    previewHtml = `<img src="${mat.thumbnail_url}" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
+    previewHtml = `<img src="${mat.thumbnail_url}" onerror="this.onerror=null; this.outerHTML='${getFileIcon(mat.file_type).replace(/'/g, \"\\\\'\")}'" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
   } else if (isImage && mat.file_url) {
-    previewHtml = `<img src="${mat.file_url}" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
+    previewHtml = `<img src="${mat.file_url}" onerror="this.onerror=null; this.outerHTML='${getFileIcon(mat.file_type).replace(/'/g, \"\\\\'\")}'" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" alt="">`;
   } else if (isVideo && mat.file_url) {
     previewHtml = `<video src="${mat.file_url}" style="width:24px; height:24px; object-fit:cover; border-radius:4px; display:block;" muted preload="metadata"></video>`;
   } else {
