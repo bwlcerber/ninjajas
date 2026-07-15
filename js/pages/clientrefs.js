@@ -730,14 +730,21 @@ const PAGE_CLIENTREFS = (() => {
     const isHidden = hiddenRefs.includes(ref.id);
     const profile = STORE.getProfileForClient(ref.client_name);
     
-    // Show thumbnail cleanly at the top if exists, otherwise show vertical emoji placeholder
-    const thumb = ref.thumbnail_url
-      ? `<img src="${ref.thumbnail_url}" alt="${ref.client_name}" loading="lazy">`
-      : `<div class="ref-thumb-placeholder">${getVerticalEmoji(ref.vertical)}</div>`;
-
     // Query dynamically by client name
     const relatedMaterials = STORE.getMaterials().filter(m => m.client_name?.toLowerCase() === ref.client_name?.toLowerCase());
     const relatedAssetIds = relatedMaterials.map(m => m.id);
+
+    // Find dynamic best thumbnail
+    let bestThumbUrl = ref.thumbnail_url;
+    const relatedCases = relatedMaterials.filter(m => m.asset_type === 'case' || m.asset_type === 'branding');
+    if (relatedCases.length > 0 && relatedCases[0].thumbnail_url && !relatedCases[0].thumbnail_url.includes('picsum.photos')) {
+      bestThumbUrl = relatedCases[0].thumbnail_url;
+    }
+
+    // Show thumbnail cleanly at the top if exists, otherwise show vertical emoji placeholder
+    const thumb = bestThumbUrl
+      ? `<img src="${bestThumbUrl}" alt="${ref.client_name}" loading="lazy">`
+      : `<div class="ref-thumb-placeholder">${getVerticalEmoji(ref.vertical)}</div>`;
 
     // Consolidate all tags to prevent duplicates and separate industries from services
     const allTags = new Set();
@@ -876,16 +883,19 @@ const PAGE_CLIENTREFS = (() => {
     const services_provided = ref ? ref.services_provided : (profile ? profile.services_provided : []);
     const initials = displayClientName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
-    // Query materials dynamically by client name, excluding cases/branding from related assets
+    // Query materials dynamically by client name
     let materials = STORE.getMaterials().filter(m => 
-      m.client_name?.trim().toLowerCase() === (decodedName || 'N/A').trim().toLowerCase() && 
-      m.asset_type !== 'case' && 
-      m.asset_type !== 'branding'
+      m.client_name?.trim().toLowerCase() === (decodedName || 'N/A').trim().toLowerCase()
     );
 
-    // Deduplicate by file_url, prioritizing 'creatives' over duplicates
+    // Deduplicate by file_url, prioritizing 'case'/'branding' first, then 'creatives'
     const seenUrls = new Set();
     materials = materials.sort((a, b) => {
+      const aIsCase = (a.asset_type === 'case' || a.asset_type === 'branding') ? 1 : 0;
+      const bIsCase = (b.asset_type === 'case' || b.asset_type === 'branding') ? 1 : 0;
+      if (aIsCase && !bIsCase) return -1;
+      if (bIsCase && !aIsCase) return 1;
+
       if (a.asset_type === 'creatives' && b.asset_type !== 'creatives') return -1;
       if (b.asset_type === 'creatives' && a.asset_type !== 'creatives') return 1;
       return 0;
@@ -897,6 +907,13 @@ const PAGE_CLIENTREFS = (() => {
     });
 
     const materialIds = materials.map(m => m.id);
+    
+    // Find dynamic best thumbnail for header
+    let bestThumbUrl = ref ? ref.thumbnail_url : '';
+    const relatedCasesHeader = materials.filter(m => m.asset_type === 'case' || m.asset_type === 'branding');
+    if (relatedCasesHeader.length > 0 && relatedCasesHeader[0].thumbnail_url && !relatedCasesHeader[0].thumbnail_url.includes('picsum.photos')) {
+      bestThumbUrl = relatedCasesHeader[0].thumbnail_url;
+    }
 
     container.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px">
@@ -916,8 +933,8 @@ const PAGE_CLIENTREFS = (() => {
           <div class="profile-card" style="margin-bottom:16px; position:relative; overflow:hidden">
             <!-- Full size thumbnail at the top of the profile card -->
             <div class="profile-detail-thumb" style="width:100%; height:180px; background:var(--bg-3); position:relative; margin:-18px -18px 14px -18px; width:calc(100% + 36px); overflow:hidden; border-bottom:1px solid var(--border-subtle)">
-              ${ref && ref.thumbnail_url 
-                ? `<img src="${ref.thumbnail_url}" style="width:100%; height:100%; object-fit:cover">`
+              ${bestThumbUrl 
+                ? `<img src="${bestThumbUrl}" style="width:100%; height:100%; object-fit:cover">`
                 : `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:36px; opacity:0.4">${getVerticalEmoji(ref ? ref.vertical : 'Other')}</div>`
               }
               
