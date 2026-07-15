@@ -264,7 +264,7 @@ const PAGE_CREATIVES = (() => {
             <!-- Tiny thumbnail -->
             <div class="creative-list-thumb-container" style="width: 44px; height: 44px; border-radius: 6px; overflow: hidden; background: var(--bg-3); flex-shrink: 0; position: relative;">
               ${isVideo 
-                ? `<video class="creative-list-media" src="${mat.file_url}" muted playsinline preload="metadata" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
+                ? `<video class="creative-list-media" src="${mat.file_url}" poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
                 : `<img class="creative-list-media" src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">`
               }
             </div>
@@ -352,7 +352,7 @@ const PAGE_CREATIVES = (() => {
         <!-- Media -->
         ${isVideo 
           ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
-               <video class="creative-card-media" src="${mat.file_url}" muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+               <video class="creative-card-media" src="${mat.file_url}" poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
                <div class="video-play-button">
                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                </div>
@@ -747,7 +747,7 @@ const PAGE_CREATIVES = (() => {
           <div style="display:flex; align-items:center; justify-content:space-between; padding:10px; background:var(--bg-3); border:1px solid var(--border-default); border-radius:var(--r-md)">
             <div style="display:flex; align-items:center; gap:10px">
               ${m.file_type === 'video' 
-                ? `<video src="${m.file_url}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;" muted></video>`
+                ? `<video src="${m.file_url}" poster="${m.thumbnail_url || ''}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;" preload="none" muted></video>`
                 : `<img src="${m.thumbnail_url || m.file_url}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">`
               }
               <div>

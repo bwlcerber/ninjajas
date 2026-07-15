@@ -127,7 +127,7 @@ const PAGE_DASHBOARD = (() => {
                 if (isClientRef) {
                   previewEl = `<div style="color:var(--accent);width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${ICONS.refs}</div>`;
                 } else if (isVideo && m.file_url) {
-                  previewEl = `<video src="${m.file_url}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline></video>`;
+                  previewEl = `<video src="${m.file_url}" poster="${m.thumbnail_url || ''}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline preload="none"></video>`;
                 } else if (isImage && (m.thumbnail_url || m.file_url)) {
                   previewEl = `<img src="${m.thumbnail_url || m.file_url}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); flex-shrink:0;">`;
                 } else {
@@ -168,7 +168,7 @@ const PAGE_DASHBOARD = (() => {
               
               let previewEl = `<div style="color:var(--text-secondary);flex-shrink:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--bg-3);border-radius:var(--r-sm);">${getFileIcon(m.file_type)}</div>`;
               if (isVideo && m.file_url) {
-                previewEl = `<video src="${m.file_url}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline></video>`;
+                previewEl = `<video src="${m.file_url}" poster="${m.thumbnail_url || ''}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline preload="none"></video>`;
               } else if (isImage && (m.thumbnail_url || m.file_url)) {
                 previewEl = `<img src="${m.thumbnail_url || m.file_url}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); flex-shrink:0;">`;
               }
@@ -224,7 +224,7 @@ const PAGE_DASHBOARD = (() => {
               const isVideo = m.file_type === 'video' || m.asset_type === 'video';
               let previewEl = '';
               if (isVideo && m.file_url) {
-                previewEl = `<video src="${m.file_url}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline></video>`;
+                previewEl = `<video src="${m.file_url}" poster="${m.thumbnail_url || ''}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline preload="none"></video>`;
               } else if (m.thumbnail_url || m.file_url) {
                 previewEl = `<img src="${m.thumbnail_url || m.file_url}" style="width:32px; height:32px; object-fit:cover; border-radius:var(--r-sm); flex-shrink:0;">`;
               }
@@ -558,7 +558,7 @@ const PAGE_DASHBOARD = (() => {
                   <!-- Media -->
                   ${isVideo 
                     ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
-                         <video class="creative-card-media" src="${mat.file_url}" muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+                         <video class="creative-card-media" src="${mat.file_url}" poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
                          <div class="video-play-button">
                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                          </div>

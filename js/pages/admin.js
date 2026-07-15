@@ -230,7 +230,7 @@ const PAGE_ADMIN = (() => {
     
     let previewEl = `<div style="color:var(--text-secondary);flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;">${getFileIcon(m.file_type)}</div>`;
     if (isVideo && m.file_url) {
-      previewEl = `<video src="${m.file_url}" style="width:36px; height:36px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline></video>`;
+      previewEl = `<video src="${m.file_url}" poster="${m.thumbnail_url || ''}" style="width:36px; height:36px; object-fit:cover; border-radius:var(--r-sm); background:#000; flex-shrink:0;" muted playsinline preload="none"></video>`;
     } else if (isImage && (m.thumbnail_url || m.file_url)) {
       previewEl = `<img src="${m.thumbnail_url || m.file_url}" style="width:36px; height:36px; object-fit:cover; border-radius:var(--r-sm); flex-shrink:0;">`;
     }
