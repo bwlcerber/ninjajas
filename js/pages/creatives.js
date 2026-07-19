@@ -311,13 +311,14 @@ const PAGE_CREATIVES = (() => {
             </div>
             
             <!-- Tiny thumbnail -->
-            <div class="creative-list-thumb-container" style="width: 44px; height: 44px; border-radius: 6px; overflow: hidden; background: var(--bg-3); flex-shrink: 0; position: relative;">
+            <div class="creative-list-thumb-container" style="width: 44px; height: 44px; border-radius: 6px; overflow: hidden; background: var(--bg-3); flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary);">
               ${isDriveVideo
                 ? `<iframe class="creative-list-media" src="${embedUrl}" style="width: 100%; height: 100%; object-fit: cover; background: #000; border:none; pointer-events: none;"></iframe>`
+                : (mat.file_url && mat.file_url.includes('drive.google.com')
+                ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
                 : (isVideo 
                 ? `<video class="creative-list-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
-                : `<img class="creative-list-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.closest('.creative-list-thumb-container').style.background='var(--bg-3)';">`)}
-              }
+                : `<img class="creative-list-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="if(!this.dataset.retried){this.dataset.retried='1'; this.src=this.src.match(/png$/i) ? this.src.replace(/png$/i,'jpg') : this.src.replace(/jpe?g$/i,'png');} else {this.style.display='none';}">`))}
             </div>
             
             <!-- Titles -->
@@ -406,6 +407,11 @@ const PAGE_CREATIVES = (() => {
                <iframe class="creative-card-media" src="${embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:none; pointer-events:none;"></iframe>
                <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
              </div>`
+          : (mat.file_url && mat.file_url.includes('drive.google.com')
+          ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: var(--bg-2); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary);">
+               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+               <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
+             </div>`
           : (isVideo 
           ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
                <video class="creative-card-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
@@ -414,7 +420,10 @@ const PAGE_CREATIVES = (() => {
                </div>
                <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
              </div>`
-          : `<img class="creative-card-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'; this.parentElement.style.background='#111';">`)}
+          : `<div style="width:100%;height:100%;position:absolute;top:0;left:0;background:var(--bg-2);display:flex;align-items:center;justify-content:center;">
+               <img class="creative-card-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;" onerror="if(!this.dataset.retried){this.dataset.retried='1'; this.src=this.src.match(/png$/i) ? this.src.replace(/png$/i,'jpg') : this.src.replace(/jpe?g$/i,'png');} else {this.style.display='none';}">
+               <svg style="color:var(--text-tertiary);width:32px;height:32px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+             </div>`))}
         
         <!-- Vignette & Overlays -->
         <div class="creative-card-vignette"></div>
