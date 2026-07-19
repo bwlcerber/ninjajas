@@ -255,9 +255,17 @@ const PAGE_CREATIVES = (() => {
       const v = card.querySelector('video');
       if (v) {
         card.addEventListener('mouseenter', () => {
-          if (v.dataset.src && !v.src) v.src = v.dataset.src;
-          if (v.dataset.poster && !v.poster) v.poster = v.dataset.poster;
-          v.play().catch(err => console.log('Video autoplay blocked or interrupted:', err));
+          let needsLoad = false;
+          if (v.dataset.src && !v.getAttribute('src')) {
+            v.setAttribute('src', v.dataset.src);
+            needsLoad = true;
+          }
+          if (v.dataset.poster && !v.getAttribute('poster')) {
+            v.setAttribute('poster', v.dataset.poster);
+          }
+          if (needsLoad) v.load();
+          
+          v.play().catch(err => console.log('Video autoplay blocked:', err));
         });
         card.addEventListener('mouseleave', () => {
           v.pause();
