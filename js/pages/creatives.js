@@ -284,7 +284,9 @@ const PAGE_CREATIVES = (() => {
     const isDriveVideo = mat.file_url && mat.file_url.includes('drive.google.com/file/d/');
     const isVideo = mat.file_type === 'video' || isDriveVideo;
     const isChecked = window.CALL_PREP_BASKET && window.CALL_PREP_BASKET.has(mat.id);
-    const badgeType = isVideo ? 'Video' : (mat.file_type === 'link' ? 'Link' : 'PNG');
+    const _ext = (mat.file_url || '').split('.').pop().split('?')[0].toUpperCase();
+    const _knownExts = ['JPG','JPEG','PNG','GIF','WEBP','SVG','MP4','MOV','AVI','WEBM','PDF'];
+    const badgeType = isVideo ? (_knownExts.includes(_ext) && ['MP4','MOV','AVI','WEBM'].includes(_ext) ? _ext : 'Video') : (mat.file_type === 'link' ? 'Link' : (_knownExts.includes(_ext) ? _ext : (mat.file_type || 'File').toUpperCase()));
     const hiddenList = getHiddenCreatives();
     
     let embedUrl = mat.file_url;
