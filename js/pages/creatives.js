@@ -194,6 +194,30 @@ const PAGE_CREATIVES = (() => {
 
       <div class="creatives-page" id="creatives-content" style="background:var(--bg-2); padding:20px; border-radius:var(--r-md); border:1px solid var(--border-subtle)">
         <style>
+          .video-play-button {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 48px !important;
+            height: 48px !important;
+            background: rgba(255,255,255,0.15) !important;
+            backdrop-filter: blur(4px) !important;
+            border: 2px solid rgba(255,255,255,0.4) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 8 !important;
+            transition: opacity 0.25s ease !important;
+          }
+          .video-play-button svg {
+            width: 18px !important;
+            height: 18px !important;
+            fill: #fff !important;
+            margin-left: 3px !important;
+          }
           .creative-card-item:hover .video-brand-overlay,
           .creative-card-item:hover .video-play-button {
             opacity: 0 !important;
@@ -401,8 +425,9 @@ const PAGE_CREATIVES = (() => {
         
         <!-- Media -->
         ${isDriveVideo 
-          ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
+          ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #111;">
                <iframe class="creative-card-media" src="${embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:none; pointer-events:none;"></iframe>
+               <div class="video-play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
              </div>`
           : (isVideo 
@@ -413,8 +438,7 @@ const PAGE_CREATIVES = (() => {
                </div>
                <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
              </div>`
-          : `<img class="creative-card-media lazy-media" data-src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}">`)
-        }
+          : `<img class="creative-card-media lazy-media" data-src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" onerror="this.style.display='none'; this.parentElement.style.background='#111';">`)}
         
         <!-- Vignette & Overlays -->
         <div class="creative-card-vignette"></div>
