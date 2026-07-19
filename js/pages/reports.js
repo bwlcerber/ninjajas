@@ -273,9 +273,12 @@ const PAGE_REPORTS = (() => {
           </label>
         </div>
         <div class="material-row-icon" style="overflow:hidden; display:flex; align-items:center; justify-content:center;">
-          ${(mat.file_type === 'image' || mat.file_type === 'video') 
-            ? `<img src="${mat.thumbnail_url || mat.file_url}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">` 
-            : (mat.asset_type === 'influencer-marketing' ? getFileIcon('doc-link') : getFileIcon(mat.file_type))
+          ${mat.asset_type === 'smm-profiles'
+            ? getFileIcon('link')
+            : ((mat.file_type === 'image' || mat.file_type === 'video') 
+              ? `<img src="${mat.thumbnail_url || mat.file_url}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; color:var(--text-tertiary);">${getFileIcon(mat.file_type)}</div>` 
+              : (mat.asset_type === 'influencer-marketing' ? getFileIcon('doc-link') : getFileIcon(mat.file_type)))
           }
         </div>
         <div class="material-row-info">

@@ -255,6 +255,8 @@ const PAGE_CREATIVES = (() => {
       const v = card.querySelector('video');
       if (v) {
         card.addEventListener('mouseenter', () => {
+          if (v.dataset.src && !v.src) v.src = v.dataset.src;
+          if (v.dataset.poster && !v.poster) v.poster = v.dataset.poster;
           v.play().catch(err => console.log('Video autoplay blocked or interrupted:', err));
         });
         card.addEventListener('mouseleave', () => {
