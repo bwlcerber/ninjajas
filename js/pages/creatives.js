@@ -254,6 +254,15 @@ const PAGE_CREATIVES = (() => {
     container.querySelectorAll('.creative-card-item, .creative-list-item').forEach(card => {
       const v = card.querySelector('video');
       if (v) {
+        v.addEventListener('playing', () => {
+          const wrapper = v.closest('.static-video-wrapper');
+          if (wrapper) wrapper.classList.add('is-playing');
+        });
+        v.addEventListener('pause', () => {
+          const wrapper = v.closest('.static-video-wrapper');
+          if (wrapper) wrapper.classList.remove('is-playing');
+        });
+
         card.addEventListener('mouseenter', () => {
           let needsLoad = false;
           if (v.dataset.src && !v.getAttribute('src')) {
@@ -327,7 +336,7 @@ const PAGE_CREATIVES = (() => {
                 : (mat.file_url && mat.file_url.includes('drive.google.com')
                 ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
                 : (isVideo 
-                ? `<video class="creative-list-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
+                ? `<video class="creative-list-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="metadata" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
                 : `<img class="creative-list-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="if(!this.dataset.retried){this.dataset.retried='1'; this.src=this.src.match(/png$/i) ? this.src.replace(/png$/i,'jpg') : this.src.replace(/jpe?g$/i,'png');} else {this.style.display='none';}">`))}
             </div>
             
@@ -424,7 +433,7 @@ const PAGE_CREATIVES = (() => {
              </div>`
           : (isVideo 
           ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
-               <video class="creative-card-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
+               <video class="creative-card-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
                <div class="video-play-button">
                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                </div>
