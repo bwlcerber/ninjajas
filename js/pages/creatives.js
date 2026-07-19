@@ -254,15 +254,6 @@ const PAGE_CREATIVES = (() => {
     container.querySelectorAll('.creative-card-item, .creative-list-item').forEach(card => {
       const v = card.querySelector('video');
       if (v) {
-        v.addEventListener('playing', () => {
-          const wrapper = v.closest('.static-video-wrapper');
-          if (wrapper) wrapper.classList.add('is-playing');
-        });
-        v.addEventListener('pause', () => {
-          const wrapper = v.closest('.static-video-wrapper');
-          if (wrapper) wrapper.classList.remove('is-playing');
-        });
-
         card.addEventListener('mouseenter', () => {
           let needsLoad = false;
           if (v.dataset.src && !v.getAttribute('src')) {
