@@ -193,6 +193,11 @@ const PAGE_CREATIVES = (() => {
       </div>
 
       <div class="creatives-page" id="creatives-content" style="background:var(--bg-2); padding:20px; border-radius:var(--r-md); border:1px solid var(--border-subtle)">
+        <style>
+          .creative-card-item:hover .video-brand-overlay {
+            opacity: 0 !important;
+          }
+        </style>
         <h2 class="creative-gallery-heading" style="margin-bottom:24px">BRAND CREATIVE GALLERY</h2>
 
         ${Object.entries(renderedGroups).map(([vertical, items]) => renderVerticalSection(vertical, items, activeViewMode)).join('')}
@@ -212,6 +217,36 @@ const PAGE_CREATIVES = (() => {
         const el = document.getElementById(`vertical-section-${_pendingJump.replace(/\s+/g, '-')}`);
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         _pendingJump = null;
+      });
+    }
+
+    // Setup lazy loading observer
+    if ('IntersectionObserver' in window) {
+      const lazyMediaObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const media = entry.target;
+            if (media.dataset.src) {
+              media.src = media.dataset.src;
+              media.removeAttribute('data-src');
+            }
+            if (media.dataset.poster) {
+              media.poster = media.dataset.poster;
+              media.removeAttribute('data-poster');
+            }
+            observer.unobserve(media);
+          }
+        });
+      }, { rootMargin: '200px 0px', threshold: 0.01 });
+
+      container.querySelectorAll('.lazy-media').forEach(media => {
+        lazyMediaObserver.observe(media);
+      });
+    } else {
+      // Fallback
+      container.querySelectorAll('.lazy-media').forEach(media => {
+        if (media.dataset.src) media.src = media.dataset.src;
+        if (media.dataset.poster) media.poster = media.dataset.poster;
       });
     }
 
@@ -243,10 +278,19 @@ const PAGE_CREATIVES = (() => {
   }
 
   function renderCreativeItem(mat, viewMode) {
-    const isVideo = mat.file_type === 'video';
+    const isDriveVideo = mat.file_url && mat.file_url.includes('drive.google.com/file/d/');
+    const isVideo = mat.file_type === 'video' || isDriveVideo;
     const isChecked = window.CALL_PREP_BASKET && window.CALL_PREP_BASKET.has(mat.id);
-    const badgeType = isVideo ? 'MP4' : 'PNG';
+    const badgeType = isVideo ? 'Video' : (mat.file_type === 'link' ? 'Link' : 'PNG');
     const hiddenList = getHiddenCreatives();
+    
+    let embedUrl = mat.file_url;
+    if (isDriveVideo) {
+      const match = mat.file_url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+    }
     const isHidden = hiddenList.includes(mat.id);
 
     if (viewMode === 'list') {
@@ -263,9 +307,11 @@ const PAGE_CREATIVES = (() => {
             
             <!-- Tiny thumbnail -->
             <div class="creative-list-thumb-container" style="width: 44px; height: 44px; border-radius: 6px; overflow: hidden; background: var(--bg-3); flex-shrink: 0; position: relative;">
-              ${isVideo 
-                ? `<video class="creative-list-media" src="${mat.file_url}" poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
-                : `<img class="creative-list-media" src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">`
+              ${isDriveVideo
+                ? `<iframe class="creative-list-media" src="${embedUrl}" style="width: 100%; height: 100%; object-fit: cover; background: #000; border:none; pointer-events: none;"></iframe>`
+                : (isVideo 
+                ? `<video class="creative-list-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
+                : `<img class="creative-list-media lazy-media" data-src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" style="width: 100%; height: 100%; object-fit: cover;">`)
               }
             </div>
             
@@ -350,14 +396,20 @@ const PAGE_CREATIVES = (() => {
         ) : ''}
         
         <!-- Media -->
-        ${isVideo 
+        ${isDriveVideo 
           ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
-               <video class="creative-card-media" src="${mat.file_url}" poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
+               <iframe class="creative-card-media" src="${embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:none; pointer-events:none;"></iframe>
+               <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
+             </div>`
+          : (isVideo 
+          ? `<div class="static-video-wrapper" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000;">
+               <video class="creative-card-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
                <div class="video-play-button">
                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                </div>
+               <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
              </div>`
-          : `<img class="creative-card-media" src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" loading="lazy">`
+          : `<img class="creative-card-media lazy-media" data-src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}">`)
         }
         
         <!-- Vignette & Overlays -->
