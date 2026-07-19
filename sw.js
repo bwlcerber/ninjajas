@@ -1,4 +1,5 @@
-const CACHE_NAME = 'ninjapromo-portal-cache-v1';
+const CACHE_NAME = 'ninjapromo-portal-cache-v2';
+const OLD_CACHES = ['ninjapromo-portal-cache-v1'];
 
 // We want to cache specific image requests to ensure they don't load from zero next time
 self.addEventListener('fetch', (event) => {
@@ -48,5 +49,11 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.filter(name => OLD_CACHES.includes(name)).map(name => caches.delete(name))
+      );
+    }).then(() => clients.claim())
+  );
 });
