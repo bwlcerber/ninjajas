@@ -339,7 +339,7 @@ const PAGE_CREATIVES = (() => {
                 ? `<iframe class="creative-list-media" src="${embedUrl}" style="width: 100%; height: 100%; object-fit: cover; background: #000; border:none; pointer-events: none;"></iframe>`
                 : (isVideo 
                 ? `<video class="creative-list-media lazy-media" data-src="${mat.file_url}" data-poster="${mat.thumbnail_url || ''}" muted playsinline preload="none" style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`
-                : `<img class="creative-list-media lazy-media" data-src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" style="width: 100%; height: 100%; object-fit: cover;">`)
+                : `<img class="creative-list-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.closest('.creative-list-thumb-container').style.background='var(--bg-3)';">`)}
               }
             </div>
             
@@ -438,7 +438,7 @@ const PAGE_CREATIVES = (() => {
                </div>
                <div class="video-brand-overlay" style="position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 10; font-family: var(--font-ui); transition: opacity 0.3s; opacity: 1;">${mat.client_name}</div>
              </div>`
-          : `<img class="creative-card-media lazy-media" data-src="${mat.thumbnail_url || mat.file_url}" alt="${mat.title}" onerror="if(!this.dataset.retried){this.dataset.retried='1'; this.src=this.src.match(/png$/i) ? this.src.replace(/png$/i,'jpg') : this.src.replace(/jpe?g$/i,'png');} else {this.style.display='none'; this.parentElement.style.background='#111';}">`)}
+          : `<img class="creative-card-media" src="${mat.thumbnail_url || mat.file_url}" loading="lazy" alt="${mat.title}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'; this.parentElement.style.background='#111';">`)}
         
         <!-- Vignette & Overlays -->
         <div class="creative-card-vignette"></div>
