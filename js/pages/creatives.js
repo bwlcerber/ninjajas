@@ -194,7 +194,8 @@ const PAGE_CREATIVES = (() => {
 
       <div class="creatives-page" id="creatives-content" style="background:var(--bg-2); padding:20px; border-radius:var(--r-md); border:1px solid var(--border-subtle)">
         <style>
-          .creative-card-item:hover .video-brand-overlay {
+          .creative-card-item:hover .video-brand-overlay,
+          .creative-card-item:hover .video-play-button {
             opacity: 0 !important;
           }
         </style>
@@ -251,14 +252,17 @@ const PAGE_CREATIVES = (() => {
     }
 
     // Attach play/pause JS logic for video element hover states
-    container.querySelectorAll('.creative-card-item video, .creative-list-item video').forEach(v => {
-      v.addEventListener('mouseenter', () => {
-        v.play().catch(err => console.log('Video autoplay blocked or interrupted:', err));
-      });
-      v.addEventListener('mouseleave', () => {
-        v.pause();
-        v.currentTime = 0;
-      });
+    container.querySelectorAll('.creative-card-item, .creative-list-item').forEach(card => {
+      const v = card.querySelector('video');
+      if (v) {
+        card.addEventListener('mouseenter', () => {
+          v.play().catch(err => console.log('Video autoplay blocked or interrupted:', err));
+        });
+        card.addEventListener('mouseleave', () => {
+          v.pause();
+          v.currentTime = 0;
+        });
+      }
     });
   }
 
