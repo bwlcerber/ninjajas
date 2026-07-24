@@ -383,6 +383,21 @@ function openMaterial(material) {
       const match = url.match(/(?:v=|youtu\.be\/|embed\/)([^&?]+)/);
       if (match && match[1]) videoId = match[1];
       videoHtml = `<iframe width="100%" style="aspect-ratio: 16/9; border-radius:8px;" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
+      // Google Drive: native <video> cannot play a Drive page URL, so embed the
+      // Drive preview player in an interactive iframe (same approach as the gallery cards).
+      let driveId = '';
+      const driveMatch = url.match(/(?:file\/d\/|id=)([\w-]+)/);
+      if (driveMatch && driveMatch[1]) driveId = driveMatch[1];
+      if (driveId) {
+        videoHtml = `<iframe width="100%" style="aspect-ratio: 16/9; border-radius:8px;" src="https://drive.google.com/file/d/${driveId}/preview" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      } else {
+        // Folder/shortlink or unparseable Drive URL: can't embed, offer to open instead.
+        videoHtml = `<div style="width:100%; height:300px; display:flex; align-items:center; justify-content:center; background:#111; border-radius:8px; flex-direction:column; gap:12px;">
+                       <span style="color:#aaa; font-size:14px;">Google Drive preview unavailable.</span>
+                       <a href="${url}" target="_blank" class="btn btn-primary" style="text-decoration:none;">Open in Google Drive</a>
+                     </div>`;
+      }
     } else if (url.includes('tiktok.com') || url.includes('instagram.com')) {
       videoHtml = `<div style="width:100%; height:300px; display:flex; align-items:center; justify-content:center; background:#111; border-radius:8px; flex-direction:column; gap:12px;">
                      <span style="color:#aaa; font-size:14px;">This platform requires native viewing.</span>
