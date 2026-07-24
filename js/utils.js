@@ -365,10 +365,14 @@ function openMaterial(material) {
     modalTitle = 'project name, N/A';
   }
 
-  // Navigation Arrows HTML
-  const arrowStyle = `position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; background:rgba(20,20,20,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:50%; color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10; transition:all 0.2s;`;
-  const prevBtnHtml = (currentIndex !== -1 && mediaList.length > 1) ? `<button onclick="event.stopPropagation(); window.openMaterialNavigate(-1);" style="${arrowStyle} left:10px;" onmouseover="this.style.background='rgba(20,20,20,0.9)'" onmouseout="this.style.background='rgba(20,20,20,0.6)'">←</button>` : '';
-  const nextBtnHtml = (currentIndex !== -1 && mediaList.length > 1) ? `<button onclick="event.stopPropagation(); window.openMaterialNavigate(1);" style="${arrowStyle} right:10px;" onmouseover="this.style.background='rgba(20,20,20,0.9)'" onmouseout="this.style.background='rgba(20,20,20,0.6)'">→</button>` : '';
+  // Navigation Arrows HTML — crisp SVG chevrons in polished circular buttons
+  const arrowStyle = `position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; padding:0; background:rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.18); border-radius:50%; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); transition:background 0.2s, border-color 0.2s, transform 0.2s;`;
+  const arrowHover = `this.style.background='rgba(0,0,0,0.8)'; this.style.borderColor='rgba(255,255,255,0.45)'; this.style.transform='translateY(-50%) scale(1.08)';`;
+  const arrowOut = (side) => `this.style.background='rgba(0,0,0,0.55)'; this.style.borderColor='rgba(255,255,255,0.18)'; this.style.transform='translateY(-50%) scale(1)';`;
+  const chevronPrev = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+  const chevronNext = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+  const prevBtnHtml = (currentIndex !== -1 && mediaList.length > 1) ? `<button onclick="event.stopPropagation(); window.openMaterialNavigate(-1);" style="${arrowStyle} left:12px;" onmouseover="${arrowHover}" onmouseout="${arrowOut('left')}" aria-label="Previous">${chevronPrev}</button>` : '';
+  const nextBtnHtml = (currentIndex !== -1 && mediaList.length > 1) ? `<button onclick="event.stopPropagation(); window.openMaterialNavigate(1);" style="${arrowStyle} right:12px;" onmouseover="${arrowHover}" onmouseout="${arrowOut('right')}" aria-label="Next">${chevronNext}</button>` : '';
 
   window.openMaterialNavigate = (dir) => {
     navigateMedia(dir);
