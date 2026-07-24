@@ -891,3 +891,79 @@ async function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.
     reader.readAsDataURL(file);
   });
 }
+
+// ─────────────────────────────────────────────
+// SERVER FILE DELETION HELPERS
+// ─────────────────────────────────────────────
+
+async function deleteServerFile(urlOrUrls) {
+  if (!urlOrUrls) return;
+  const urls = Array.isArray(urlOrUrls) ? urlOrUrls : [urlOrUrls];
+  const validFiles = [];
+
+  urls.forEach(url => {
+    if (!url || typeof url !== 'string') return;
+    let path = url.trim();
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      try {
+        const u = new URL(path);
+        path = u.pathname;
+      } catch (e) {}
+    }
+    while (path.startsWith('/')) {
+      path = path.substring(1);
+    }
+    if (path.startsWith('uploads/') && !path.includes('..')) {
+      validFiles.push(path);
+    }
+  });
+
+  if (validFiles.length === 0) return;
+
+  try {
+    const res = await fetch('delete_file.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ files: validFiles })
+    });
+    return await res.json();
+  } catch (err) {
+    console.warn('Failed to contact delete_file.php server handler:', err);
+  }
+}
+
+function extractServerFilesFromRecord(record) {
+  if (!record || typeof record !== 'object') return [];
+  const files = new Set();
+
+  function scan(val) {
+    if (!val) return;
+    if (typeof val === 'string') {
+      let str = val.trim();
+      if (str.startsWith('http://') || str.startsWith('https://')) {
+        try {
+          const u = new URL(str);
+          str = u.pathname;
+        } catch (e) {}
+      }
+      while (str.startsWith('/')) {
+        str = str.substring(1);
+      }
+      if (str.startsWith('uploads/') && !str.includes('..')) {
+        files.add(str);
+      }
+    } else if (Array.isArray(val)) {
+      val.forEach(scan);
+    } else if (typeof val === 'object') {
+      Object.values(val).forEach(scan);
+    }
+  }
+
+  ['file_url', 'thumbnail_url', 'url', 'video_url', 'embed_url', 'logo_url', 'call_url', 'audio_url', 'recording_url', 'deck_url', 'attachments', 'avatar', 'avatar_url'].forEach(key => {
+    if (record[key]) scan(record[key]);
+  });
+  scan(record);
+
+  return Array.from(files);
+}
+

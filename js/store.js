@@ -706,6 +706,16 @@ const STORE = (() => {
 
   function updateMaterial(id, updates) {
     const ud = _getUserData();
+    const oldMaterial = getMaterialById(id);
+    if (oldMaterial && typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+      const oldFiles = extractServerFilesFromRecord(oldMaterial);
+      const newMaterial = { ...oldMaterial, ...updates };
+      const newFiles = extractServerFilesFromRecord(newMaterial);
+      const replacedFiles = oldFiles.filter(f => !newFiles.includes(f));
+      if (replacedFiles.length > 0) {
+        deleteServerFile(replacedFiles);
+      }
+    }
     const idx = ud.materials.findIndex(m => m.id === id);
     if (idx !== -1) {
       ud.materials[idx] = { ...ud.materials[idx], ...updates };
@@ -723,9 +733,27 @@ const STORE = (() => {
 
   function deleteRecord(id, type) {
     const ud = _getUserData();
-    if (type === 'material')      ud.materials      = ud.materials.filter(m => m.id !== id);
-    if (type === 'clientRef')     ud.clientRefs     = ud.clientRefs.filter(r => r.id !== id);
-    if (type === 'clientProfile') ud.clientProfiles = ud.clientProfiles.filter(p => p.id !== id);
+    let recordToDelete = null;
+    if (type === 'material') {
+      recordToDelete = (ud.materials || []).find(m => m.id === id);
+      ud.materials = ud.materials.filter(m => m.id !== id);
+    }
+    if (type === 'clientRef') {
+      recordToDelete = (ud.clientRefs || []).find(r => r.id === id);
+      ud.clientRefs = ud.clientRefs.filter(r => r.id !== id);
+    }
+    if (type === 'clientProfile') {
+      recordToDelete = (ud.clientProfiles || []).find(p => p.id === id);
+      ud.clientProfiles = ud.clientProfiles.filter(p => p.id !== id);
+    }
+
+    if (recordToDelete && typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+      const serverFiles = extractServerFilesFromRecord(recordToDelete);
+      if (serverFiles.length > 0) {
+        deleteServerFile(serverFiles);
+      }
+    }
+
     saveUserData(ud);
     resetState();
   }
@@ -858,16 +886,56 @@ const STORE = (() => {
   function purgeRecord(id, type) {
     const ud = loadUserData();
     ud.recycleBin = ud.recycleBin || { materials: [], clientRefs: [], clientProfiles: [] };
+    let recordToPurge = null;
     
     if (type === 'material') {
-      ud.recycleBin.materials = ud.recycleBin.materials.filter(m => m.id !== id);
+      recordToPurge = (ud.recycleBin.materials || []).find(m => m.id === id);
+      ud.recycleBin.materials = (ud.recycleBin.materials || []).filter(m => m.id !== id);
     } else if (type === 'clientRef') {
-      ud.recycleBin.clientRefs = ud.recycleBin.clientRefs.filter(r => r.id !== id);
+      recordToPurge = (ud.recycleBin.clientRefs || []).find(r => r.id === id);
+      ud.recycleBin.clientRefs = (ud.recycleBin.clientRefs || []).filter(r => r.id !== id);
     } else if (type === 'clientProfile') {
-      ud.recycleBin.clientProfiles = ud.recycleBin.clientProfiles.filter(p => p.id !== id);
+      recordToPurge = (ud.recycleBin.clientProfiles || []).find(p => p.id === id);
+      ud.recycleBin.clientProfiles = (ud.recycleBin.clientProfiles || []).filter(p => p.id !== id);
     }
+
+    if (recordToPurge && typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+      const serverFiles = extractServerFilesFromRecord(recordToPurge);
+      if (serverFiles.length > 0) {
+        deleteServerFile(serverFiles);
+      }
+    }
+
     saveUserData(ud);
     resetState();
+  }
+
+  function emptyRecycleBin() {
+    const ud = loadUserData();
+    ud.recycleBin = ud.recycleBin || { materials: [], clientRefs: [], clientProfiles: [] };
+    
+    const allRecords = [
+      ...(ud.recycleBin.materials || []),
+      ...(ud.recycleBin.clientRefs || []),
+      ...(ud.recycleBin.clientProfiles || [])
+    ];
+
+    const allFiles = new Set();
+    allRecords.forEach(rec => {
+      if (typeof extractServerFilesFromRecord === 'function') {
+        const files = extractServerFilesFromRecord(rec);
+        files.forEach(f => allFiles.add(f));
+      }
+    });
+
+    if (allFiles.size > 0 && typeof deleteServerFile === 'function') {
+      deleteServerFile(Array.from(allFiles));
+    }
+
+    ud.recycleBin = { materials: [], clientRefs: [], clientProfiles: [] };
+    saveUserData(ud);
+    resetState();
+    return allFiles.size;
   }
 
   function syncClientGeo(clientName, geo, providedUd = null) {
@@ -950,7 +1018,7 @@ const STORE = (() => {
     addMaterial, addClientRef, addClientProfile,
     updateMaterial, deleteMaterial, deleteClientRef, deleteClientProfile,
     moveMaterialScore,
-    getDeletedClientNames, getRecycleBin, restoreRecord, purgeRecord,
+    getDeletedClientNames, getRecycleBin, restoreRecord, purgeRecord, emptyRecycleBin,
     syncClientGeo,
     getStats,
     loadUserData, saveUserData, resetState

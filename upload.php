@@ -39,11 +39,16 @@ $targetPath = $uploadDir . $fileName;
 // Delete old file completely from the server if specified
 if (isset($_POST['old_file']) && !empty($_POST['old_file'])) {
     $oldFile = trim($_POST['old_file']);
+    if (strpos($oldFile, 'http://') === 0 || strpos($oldFile, 'https://') === 0) {
+        $parsed = parse_url($oldFile, PHP_URL_PATH);
+        if ($parsed) $oldFile = ltrim($parsed, '/');
+    }
+    $oldFile = ltrim($oldFile, '/');
     // Ensure we only delete within the uploads directory for security
     if (strpos($oldFile, 'uploads/') === 0 && strpos($oldFile, '..') === false) {
         $oldPath = __DIR__ . '/' . $oldFile;
         if (file_exists($oldPath) && is_file($oldPath)) {
-            unlink($oldPath);
+            @unlink($oldPath);
         }
     }
 }

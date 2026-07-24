@@ -1394,11 +1394,15 @@ const PAGE_CLIENTREFS = (() => {
       }
     }
     
-    // Delete associated materials
+    // Delete associated materials and server files
     if (clientName) {
       const materials = STORE.getMaterials().filter(m => m.client_name && m.client_name?.toLowerCase() === (clientName || 'N/A').toLowerCase());
       materials.forEach(m => {
-        STORE.deleteMaterial(m.id);
+        if (typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+          const files = extractServerFilesFromRecord(m);
+          if (files.length > 0) deleteServerFile(files);
+        }
+        STORE.deleteRecord(m.id, 'material');
       });
       // Prevent syncClients from regenerating it
       const ud = STORE.loadUserData();
@@ -1410,12 +1414,26 @@ const PAGE_CLIENTREFS = (() => {
       STORE.saveUserData(ud);
     }
 
-    if (refId) STORE.deleteClientRef(refId);
-    if (profileId) STORE.deleteClientProfile(profileId);
+    if (refId) {
+      const ref = STORE.getClientRefs().find(r => r.id === refId);
+      if (ref && typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+        const files = extractServerFilesFromRecord(ref);
+        if (files.length > 0) deleteServerFile(files);
+      }
+      STORE.deleteRecord(refId, 'clientRef');
+    }
+    if (profileId) {
+      const profile = STORE.getClientProfiles().find(p => p.id === profileId);
+      if (profile && typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+        const files = extractServerFilesFromRecord(profile);
+        if (files.length > 0) deleteServerFile(files);
+      }
+      STORE.deleteRecord(profileId, 'clientProfile');
+    }
     
-    // If the ref was a seed that got deleted, ensure it's not regenerated
+    // Reset state and navigate back
     STORE.resetState();
-    showToast('Client reference and assets deleted successfully', 'success');
+    showToast('Client reference and server files deleted successfully', 'success');
     ROUTER.navigate('clientrefs');
   }
 

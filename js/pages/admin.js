@@ -1097,12 +1097,14 @@ const PAGE_ADMIN = (() => {
     const totalCount = (bin.materials || []).length + (bin.clientRefs || []).length + (bin.clientProfiles || []).length;
 
     let html = `
-      <div style="display:flex; flex-direction:column; gap:16px;">
-        <div class="section-header">
-          <span class="section-title">🗑️ Recycle Bin (Super Admin)</span>
-          <span class="section-count">${totalCount}</span>
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="section-title">🗑️ Recycle Bin (Super Admin)</span>
+            <span class="section-count">${totalCount}</span>
+          </div>
+          ${totalCount > 0 ? `<button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.emptyBin()" title="Empty Recycle Bin and delete all server files from hosting">Empty Recycle Bin</button>` : ''}
         </div>
-        <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:8px;">Deleted assets and references are stored here. You can restore them to the portal or purge them permanently.</p>
+        <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:8px;">Deleted assets and references are stored here. You can restore them to the portal or purge them permanently to free up hosting space.</p>
     `;
 
     if (totalCount === 0) {
@@ -1126,7 +1128,7 @@ const PAGE_ADMIN = (() => {
             </div>
             <div class="admin-item-actions">
               <button class="btn btn-sm btn-ghost" onclick="PAGE_ADMIN.restoreItem('${m.id}', 'material')" title="Restore">Restore</button>
-              <button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.purgeItem('${m.id}', 'material')" title="Delete Permanently">Purge</button>
+              <button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.purgeItem('${m.id}', 'material')" title="Delete Permanently">Purge & Free Storage</button>
             </div>
           </div>
         `;
@@ -1142,7 +1144,7 @@ const PAGE_ADMIN = (() => {
             </div>
             <div class="admin-item-actions">
               <button class="btn btn-sm btn-ghost" onclick="PAGE_ADMIN.restoreItem('${r.id}', 'clientRef')" title="Restore">Restore</button>
-              <button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.purgeItem('${r.id}', 'clientRef')" title="Delete Permanently">Purge</button>
+              <button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.purgeItem('${r.id}', 'clientRef')" title="Delete Permanently">Purge & Free Storage</button>
             </div>
           </div>
         `;
@@ -1158,7 +1160,7 @@ const PAGE_ADMIN = (() => {
             </div>
             <div class="admin-item-actions">
               <button class="btn btn-sm btn-ghost" onclick="PAGE_ADMIN.restoreItem('${p.id}', 'clientProfile')" title="Restore">Restore</button>
-              <button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.purgeItem('${p.id}', 'clientProfile')" title="Delete Permanently">Purge</button>
+              <button class="btn btn-sm btn-danger" onclick="PAGE_ADMIN.purgeItem('${p.id}', 'clientProfile')" title="Delete Permanently">Purge & Free Storage</button>
             </div>
           </div>
         `;
@@ -1179,9 +1181,17 @@ const PAGE_ADMIN = (() => {
   }
 
   function purgeItem(id, type) {
-    if (!confirm('Are you sure you want to permanently delete this item? This action cannot be undone.')) return;
+    if (!confirm('Are you sure you want to permanently delete this item and remove its files from hosting storage? This action cannot be undone.')) return;
     STORE.purgeRecord(id, type);
-    showToast('Item purged permanently');
+    showToast('Item permanently purged and server storage cleared', 'success');
+    const container = document.querySelector('.page-content');
+    if (container) renderAdmin(container);
+  }
+
+  function emptyBin() {
+    if (!confirm('Are you sure you want to permanently delete ALL items in the Recycle Bin and clear their files from hosting storage? This action cannot be undone.')) return;
+    STORE.emptyRecycleBin();
+    showToast('Recycle bin emptied and server hosting space reclaimed!', 'success');
     const container = document.querySelector('.page-content');
     if (container) renderAdmin(container);
   }
@@ -1204,7 +1214,8 @@ const PAGE_ADMIN = (() => {
     saveUser,
     deleteUser,
     restoreItem,
-    purgeItem
+    purgeItem,
+    emptyBin
   };
 })();
 

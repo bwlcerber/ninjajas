@@ -840,9 +840,14 @@ const PAGE_CREATIVES = (() => {
   }
 
   function deleteCreativeForever(id) {
-    if (confirm("Are you sure you want to permanently delete this creative?")) {
-      STORE.deleteMaterial(id);
-      showToast('Creative permanently deleted', 'success');
+    if (confirm("Are you sure you want to permanently delete this creative and remove its files from server hosting?")) {
+      const mat = STORE.getMaterialById(id);
+      if (mat && typeof extractServerFilesFromRecord === 'function' && typeof deleteServerFile === 'function') {
+        const files = extractServerFilesFromRecord(mat);
+        if (files.length > 0) deleteServerFile(files);
+      }
+      STORE.deleteRecord(id, 'material');
+      showToast('Creative permanently deleted and server space freed', 'success');
       const container = document.getElementById('page-container');
       if (container) render(container);
     }
