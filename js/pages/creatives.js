@@ -417,40 +417,75 @@ const PAGE_CREATIVES = (() => {
 
   async function handleAddLink() {
     const input = document.getElementById('creative-link-input');
-    const url = input.value.trim();
-    if (!url) return;
+    if (!input) return;
+    const rawText = input.value.trim();
+    if (!rawText) return;
 
-    let thumbnail = '';
-    let name = url;
-    let type = 'link';
+    const candidates = rawText.split(/[\n,\s]+/).map(s => s.trim()).filter(Boolean);
+    let addedCount = 0;
 
-    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-    if (ytMatch) {
-      thumbnail = `https://img.youtube.com/vi/${ytMatch[1]}/0.jpg`;
-      name = 'YouTube Video';
-      type = 'video/youtube';
-    } else if (url.includes('tiktok.com')) {
-      name = 'TikTok Video';
-      type = 'video/tiktok';
-      try {
-        const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        if (data && data.thumbnail_url) thumbnail = data.thumbnail_url;
-      } catch (e) {
-        console.warn('Could not fetch tiktok thumbnail', e);
-        thumbnail = 'https://sf-tb-sg.ibytedtos.com/obj/eden-sg/uhtyvueh7nulogpouzhm/tiktok-icon2.png';
+    for (let rawUrl of candidates) {
+      let url = rawUrl;
+      if (!url.match(/^https?:\/\//i)) {
+        if (url.includes('drive.google.com') || url.includes('docs.google.com') || url.includes('youtube.com') || url.includes('youtu.be') || url.includes('tiktok.com') || url.includes('instagram.com')) {
+          url = 'https://' + url;
+        } else if (url.includes('.')) {
+          url = 'https://' + url;
+        } else {
+          continue;
+        }
       }
-    } else if (url.includes('instagram.com')) {
-      name = 'Instagram Post';
-      type = 'video/instagram';
-      thumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png';
-    } else {
-      name = 'External Link';
-      type = 'link/external';
-      thumbnail = 'https://via.placeholder.com/150?text=Link';
-    }
 
-    if (!_uploadedFilesBatch.some(existing => existing.url === url)) {
+      if (_uploadedFilesBatch.some(existing => existing.url === url)) {
+        continue;
+      }
+
+      let thumbnail = '';
+      let name = url;
+      let type = 'link';
+
+      const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      if (ytMatch) {
+        thumbnail = `https://img.youtube.com/vi/${ytMatch[1]}/0.jpg`;
+        name = `YouTube Video (${ytMatch[1]})`;
+        type = 'video/youtube';
+      } else if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
+        const driveMatch = url.match(/(?:file\/d\/|id=)([\w-]+)/);
+        const driveId = driveMatch ? driveMatch[1] : '';
+        name = driveId ? `Google Drive Asset (${driveId.substring(0, 6)})` : 'Google Drive File';
+        type = 'video/drive';
+        thumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png';
+      } else if (url.includes('tiktok.com')) {
+        name = 'TikTok Video';
+        type = 'video/tiktok';
+        try {
+          const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
+          const data = await res.json();
+          if (data && data.thumbnail_url) thumbnail = data.thumbnail_url;
+        } catch (e) {
+          thumbnail = 'https://sf-tb-sg.ibytedtos.com/obj/eden-sg/uhtyvueh7nulogpouzhm/tiktok-icon2.png';
+        }
+        if (!thumbnail) thumbnail = 'https://sf-tb-sg.ibytedtos.com/obj/eden-sg/uhtyvueh7nulogpouzhm/tiktok-icon2.png';
+      } else if (url.includes('instagram.com')) {
+        name = 'Instagram Post';
+        type = 'video/instagram';
+        thumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png';
+      } else if (url.match(/\.(mp4|mov|avi|webm)$/i)) {
+        const fileName = url.split('/').pop().split('?')[0] || 'Direct Video';
+        name = decodeURIComponent(fileName);
+        type = 'video/direct';
+        thumbnail = '';
+      } else if (url.match(/\.(png|jpg|jpeg|gif|webp)$/i)) {
+        const fileName = url.split('/').pop().split('?')[0] || 'Direct Image';
+        name = decodeURIComponent(fileName);
+        type = 'image/direct';
+        thumbnail = url;
+      } else {
+        name = 'External Link';
+        type = 'link/external';
+        thumbnail = 'https://via.placeholder.com/150?text=Link';
+      }
+
       _uploadedFilesBatch.push({
         name: name,
         url: url,
@@ -459,8 +494,15 @@ const PAGE_CREATIVES = (() => {
         thumbnail: thumbnail,
         size: 0
       });
+      addedCount++;
+    }
+
+    if (addedCount > 0) {
       input.value = '';
       PAGE_CREATIVES.updateBatchUI();
+      showToast(`Added ${addedCount} link(s) to batch upload`, 'success');
+    } else if (candidates.length > 0) {
+      showToast('No new or valid links detected', 'warning');
     }
   }
 
@@ -476,9 +518,12 @@ const PAGE_CREATIVES = (() => {
           <input type="file" id="creative-files-input" multiple accept="image/*,video/*" style="display:none;" onchange="PAGE_CREATIVES.handleFilesSelect(event);">
         </div>
 
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input type="text" id="creative-link-input" class="input" placeholder="Or paste link (YouTube, TikTok, Instagram)" style="flex:1;">
-          <button class="btn btn-secondary" onclick="PAGE_CREATIVES.handleAddLink()">Add Link</button>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; gap:8px; align-items:flex-start;">
+            <textarea id="creative-link-input" class="input" rows="2" placeholder="Or paste link(s) here (Google Drive, YouTube, TikTok, Instagram, Direct URLs) — paste multiple links separated by new lines or spaces" style="flex:1; resize:vertical; font-size:12px; font-family:var(--font-sans); min-height:46px; border-radius:var(--r-md); padding:8px 12px;"></textarea>
+            <button class="btn btn-secondary" onclick="PAGE_CREATIVES.handleAddLink()" style="height:46px; white-space:nowrap; padding:0 16px; font-size:12px; font-weight:600;">Add Link(s)</button>
+          </div>
+          <div style="font-size:10.5px; color:var(--text-tertiary);">💡 Tip: You can paste multiple links at once (e.g. several Google Drive video links on separate lines).</div>
         </div>
 
         <div id="creative-upload-previews" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto;"></div>
