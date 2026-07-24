@@ -96,7 +96,7 @@ const PAGE_CREATIVES = (() => {
     };
     allCreatives.sort((a, b) => extractTime(b) - extractTime(a));
 
-    const verticals = window.PORTAL_DATA.VERTICALS;
+    const verticals = window.PORTAL_DATA.VERTICALS.filter(v => v !== 'B2B' && v !== 'B2C');
 
     // Group by vertical (supporting display-level duplication for assets in multiple verticals)
     const grouped = {};
@@ -507,7 +507,7 @@ const PAGE_CREATIVES = (() => {
   }
 
   function openUploadModal() {
-    const verticals = window.PORTAL_DATA.VERTICALS;
+    const verticals = window.PORTAL_DATA.VERTICALS.filter(v => v !== 'B2B' && v !== 'B2C');
 
     const modalBody = `
       <div style="display:flex; flex-direction:column; gap:16px;">
@@ -902,7 +902,7 @@ const PAGE_CREATIVES = (() => {
     const mat = STORE.getMaterialById(matId);
     if (!mat) return;
 
-    const verticals = window.PORTAL_DATA.VERTICALS;
+    const verticals = window.PORTAL_DATA.VERTICALS.filter(v => v !== 'B2B' && v !== 'B2C');
     const services = window.PORTAL_DATA.SERVICES;
     const matVerts = mat.verticals || (mat.vertical ? [mat.vertical] : []);
     const matServices = mat.services_provided || [];
